@@ -1,132 +1,46 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import { Container } from "@/components/layout/container";
 
 export default function DashboardPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container>
       <div className="space-y-8">
         <div>
-          <h1 className="font-heading text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+            Dashboard
+          </h1>
+          <p className="text-[var(--muted)]">
             Welcome back! Here&apos;s your learning overview.
           </p>
         </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Courses
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground">
-                +2 from last month
+        
+        {/* Today's Lesson Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Today&apos;s Lesson</CardTitle>
+            <CardDescription>Your personalized learning content for today</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 mx-auto bg-[var(--brand)]/10 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-8 h-8 text-[var(--brand)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 5.477 5.754 5 7.5 5s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.523 18.246 19 16.5 19c-1.746 0-3.332-.477-4.5-1.253" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">No lesson scheduled</h3>
+              <p className="text-[var(--muted)] mb-4">
+                Create your first learning plan to get started with daily lessons.
               </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Completed
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">8</div>
-              <p className="text-xs text-muted-foreground">
-                +1 from last week
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                In Progress
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">4</div>
-              <p className="text-xs text-muted-foreground">
-                Keep going!
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Hours Learned
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">145</div>
-              <p className="text-xs text-muted-foreground">
-                This month
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Tabs defaultValue="recent" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="recent">Recent Activity</TabsTrigger>
-            <TabsTrigger value="recommended">Recommended</TabsTrigger>
-          </TabsList>
-          <TabsContent value="recent" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Continue Learning</CardTitle>
-                <CardDescription>
-                  Pick up where you left off
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium">Advanced React Patterns</h3>
-                    <p className="text-sm text-muted-foreground">75% complete</p>
-                  </div>
-                  <Button size="sm">Continue</Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium">TypeScript Fundamentals</h3>
-                    <p className="text-sm text-muted-foreground">45% complete</p>
-                  </div>
-                  <Button size="sm">Continue</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="recommended" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recommended for You</CardTitle>
-                <CardDescription>
-                  Based on your learning history
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium">Next.js 14 Masterclass</h3>
-                    <p className="text-sm text-muted-foreground">New course</p>
-                  </div>
-                  <Button size="sm" variant="outline">Start</Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium">AI & Machine Learning</h3>
-                    <p className="text-sm text-muted-foreground">Popular</p>
-                  </div>
-                  <Button size="sm" variant="outline">Start</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              <a 
+                href="/app/create" 
+                className="inline-flex items-center px-4 py-2 bg-[var(--brand)] text-white rounded-md hover:opacity-90 transition-opacity"
+              >
+                Create Plan
+              </a>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </Container>
   );
 }
