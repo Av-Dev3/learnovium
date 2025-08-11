@@ -16,12 +16,15 @@ function supportsCustomTemp(model: string) {
 }
 
 async function chatCore(model: string, messages: Msg[], desiredTemp?: number) {
-  const params: any = { model, messages };
+  const baseParams = { model, messages };
   if (supportsCustomTemp(model) && typeof desiredTemp === "number") {
-    params.temperature = desiredTemp;
+    return await openai.chat.completions.create({
+      ...baseParams,
+      temperature: desiredTemp,
+    });
   }
   // Keep it simple: no response_format. We'll parse ourselves.
-  return await openai.chat.completions.create(params);
+  return await openai.chat.completions.create(baseParams);
 }
 
 async function chatJSON<T>(opts: {
