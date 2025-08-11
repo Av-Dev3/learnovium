@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { supabaseBrowser } from "../../../../lib/supabaseClient";
+import { supabaseBrowser } from "@/lib/supabaseClient";
 
 function AuthCallbackContent() {
   const router = useRouter();

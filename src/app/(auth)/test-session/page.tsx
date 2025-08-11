@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabaseBrowser } from "../../../lib/supabaseClient";
+import { supabaseBrowser } from "@/lib/supabaseClient";
 
 export default function TestSession() {
   const [email, setEmail] = useState<string | null>(null);
