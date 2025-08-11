@@ -13,7 +13,7 @@ export async function GET() {
     .limit(1);
 
   return NextResponse.json({
-    ok: true,
+    ok: !error,
     rows: data?.length ?? 0,
     error: error?.message,
   });
