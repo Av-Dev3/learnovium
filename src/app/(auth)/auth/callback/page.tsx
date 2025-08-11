@@ -50,11 +50,12 @@ function AuthCallbackInner() {
         }
 
         setMsg("No auth params found in the URL. Request a new magic link.");
-      } catch (err: any) {
-        console.error("Auth callback error:", err);
-        setMsg(err?.message || "Sign‑in failed. Try again.");
-        setTimeout(() => router.replace("/auth"), 1500);
-      }
+             } catch (err: unknown) {
+         console.error("Auth callback error:", err);
+         const errorMessage = err instanceof Error ? err.message : "Sign‑in failed. Try again.";
+         setMsg(errorMessage);
+         setTimeout(() => router.replace("/auth"), 1500);
+       }
     };
 
     run();
