@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/api/utils";
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
-  const { user, supabase, res } = await requireUser();
+  const { user, supabase, res } = await requireUser(req);
   if (!user) return res!;
   const body = await req.json().catch(() => ({}));
   const { goal_id, day_index, status, score, notes } = body || {};
@@ -22,4 +22,12 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json({ ok: true });
+}
+
+export async function GET(req: NextRequest) {
+  const { user, res } = await requireUser(req);
+  if (!user) return res!;
+  
+  // TODO: Implement progress retrieval logic
+  return NextResponse.json({ message: "Progress endpoint - implementation needed" });
 } 
