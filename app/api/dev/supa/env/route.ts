@@ -1,1 +1,0 @@
-export { GET, runtime } from "@/lib/dev/supa-env"; 
