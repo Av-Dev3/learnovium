@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
     const out = await retrieveContextDB(q, k, topic);
     return NextResponse.json(out);
   } catch (e: unknown) {
-    const errorMessage = e instanceof Error ? e.message : "DB search failed";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json({ error: e instanceof Error ? e.message : "DB search failed", q, topic, k }, { status: 500 });
   }
 } 
