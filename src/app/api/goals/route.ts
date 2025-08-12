@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 // GET /api/goals — list current user's goals
 export async function GET() {
-  const { user, supabase, res } = await requireUser(new NextRequest(new URL("http://local")));
+  const { user, supabase, res } = await requireUser();
   if (!user) return res!;
   const { data, error } = await supabase
     .from("learning_goals")
@@ -18,7 +18,7 @@ export async function GET() {
 
 // POST /api/goals — create a new goal (no plan build yet)
 export async function POST(req: NextRequest) {
-  const { user, supabase, res } = await requireUser(req);
+  const { user, supabase, res } = await requireUser();
   if (!user) return res!;
   const body = await req.json().catch(() => ({}));
   const { topic, focus } = body || {};

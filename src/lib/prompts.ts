@@ -1,4 +1,3 @@
-import { PlanJSON, LessonJSON, ValidationJSON } from "@/types/ai";
 import { retrieveContext } from "@/rag/retriever";
 
 const JSON_RULES =

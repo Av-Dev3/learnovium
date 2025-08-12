@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-export async function requireUser(_req: NextRequest) {
+export async function requireUser() {
   const supabase = await supabaseServer();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) return { user: null, supabase, res: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
   return { user, supabase, res: null };
 }
 
-export function dayIndexFrom(startISO: string, _tz = "UTC") {
+export function dayIndexFrom(startISO: string) {
   // Coarse day index for caching lessons per day/goal
   const start = new Date(startISO);
   const now = new Date();
