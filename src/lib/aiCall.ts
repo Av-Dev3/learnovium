@@ -1,5 +1,6 @@
 import { openai, modelFor } from "@/lib/openai";
 import { z } from "zod";
+import { track } from "@/lib/obs";
 
 type Msg = { role: "system" | "user" | "assistant"; content: string };
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -41,17 +42,20 @@ async function chatJSON<T>(opts: {
 
   for (let attempt = 1; attempt <= 4; attempt++) {
     try {
+      const t0 = Date.now();
       const res = await chatCore(model, opts.messages, opts.temperature ?? 0.7);
+      const dt = Date.now() - t0;
+
       const text = res.choices[0]?.message?.content ?? "";
       const parsed = coerceJSON(text);
       const data = opts.schema.parse(parsed);
-      const usage = res.usage
-        ? {
-            prompt_tokens: res.usage.prompt_tokens ?? 0,
-            completion_tokens: res.usage.completion_tokens ?? 0,
-            total_tokens: res.usage.total_tokens ?? 0,
-          }
-        : undefined;
+      const usage = res.usage ? {
+        prompt_tokens: res.usage.prompt_tokens ?? 0,
+        completion_tokens: res.usage.completion_tokens ?? 0,
+        total_tokens: res.usage.total_tokens ?? 0
+      } : undefined;
+
+      track({ task: opts.task, model, ms: dt, usage });
 
       console.log(`[AI:${opts.task}] model=${model} tokens=${usage?.total_tokens ?? "?"}`);
       return { data, usage };
