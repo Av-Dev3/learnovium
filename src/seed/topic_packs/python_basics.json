@@ -1,0 +1,41 @@
+{
+  "id": "python-basics-v1",
+  "topic": "Python",
+  "subtopic": "Basics",
+  "version": "1",
+  "locale": "en",
+  "chunks": [
+    {
+      "id": "py-1",
+      "topic": "Python",
+      "subtopic": "Syntax",
+      "text_summary": "Python uses indentation to define blocks. Variables are dynamically typed. Common types: int, float, str, bool, list, tuple, dict. Use '#' for comments.",
+      "tags": ["beginner","syntax"],
+      "source": { "url": "https://docs.python.org/3/tutorial/introduction.html", "title": "Python Tutorial: Introduction", "author": "Python Docs" }
+    },
+    {
+      "id": "py-2",
+      "topic": "Python",
+      "subtopic": "Collections",
+      "text_summary": "Lists are mutable ordered sequences; tuples are immutable; dicts map keys to values; sets store unique items. Use list comprehensions for concise transformations.",
+      "tags": ["collections","beginner"],
+      "source": { "url": "https://docs.python.org/3/tutorial/datastructures.html", "title": "Data Structures", "author": "Python Docs" }
+    },
+    {
+      "id": "py-3",
+      "topic": "Python",
+      "subtopic": "Control Flow",
+      "text_summary": "if/elif/else for branching; for loops iterate over iterables; while loops run while condition is true; use 'break'/'continue'; use 'try/except' for error handling.",
+      "tags": ["control-flow","beginner"],
+      "source": { "url": "https://docs.python.org/3/tutorial/controlflow.html", "title": "Control Flow", "author": "Python Docs" }
+    },
+    {
+      "id": "py-4",
+      "topic": "Python",
+      "subtopic": "Functions",
+      "text_summary": "Define functions with 'def'; arguments can be positional, keyword, *args, **kwargs; return values with 'return'; use docstrings to document behavior.",
+      "tags": ["functions","beginner"],
+      "source": { "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions", "title": "Defining Functions", "author": "Python Docs" }
+    }
+  ]
+} 

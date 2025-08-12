@@ -1,4 +1,5 @@
 import { PlanJSON, LessonJSON, ValidationJSON } from "@/types/ai";
+import { retrieveContext } from "@/rag/retriever";
 
 const JSON_RULES =
   "Respond with ONLY valid JSON. No backticks, no markdown, no commentary. If unsure, return the closest valid JSON.";
@@ -72,5 +73,34 @@ Return:
 
 ${JSON_RULES}`
     },
+  ];
+}
+
+export async function buildPlannerPromptWithRAG(query: string, topic?: string, k = 6) {
+  const { context } = await retrieveContext(query, k, topic);
+  return [
+    { role: "system" as const, content: "You build multi-week learning plans strictly from provided context. Output must validate against the PlanJSON schema." },
+    { role: "user" as const, content:
+`Context (RAG top-${k}):
+${context}
+
+Task:
+Return a PlanJSON for the topic: ${topic ?? "General"}.
+
+Respond with ONLY valid JSON.` }
+  ];
+}
+
+export async function buildLessonPromptWithRAG(query: string, topic?: string, k = 5) {
+  const { context } = await retrieveContext(query, k, topic);
+  return [
+    { role: "system" as const, content: "You are an AI tutor. Output must validate against LessonJSON." },
+    { role: "user" as const, content:
+`Context (RAG top-${k}):
+${context}
+
+Task:
+Return LessonJSON for today's focus: ${query}.
+Respond with ONLY valid JSON.` }
   ];
 } 

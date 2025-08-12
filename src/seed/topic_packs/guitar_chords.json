@@ -1,0 +1,41 @@
+{
+  "id": "guitar-chords-v1",
+  "topic": "Guitar",
+  "subtopic": "Chords",
+  "version": "1",
+  "locale": "en",
+  "chunks": [
+    {
+      "id": "gt-1",
+      "topic": "Guitar",
+      "subtopic": "Open Chords",
+      "text_summary": "Start with open chords: C, G, D, Em, Am. Focus on clean fretting, economy of motion, and switching smoothly with a metronome.",
+      "tags": ["beginner","open-chords"],
+      "source": { "url": "https://www.justinguitar.com", "title": "Beginner Course", "author": "Justin Sandercoe" }
+    },
+    {
+      "id": "gt-2",
+      "topic": "Guitar",
+      "subtopic": "Rhythm",
+      "text_summary": "Basic strum patterns: D D U U D U. Count 1 & 2 & 3 & 4 &; keep wrist loose; use muted strums to practice timing.",
+      "tags": ["rhythm","beginner"],
+      "source": { "url": "https://www.fender.com/articles", "title": "Strumming Basics", "author": "Fender" }
+    },
+    {
+      "id": "gt-3",
+      "topic": "Guitar",
+      "subtopic": "Transitions",
+      "text_summary": "Chord transitions are best trained slowly. Use anchor fingers that don't move between shapes to reduce travel time.",
+      "tags": ["practice","technique"],
+      "source": { "url": "https://www.guitarhabits.com", "title": "Chord Changes", "author": "K. Jonk" }
+    },
+    {
+      "id": "gt-4",
+      "topic": "Guitar",
+      "subtopic": "Practice",
+      "text_summary": "Short focused sessions beat long sloppy ones. 10 minutes daily with a clear target yields compounding results.",
+      "tags": ["habits","practice"],
+      "source": { "url": "https://www.justinguitar.com", "title": "Practice Routine", "author": "Justin Sandercoe" }
+    }
+  ]
+} 
