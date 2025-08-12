@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser, dayIndexFrom } from "@/lib/api/utils";
-import { retrieveContext } from "@/rag/retriever";
+import { retrieveContextDB } from "@/rag/retriever_db";
 import { generateLesson } from "@/lib/aiCall";
 import { buildLessonPrompt } from "@/lib/prompts";
 
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     if (existing?.lesson_json) return NextResponse.json(existing.lesson_json);
 
     const query = `${goal.topic} — ${goal.focus || "beginner daily lesson"}`;
-    const { context } = await retrieveContext(query, 5, goal.topic);
+    const { context } = await retrieveContextDB(query, 5, goal.topic, req);
     const msgs = buildLessonPrompt(`Today's focus: ${goal.focus || goal.topic}. Use this context:\n${context}`);
     const { data: lesson } = await generateLesson(msgs);
 
