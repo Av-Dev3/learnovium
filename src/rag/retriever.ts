@@ -8,12 +8,14 @@ export function getIndex() {
   return indexPromise;
 }
 
-export async function retrieveContext(query: string, k = 5, topicFilter?: string) {
+// rag/retriever.ts
+export async function retrieveContext(query: string, k = 5, topicFilter?: string, minScore = 0.3) {
   const idx = await getIndex();
-  // Embed query using the same model
   const { embedTexts } = await import("./embeddings");
   const [qvec] = await embedTexts([query]);
-  const results = idx.store.search(qvec, k, c => topicFilter ? c.topic.toLowerCase() === topicFilter.toLowerCase() : true);
-  const context = results.map(r => `• ${r.chunk.text_summary} (source: ${r.chunk.source.title} — ${r.chunk.source.url})`).join("\n");
-  return { results, context };
-} 
+  const raw = idx.store.search(qvec, k * 2, c => topicFilter ? c.topic.toLowerCase() === topicFilter.toLowerCase() : true);
+  const filtered = raw.filter(r => r.score >= minScore).slice(0, k);
+  const context = filtered.map(r => `• ${r.chunk.text_summary} (source: ${r.chunk.source.title} — ${r.chunk.source.url})`).join("\n");
+  return { results: filtered, context };
+}
+ 
