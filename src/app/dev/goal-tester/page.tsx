@@ -1,5 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+function SessionBadge() {
+  const [me, setMe] = useState<{ user?: { email?: string } } | null>(null);
+  useEffect(() => {
+    fetch("/api/dev/supa/me").then(r => r.json()).then(setMe).catch(() => {});
+  }, []);
+  const u = me?.user;
+  return (
+    <div className="text-sm">
+      Session: {u ? <span className="text-green-600">signed in as {u.email}</span> : <span className="text-red-600">not signed in</span>}
+    </div>
+  );
+}
 
 export default function GoalTester() {
   const [topic, setTopic] = useState("Python");
@@ -45,6 +58,7 @@ export default function GoalTester() {
   return (
     <main className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Dev Goal Tester</h1>
+      <SessionBadge />
       <div className="space-y-2">
         <label className="block">
           Topic:

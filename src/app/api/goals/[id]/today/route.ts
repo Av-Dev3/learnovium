@@ -5,6 +5,7 @@ import { generateLesson } from "@/lib/aiCall";
 import { buildLessonPrompt } from "@/lib/prompts";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { user, supabase, res } = await requireUser(req);

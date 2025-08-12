@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/api/utils";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 // GET /api/goals — list current user's goals
 export async function GET() {
