@@ -9,7 +9,7 @@ export type RAGIndex = {
   chunks: ReturnType<typeof TopicPack.parse>["chunks"];
 };
 
-export async function buildIndexFromSeeds(dir = "seed/topic_packs") {
+export async function buildIndexFromSeeds(dir = "src/seed/topic_packs") {
   // Load all JSON packs
   const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
   const packs: TTopicPack[] = files.map(f => {
