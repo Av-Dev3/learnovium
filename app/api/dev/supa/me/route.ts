@@ -1,0 +1,1 @@
+export { GET, runtime } from "@/lib/dev/supa-me"; 
