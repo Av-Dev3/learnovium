@@ -38,10 +38,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       user_id: user.id,
       goal_id: goalId,
       day_index: dayIndex,
-      chunk_ids: [],
+      chunk_ids: null, // uuid[] column; we'll store null until we track actual chunk IDs
       model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
-      citations: lesson.citations || [],
-      lesson_json: lesson,
+      citations: lesson.citations || [],  // jsonb array is OK
+      lesson_json: lesson,                // <-- now exists and is jsonb
     });
     if (wErr) return NextResponse.json({ error: wErr.message }, { status: 400 });
 
