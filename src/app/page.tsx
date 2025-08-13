@@ -8,7 +8,7 @@ export default function Home() {
         <li><a className="underline" href="/api/dev/ai/plan">/api/dev/ai/plan</a></li>
         <li><a className="underline" href="/api/dev/ai/lesson">/api/dev/ai/lesson</a></li>
         <li><a className="underline" href="/api/dev/rag/search?q=Python%20loops&topic=Python&k=3">/api/dev/rag/search</a></li>
-        <li><a className="underline" href="/api/goals">/api/goals (GET)</a></li>
+        <li><span className="opacity-50">/api/goals (GET) — requires auth</span></li>
         <li><a className="underline" href="/api/progress">/api/progress (POST via REST client)</a></li>
         <li><a className="underline" href="/api/dev/supa/env">/api/dev/supa/env</a></li>
         <li><a className="underline" href="/api/dev/supa/me">/api/dev/supa/me</a></li>
