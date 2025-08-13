@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       // topic_pack
       const { error: pErr } = await supa
         .from("topic_pack")
-        .upsert({ id: pack.id, topic: pack.topic, subtopic: pack.subtopic ?? null, version: pack.version ?? "1", locale: pack.locale ?? "en", created_by: user.id })
+        .upsert({ id: pack.id, topic: pack.topic, subtopic: pack.subtopic ?? null, version: pack.version ?? "1", locale: pack.locale ?? "en" })
         .select("id")
         .single();
       if (pErr) return NextResponse.json({ error: `topic_pack upsert: ${pErr.message}` }, { status: 400 });
