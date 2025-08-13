@@ -1,63 +1,16 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Target, Brain, Calendar, TrendingUp, Shield, Zap } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { supabaseBrowser } from "@/lib/supabaseClient";
 
-export default function Home() {
-  const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const supabase = supabaseBrowser();
+import { supabaseServer } from "@/lib/supabaseServer";
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setIsAuthenticated(!!session);
-      } catch (error) {
-        console.error('Auth check error:', error);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, [supabase.auth]);
-
-  const handleGetStarted = () => {
-    if (isAuthenticated) {
-      router.push('/app');
-    } else {
-      router.push('/auth');
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
-        <div className="container mx-auto px-4 py-16">
-          <div className="animate-pulse space-y-8">
-            <div className="text-center space-y-4">
-              <div className="h-16 w-64 bg-slate-200 dark:bg-slate-700 rounded-lg mx-auto"></div>
-              <div className="h-6 w-96 bg-slate-200 dark:bg-slate-700 rounded mx-auto"></div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-48 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+export default async function Home() {
+  // Check authentication status server-side
+  const supabase = await supabaseServer();
+  const { data: { session } } = await supabase.auth.getSession();
+  const isAuthenticated = !!session;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
@@ -97,14 +50,25 @@ export default function Home() {
             Get personalized daily lessons, track your progress, and achieve your learning goals with intelligent AI guidance.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={handleGetStarted} className="text-lg px-8 py-6">
-              {isAuthenticated ? 'Go to Dashboard' : 'Get Started Free'}
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            {!isAuthenticated && (
-              <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6">
-                <Link href="/auth">Sign In</Link>
+            {isAuthenticated ? (
+              <Button size="lg" asChild className="text-lg px-8 py-6">
+                <Link href="/app">
+                  Go to Dashboard
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
+            ) : (
+              <>
+                <Button size="lg" asChild className="text-lg px-8 py-6">
+                  <Link href="/auth">
+                    Get Started Free
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6">
+                  <Link href="/auth">Sign In</Link>
+                </Button>
+              </>
             )}
           </div>
         </div>
@@ -221,15 +185,31 @@ export default function Home() {
               </p>
             </CardHeader>
             <CardContent className="text-center">
-              <Button 
-                size="lg" 
-                variant="secondary" 
-                onClick={handleGetStarted}
-                className="text-lg px-8 py-6 bg-white text-blue-600 hover:bg-blue-50"
-              >
-                {isAuthenticated ? 'Continue Learning' : 'Start Learning Now'}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              {isAuthenticated ? (
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  asChild
+                  className="text-lg px-8 py-6 bg-white text-blue-600 hover:bg-blue-50"
+                >
+                  <Link href="/app">
+                    Continue Learning
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              ) : (
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  asChild
+                  className="text-lg px-8 py-6 bg-white text-blue-600 hover:bg-blue-50"
+                >
+                  <Link href="/auth">
+                    Start Learning Now
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>
