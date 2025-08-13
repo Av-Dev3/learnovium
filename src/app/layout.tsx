@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, DM_Sans } from "next/font/google";
 import "./globals.css";
-import { AppHeader } from "@/components/app-header";
-import { Footer } from "@/components/layout/footer";
+
 import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
@@ -86,20 +85,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // TODO: Replace with real auth in Phase 1
-  const isLoggedIn = false; // Set to true to test logged-in state
-  
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${dmSans.variable} font-sans antialiased`}
       >
         <ThemeProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <AppHeader isLoggedIn={isLoggedIn} />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          {children}
         </ThemeProvider>
       </body>
     </html>
