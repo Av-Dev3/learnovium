@@ -11,6 +11,7 @@
     --card: hsl(0 0% 100%);
     --border: hsl(214.3 31.8% 91.4%);
     --radius: 0.5rem;
+    --focus-ring: hsl(258 85% 55%);
   }
 
   .dark {
@@ -20,6 +21,7 @@
     --card: hsl(222 47% 11%);
     --border: hsl(217 33% 17%);
     --brand: hsl(258 85% 65%);
+    --focus-ring: hsl(258 85% 65%);
   }
 }
 
@@ -30,5 +32,42 @@
   body {
     background-color: var(--bg);
     color: var(--fg);
+  }
+}
+
+@layer components {
+  /* Focus-visible styles for better accessibility */
+  .focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+
+  /* Ensure interactive elements have proper focus styles */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [role="button"]:focus-visible,
+  [role="tab"]:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+
+  /* Remove default focus styles */
+  button:focus,
+  a:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+  }
+
+  /* High contrast focus styles for better visibility */
+  .focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
   }
 }

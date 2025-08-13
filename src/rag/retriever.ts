@@ -15,14 +15,14 @@ export async function retrieveContext(query: string, k = 5, topicFilter?: string
   try {
     const db = await retrieveContextDB(query, k, topicFilter);
     if (db.results?.length) return db;
-  } catch (_) {
+  } catch {
     // ignore and fall back to seed
   }
   // Fall back to local seed index
   const idx = await getIndex();
   const { embedTexts } = await import("./embeddings");
   const [qvec] = await embedTexts([query]);
-  const results = idx.store.search(qvec, k, c => topicFilter ? c.topic.toLowerCase() === topicFilter.toLowerCase() : true);
+  const results = idx.store.search(qvec, k, (c) => topicFilter ? c.topic.toLowerCase() === topicFilter.toLowerCase() : true);
   const context = results.map(r => `• ${r.chunk.text_summary}`).join("\n");
   return { results, context };
 }

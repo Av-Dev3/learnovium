@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { supabaseBrowser } from "@/lib/supabaseClient";
 
 type Goal = { id: string; topic: string; focus: string | null; plan_version?: number; created_at?: string };
@@ -52,7 +52,7 @@ export default function GoalTester() {
           : { "Content-Type": "application/json" } as Record<string,string>
   ), [token]);
 
-  async function refreshGoals() {
+  const refreshGoals = useCallback(async () => {
     setLoading(true);
     setOutput(null);
     try {
@@ -66,7 +66,7 @@ export default function GoalTester() {
         setOutput({ error: true, status: res.status, data });
       }
     } finally { setLoading(false); }
-  }
+  }, [token, goalId]);
 
   async function createGoal() {
     setLoading(true); setOutput(null);
@@ -104,7 +104,7 @@ export default function GoalTester() {
     } finally { setLoading(false); }
   }
 
-  useEffect(() => { if (token) refreshGoals(); }, [token]);
+  useEffect(() => { if (token) refreshGoals(); }, [token, refreshGoals]);
 
   return (
     <main className="p-6 space-y-4">
