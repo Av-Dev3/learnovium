@@ -1,7 +1,7 @@
 import { AppHeader } from "@/components/app-header";
 import { Footer } from "@/components/layout/footer";
 
-export default function AppLayout({
+export default function OldAppLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -13,4 +13,5 @@ export default function AppLayout({
       <Footer />
     </div>
   );
-} 
+}
+

@@ -1,13 +1,15 @@
 import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
 
 export default {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  darkMode: 'class',
+  content: ["./src/**/*.{ts,tsx}"],
+  darkMode: "class",
   theme: {
+    container: {
+      center: true,
+      padding: "1rem",
+      screens: { "2xl": "1280px" },
+    },
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", "sans-serif"],
@@ -28,5 +30,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [typography],
 } satisfies Config;

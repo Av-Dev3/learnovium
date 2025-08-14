@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { ProtectedShell } from "./ProtectedShell";
 
 export default async function AppLayout({
   children,
@@ -14,5 +15,5 @@ export default async function AppLayout({
     redirect("/auth");
   }
 
-  return <>{children}</>;
+  return <ProtectedShell>{children}</ProtectedShell>;
 } 

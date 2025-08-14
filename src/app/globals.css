@@ -2,75 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --brand: hsl(258 85% 55%);
-    --bg: hsl(0 0% 100%);
-    --fg: hsl(224 71% 4%);
-    --muted: hsl(220 14.3% 95.9%);
-    --card: hsl(0 0% 100%);
-    --border: hsl(214.3 31.8% 91.4%);
-    --radius: 0.75rem;
-    --focus-ring: hsl(258 85% 55%);
-  }
-
-  .dark {
-    --bg: hsl(224 71% 4%);
-    --fg: hsl(210 20% 98%);
-    --muted: hsl(215 27% 12%);
-    --card: hsl(222 47% 11%);
-    --border: hsl(217 33% 17%);
-    --brand: hsl(258 85% 65%);
-    --focus-ring: hsl(258 85% 65%);
-  }
+/* Tokens (HSL) */
+:root{
+  --bg: 0 0% 100%;
+  --card: 0 0% 100%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 222 9% 35%;
+  --border: 0 0% 90%;
+  --ring: 222 90% 60%;
+  --primary: 222 90% 56%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 267 84% 64%;
+  --accent-foreground: 0 0% 100%;
+}
+.dark:root{
+  --bg: 222 15% 8%;
+  --card: 222 14% 12%;
+  --muted: 222 12% 16%;
+  --muted-foreground: 222 9% 70%;
+  --border: 222 12% 18%;
 }
 
-@layer base {
-  * {
-    border-color: var(--border);
-  }
-  body {
-    background-color: var(--bg);
-    color: var(--fg);
-  }
-  ::selection {
-    background: color-mix(in_oklab, var(--brand) 30%, transparent);
-  }
-}
+html, body { height: 100%; }
+body { background: hsl(var(--bg)); }
 
-@layer components {
-  /* Focus-visible styles for better accessibility */
-  .focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
-    border-radius: var(--radius);
-  }
+/* helpers */
+.shadow-soft { box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.06); }
+.shadow-hover:hover { box-shadow: 0 8px 30px rgba(0,0,0,.12); }
+.gradient-text { background-image: linear-gradient(90deg,hsl(var(--primary)),hsl(var(--accent)));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-  /* Ensure interactive elements have proper focus styles */
-  button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  select:focus-visible,
-  textarea:focus-visible,
-  [role="button"]:focus-visible,
-  [role="tab"]:focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
-    border-radius: var(--radius);
-  }
-
-  /* Remove default focus styles */
-  button:focus,
-  a:focus,
-  input:focus,
-  select:focus,
-  textarea:focus {
-    outline: none;
-  }
-
-  /* High contrast focus styles for better visibility */
-  .focus-visible {
-    outline: 3px solid var(--focus-ring);
-    outline-offset: 2px;
-  }
-}
+.prose :where(h1,h2,h3){ letter-spacing:-0.02em; }
+.prose :where(code){ font-weight:600; }
