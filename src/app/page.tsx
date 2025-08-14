@@ -14,7 +14,7 @@ export default async function Home() {
   const isAuthenticated = !!session;
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
+    <div className="min-h-screen bg-[var(--bg)] overflow-x-hidden">
       <AppHeader isLoggedIn={isAuthenticated} />
 
       {/* Hero Section */}
@@ -111,7 +111,7 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-[var(--fg)] mb-6">
-              Why Choose <span className="text-brand">LearnOV AI</span>?
+              Why Choose <span className="text-brand">Learnovium</span>?
             </h2>
             <p className="text-xl text-[var(--fg)]/70 max-w-3xl mx-auto leading-relaxed">
               Our platform combines cutting-edge AI with proven learning methodologies to deliver an unparalleled educational experience

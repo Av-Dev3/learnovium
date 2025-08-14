@@ -6,9 +6,11 @@ export function Footer() {
       <div className="container py-12">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           {/* Brand */}
-          <div className="space-y-3">
-            <h3 className="font-heading text-xl font-bold bg-gradient-to-r from-brand via-purple-500 to-brand bg-clip-text text-transparent">LearnovAI</h3>
-            <p className="text-sm text-[var(--fg)]/70">AI-powered learning paths that adapt to you.</p>
+          <div className="col-span-2 md:col-span-1">
+            <h3 className="font-heading text-lg font-semibold bg-gradient-to-r from-brand via-purple-500 to-brand bg-clip-text text-transparent mb-4">Learnovium</h3>
+            <p className="text-[var(--fg)]/70 text-sm leading-relaxed">
+              Master any skill with AI-powered learning paths. Get personalized daily lessons and achieve your learning goals.
+            </p>
           </div>
 
           {/* Product */}
@@ -42,12 +44,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-[var(--border)]/60 pt-6 md:flex-row">
-          <p className="text-sm text-[var(--fg)]/60">© {new Date().getFullYear()} LearnovAI. All rights reserved.</p>
-          <div className="flex items-center gap-3">
-            <span className="h-2 w-2 rounded-full bg-brand animate-pulse" />
-            <span className="text-xs text-[var(--fg)]/60">Always learning</span>
-          </div>
+        <div className="col-span-full pt-8 border-t border-[var(--border)]/40">
+          <p className="text-sm text-[var(--fg)]/60">© {new Date().getFullYear()} Learnovium. All rights reserved.</p>
         </div>
       </div>
     </footer>

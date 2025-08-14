@@ -88,7 +88,7 @@ export default function PrivacyPage() {
                 please contact us:
               </p>
               <div className="space-y-2">
-                <p><strong>Email:</strong> privacy@learnovai.com</p>
+                <p><strong>Email:</strong> privacy@learnovium.com</p>
                 <p><strong>Address:</strong> 123 Learning Street, Education City, EC 12345</p>
                 <p><strong>Phone:</strong> +1 (555) 123-4567</p>
               </div>

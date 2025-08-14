@@ -31,8 +31,8 @@ export default function ProtectedLayout({
         {/* Sidebar */}
         <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
           <div className="flex flex-col flex-grow bg-[var(--card)]/80 backdrop-blur border-r border-[var(--border)]/60 pt-5 pb-4 overflow-y-auto">
-            <div className="flex items-center flex-shrink-0 px-4">
-              <h1 className="font-heading text-xl font-semibold bg-gradient-to-r from-brand via-purple-500 to-brand bg-clip-text text-transparent">LearnovAI</h1>
+            <div className="flex items-center space-x-2">
+              <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
             </div>
             <nav className="mt-8 flex-1 px-2 space-y-1">
               <AppNav />
@@ -50,8 +50,8 @@ export default function ProtectedLayout({
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
               <div className="flex flex-col h-full">
-                <div className="flex items-center flex-shrink-0 px-4 py-5">
-                  <h1 className="font-heading text-xl font-semibold">LearnovAI</h1>
+                <div className="flex items-center justify-between">
+                  <h1 className="font-heading text-xl font-semibold">Learnovium</h1>
                 </div>
                 <nav className="flex-1 px-2 space-y-1">
                   <AppNav />

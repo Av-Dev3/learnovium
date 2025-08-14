@@ -1,4 +1,4 @@
-# LearnovAI
+# Learnovium
 
 AI-powered learning paths with daily micro-lessons and reminders.
 
@@ -25,8 +25,8 @@ AI-powered learning paths with daily micro-lessons and reminders.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/learnovai.git
-   cd learnovai
+   git clone https://github.com/your-username/learnovium.git
+   cd learnovium
    ```
 
 2. **Install dependencies**
@@ -147,9 +147,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or need help, please:
 - Open an issue on GitHub
-- Contact us at support@learnovai.com
+- Contact us at support@learnovium.com
 - Join our community Discord
 
 ---
 
-Built with ❤️ by the LearnovAI team
+Built with ❤️ by the Learnovium team
