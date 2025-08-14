@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, DM_Sans } from "next/font/google";
+import { Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -9,7 +9,7 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-const dmSans = DM_Sans({
+const interTight = Inter_Tight({
   subsets: ["latin"],
   variable: "--font-heading",
 });
@@ -88,7 +88,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${dmSans.variable} font-sans antialiased`}
+        className={`${inter.variable} ${interTight.variable} font-sans antialiased selection:bg-brand/20 selection:text-[var(--fg)]`}
       >
         <ThemeProvider>
           {children}
