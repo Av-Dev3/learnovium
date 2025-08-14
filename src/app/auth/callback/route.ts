@@ -6,7 +6,13 @@ export async function GET(req: NextRequest) {
   const code = url.searchParams.get("code");
   const next = url.searchParams.get("next") || "/app";
 
-  const res = NextResponse.redirect(new URL(next, process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"));
+  if (!code) {
+    // No code; punt back to /auth
+    return NextResponse.redirect(new URL("/auth", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"));
+  }
+
+  // Create a response that we can set cookies on
+  const res = NextResponse.next();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,17 +32,20 @@ export async function GET(req: NextRequest) {
     }
   );
 
-  if (!code) {
-    // No code; punt back to /auth
-    return NextResponse.redirect(new URL("/auth", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"));
-  }
-
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
     // Bubble error to /auth (optional: include ?e=callback)
     return NextResponse.redirect(new URL("/auth?e=callback", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"));
   }
 
-  // Cookies are now set on the response; redirect to /app
-  return res;
+  // Now redirect with the cookies set
+  const redirectUrl = new URL(next, process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
+  const finalRes = NextResponse.redirect(redirectUrl);
+  
+  // Copy cookies from the response that has the session cookies
+  res.cookies.getAll().forEach(cookie => {
+    finalRes.cookies.set(cookie);
+  });
+
+  return finalRes;
 } 
