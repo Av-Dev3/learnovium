@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(req: NextRequest) {
-  // Don't guard auth/reset/debug pages
-  const { pathname } = req.nextUrl;
-  const isProtected = pathname.startsWith("/app");
-  if (!isProtected) return NextResponse.next();
+  const { pathname, search } = req.nextUrl;
+  if (!pathname.startsWith("/app")) return NextResponse.next();
 
   const res = NextResponse.next();
 
@@ -17,23 +15,22 @@ export async function middleware(req: NextRequest) {
         get(name: string) {
           return req.cookies.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: { [key: string]: unknown }) {
           res.cookies.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: { [key: string]: unknown }) {
           res.cookies.set({ name, value: "", ...options });
         },
       },
     }
   );
 
-  const { data, error } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
 
-  // If no user, bounce to /auth with a next= param
   if (!data?.user) {
     const url = req.nextUrl.clone();
     url.pathname = "/auth";
-    url.searchParams.set("next", pathname + req.nextUrl.search);
+    url.searchParams.set("next", pathname + search);
     return NextResponse.redirect(url);
   }
 
