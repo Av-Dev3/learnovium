@@ -8,14 +8,12 @@ export default function TestWrite() {
   const run = async () => {
     const supabase = supabaseBrowser();
 
-    // Check session
     const { data: userRes, error: userErr } = await supabase.auth.getUser();
     if (userErr || !userRes.user) {
       setOut("Not signed in. Go to /auth first.");
       return;
     }
 
-    // Insert a dummy goal for this user
     const { error: insErr } = await supabase.from("learning_goals").insert({
       user_id: userRes.user.id,
       topic: "Supabase Smoke Test",
@@ -26,7 +24,6 @@ export default function TestWrite() {
       return;
     }
 
-    // Read back latest few
     const { data, error: selErr } = await supabase
       .from("learning_goals")
       .select("id, topic, created_at")
@@ -54,4 +51,5 @@ export default function TestWrite() {
       </p>
     </main>
   );
-} 
+}
+
