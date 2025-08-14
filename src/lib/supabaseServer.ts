@@ -1,29 +1,34 @@
+"use server";
+
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
-export async function supabaseServer(req?: NextRequest) {
+export async function supabaseServer(_req?: NextRequest) {
+  // Pull cookies in/out for SSR so session is available in RSC
   const cookieStore = await cookies();
-  const authHeader = req?.headers.get("authorization") || undefined; // "Bearer <token>"
 
-  return createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+        getAll() {
+          return cookieStore.getAll().map(cookie => ({
+            name: cookie.name,
+            value: cookie.value,
+          }));
         },
-        set(name: string, value: string, options: CookieOptions) {
-          cookieStore.set({ name, value, ...options });
+        setAll(cookies: { name: string; value: string; options: CookieOptions }[]) {
+          cookies.forEach(({ name, value, options }) => {
+            try {
+              cookieStore.set({ name, value, ...options });
+            } catch {}
+          });
         },
-        remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: "", ...options });
-        },
-      },
-      global: {
-        headers: authHeader ? { Authorization: authHeader } : {},
       },
     }
   );
-} 
+
+  return supabase;
+}

@@ -2,35 +2,108 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tokens (HSL) */
+/* ---------- Tokens (HSL unless noted) ---------- */
 :root{
+  /* Surfaces */
   --bg: 0 0% 100%;
   --card: 0 0% 100%;
   --muted: 0 0% 96%;
   --muted-foreground: 222 9% 35%;
   --border: 0 0% 90%;
-  --ring: 222 90% 60%;
+
+  /* Brand & text */
   --primary: 222 90% 56%;
   --primary-foreground: 0 0% 100%;
   --accent: 267 84% 64%;
   --accent-foreground: 0 0% 100%;
+
+  /* Missing vars used by tailwind.config.ts */
+  --brand: hsl(222 90% 56%);
+  --fg: hsl(222 15% 18%);      /* default text color in light mode */
+  --ring: 222 90% 60%;
+  --radius: 12px;              /* for rounded-lg/md/sm extensions */
 }
+
 .dark:root{
   --bg: 222 15% 8%;
   --card: 222 14% 12%;
   --muted: 222 12% 16%;
   --muted-foreground: 222 9% 70%;
   --border: 222 12% 18%;
+  --fg: hsl(0 0% 98%);         /* readable on dark */
 }
 
-html, body { height: 100%; }
-body { background: hsl(var(--bg)); }
+/* Base */
+html, body { 
+  height: 100%; 
+  scroll-behavior: smooth;
+}
 
-/* helpers */
-.shadow-soft { box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.06); }
-.shadow-hover:hover { box-shadow: 0 8px 30px rgba(0,0,0,.12); }
-.gradient-text { background-image: linear-gradient(90deg,hsl(var(--primary)),hsl(var(--accent)));
-  -webkit-background-clip: text; background-clip: text; color: transparent; }
+body {
+  background: hsl(var(--bg));
+  color: var(--fg);
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-.prose :where(h1,h2,h3){ letter-spacing:-0.02em; }
-.prose :where(code){ font-weight:600; }
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Helpers */
+.shadow-soft { 
+  box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.06); 
+}
+
+.shadow-hover:hover { 
+  box-shadow: 0 8px 30px rgba(0,0,0,.12); 
+}
+
+.gradient-text {
+  background-image: linear-gradient(90deg,hsl(var(--primary)),hsl(var(--accent)));
+  -webkit-background-clip: text; 
+  background-clip: text; 
+  color: transparent;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Typography tweaks */
+.prose :where(h1,h2,h3){ 
+  letter-spacing:-0.02em; 
+}
+
+.prose :where(code){ 
+  font-weight:600; 
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Background size utilities */
+.bg-size-200 {
+  background-size: 200% 200%;
+}
