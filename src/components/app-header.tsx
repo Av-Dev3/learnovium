@@ -114,80 +114,146 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
           {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="md:hidden p-2">
+              <Button variant="ghost" size="sm" className="md:hidden p-2 hover:bg-muted/50 transition-colors">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-[var(--bg)]/95 backdrop-blur-xl border-l border-[var(--border)]/60">
+            <SheetContent side="right" className="w-[320px] sm:w-[380px] p-0 bg-gradient-to-br from-[var(--bg)] via-[var(--bg)] to-[var(--muted)]/20 backdrop-blur-2xl border-l border-[var(--border)]/40">
               <div className="flex flex-col h-full">
-                {/* Header */}
-                <div className="flex items-center justify-between pb-6 border-b border-[var(--border)]/40">
-                  <h3 className="font-heading text-xl font-bold text-[var(--fg)]">Menu</h3>
-                  <ThemeToggle />
-                </div>
-                
-                {/* Navigation */}
-                <div className="flex-1 py-6">
-                  <nav className="space-y-1">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`block px-4 py-3 rounded-xl transition-all duration-200 ${
-                          isActive(item.href)
-                            ? "bg-brand/10 text-brand font-semibold border border-brand/20"
-                            : "text-[var(--fg)]/80 hover:bg-muted/50 hover:text-[var(--fg)]"
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </nav>
-                </div>
-
-                {/* User Section */}
-                {isLoggedIn ? (
-                  <div className="border-t border-[var(--border)]/40 pt-6 space-y-4">
-                    <div className="flex items-center space-x-3 px-4">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={userAvatarUrl} alt={userName} />
-                        <AvatarFallback className="bg-brand/10 text-brand">
-                          {userName ? userName.charAt(0).toUpperCase() : "U"}
-                        </AvatarFallback>
-                      </Avatar>
+                {/* Header with gradient background */}
+                <div className="relative overflow-hidden bg-gradient-to-r from-brand/10 via-purple-500/10 to-brand/10 p-6 border-b border-[var(--border)]/30">
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--brand),transparent_50%)] opacity-20" />
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <span className="font-heading text-lg font-bold text-white">L</span>
+                      </div>
                       <div>
-                        <p className="font-medium text-[var(--fg)]">{userName || "User"}</p>
-                        <p className="text-sm text-[var(--fg)]/60">Account</p>
+                        <h3 className="font-heading text-xl font-bold text-[var(--fg)]">Learnovium</h3>
+                        <p className="text-sm text-[var(--fg)]/60">AI Learning Platform</p>
                       </div>
                     </div>
-                    <nav className="space-y-1">
-                      {userMenuItems.map((item) => (
+                    <ThemeToggle />
+                  </div>
+                </div>
+                
+                {/* Navigation Section */}
+                <div className="flex-1 p-6 space-y-6">
+                  <div>
+                    <h4 className="text-sm font-semibold text-[var(--fg)]/60 uppercase tracking-wider mb-4 px-2">Navigation</h4>
+                    <nav className="space-y-2">
+                      {navItems.map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="block px-4 py-3 rounded-xl text-[var(--fg)]/80 hover:bg-muted/50 hover:text-[var(--fg)] transition-all duration-200"
+                          className={`group flex items-center px-4 py-3 rounded-2xl transition-all duration-300 ${
+                            isActive(item.href)
+                              ? "bg-gradient-to-r from-brand/20 to-purple-500/20 text-brand border border-brand/30 shadow-lg"
+                              : "text-[var(--fg)]/80 hover:bg-muted/50 hover:text-[var(--fg)] hover:shadow-md"
+                          }`}
                         >
-                          {item.label}
+                          <div className={`w-2 h-2 rounded-full mr-3 transition-all duration-300 ${
+                            isActive(item.href) 
+                              ? "bg-brand shadow-lg shadow-brand/50" 
+                              : "bg-[var(--fg)]/30 group-hover:bg-[var(--fg)]/50"
+                          }`} />
+                          <span className="font-medium">{item.label}</span>
+                          {isActive(item.href) && (
+                            <div className="ml-auto w-2 h-2 bg-brand rounded-full animate-pulse" />
+                          )}
                         </Link>
                       ))}
-                      <div className="px-4 py-3 text-[var(--fg)]/60 hover:text-[var(--fg)]/80 transition-colors cursor-pointer">
-                        Sign out
-                      </div>
                     </nav>
                   </div>
-                ) : (
-                  <div className="border-t border-[var(--border)]/40 pt-6 space-y-4">
-                    <div className="px-4 space-y-3">
-                      <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-opacity" asChild>
-                        <Link href="/auth">Get Started</Link>
-                      </Button>
-                      <Button variant="outline" className="w-full" asChild>
-                        <Link href="/auth/sign-in">Sign In</Link>
-                      </Button>
+
+                  {/* User Section */}
+                  {isLoggedIn ? (
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-semibold text-[var(--fg)]/60 uppercase tracking-wider mb-4 px-2">Account</h4>
+                      
+                      {/* User Profile Card */}
+                      <div className="bg-gradient-to-r from-[var(--card)] to-[var(--muted)]/30 rounded-2xl p-4 border border-[var(--border)]/40 shadow-lg">
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="h-12 w-12 ring-2 ring-brand/20">
+                            <AvatarImage src={userAvatarUrl} alt={userName} />
+                            <AvatarFallback className="bg-gradient-to-br from-brand to-purple-600 text-white font-semibold text-lg">
+                              {userName ? userName.charAt(0).toUpperCase() : "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-semibold text-[var(--fg)]">{userName || "User"}</p>
+                            <p className="text-sm text-[var(--fg)]/60">Premium Member</p>
+                          </div>
+                          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                        </div>
+                      </div>
+
+                      {/* Account Navigation */}
+                      <nav className="space-y-2">
+                        {userMenuItems.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="group flex items-center px-4 py-3 rounded-2xl text-[var(--fg)]/80 hover:bg-muted/50 hover:text-[var(--fg)] transition-all duration-300 hover:shadow-md"
+                          >
+                            <div className="w-2 h-2 rounded-full mr-3 bg-[var(--fg)]/30 group-hover:bg-[var(--fg)]/50 transition-colors" />
+                            <span className="font-medium">{item.label}</span>
+                            <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="w-2 h-2 bg-[var(--fg)]/30 rounded-full" />
+                            </div>
+                          </Link>
+                        ))}
+                        
+                        {/* Sign Out */}
+                        <div className="group flex items-center px-4 py-3 rounded-2xl text-red-500/80 hover:bg-red-500/10 hover:text-red-500 transition-all duration-300 hover:shadow-md cursor-pointer">
+                          <div className="w-2 h-2 rounded-full mr-3 bg-red-500/50 group-hover:bg-red-500 transition-colors" />
+                          <span className="font-medium">Sign out</span>
+                          <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="w-2 h-2 bg-red-500/50 rounded-full" />
+                          </div>
+                        </div>
+                      </nav>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-semibold text-[var(--fg)]/60 uppercase tracking-wider mb-4 px-2">Get Started</h4>
+                      
+                      {/* CTA Cards */}
+                      <div className="space-y-3">
+                        <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
+                          <Link href="/auth">
+                            <div className="flex items-center justify-center space-x-2">
+                              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                              <span>Start Learning Free</span>
+                            </div>
+                          </Link>
+                        </Button>
+                        
+                        <Button variant="outline" className="w-full border-2 border-[var(--border)] hover:border-brand/50 hover:bg-muted/30 transition-all duration-300 rounded-2xl py-4 text-base font-medium" asChild>
+                          <Link href="/auth/sign-in">
+                            <div className="flex items-center justify-center space-x-2">
+                              <div className="w-2 h-2 bg-[var(--fg)]/60 rounded-full" />
+                              <span>Sign In</span>
+                            </div>
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="p-6 border-t border-[var(--border)]/30 bg-gradient-to-t from-[var(--muted)]/20 to-transparent">
+                  <div className="text-center">
+                    <p className="text-xs text-[var(--fg)]/50 mb-2">Always learning, always growing</p>
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-1.5 h-1.5 bg-brand rounded-full animate-pulse" />
+                      <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}} />
+                      <div className="w-1.5 h-1.5 bg-brand rounded-full animate-pulse" style={{animationDelay: '0.4s'}} />
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             </SheetContent>
           </Sheet>
