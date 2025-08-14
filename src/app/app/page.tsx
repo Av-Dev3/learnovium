@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { LessonCard } from "@/components/ui/lesson-card";
 import { GoalCard } from "@/components/ui/goal-card";
 import { LoadingState } from "@/components/ui/loading-state";

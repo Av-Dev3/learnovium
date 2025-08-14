@@ -1,29 +1,45 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(req: NextRequest) {
-  // For now, let's use a simpler approach without Supabase client in middleware
-  // The protected layout will handle authentication checks
-  
-  // If accessing app routes, allow the request to proceed
-  // The layout will handle auth checks and redirects
-  if (req.nextUrl.pathname.startsWith('/app')) {
-    return NextResponse.next();
+  // Don't guard auth/reset/debug pages
+  const { pathname } = req.nextUrl;
+  const isProtected = pathname.startsWith("/app");
+  if (!isProtected) return NextResponse.next();
+
+  const res = NextResponse.next();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return req.cookies.get(name)?.value;
+        },
+        set(name: string, value: string, options: any) {
+          res.cookies.set({ name, value, ...options });
+        },
+        remove(name: string, options: any) {
+          res.cookies.set({ name, value: "", ...options });
+        },
+      },
+    }
+  );
+
+  const { data, error } = await supabase.auth.getUser();
+
+  // If no user, bounce to /auth with a next= param
+  if (!data?.user) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/auth";
+    url.searchParams.set("next", pathname + req.nextUrl.search);
+    return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  return res;
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
-  ],
+  matcher: ["/app/:path*"],
 }; 

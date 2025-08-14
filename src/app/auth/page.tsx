@@ -115,7 +115,7 @@ export default function AuthPage() {
           </div>
         )}
 
-        {err && <p className="text-sm text-red-600">{err}</p>}
+        {err && <p className="text-sm text-red-600">{err.includes("Email not confirmed") ? "Check your inbox and confirm your email, then sign in again." : err}</p>}
         {msg && <p className="text-sm text-green-600">{msg}</p>}
 
         <p className="text-xs text-neutral-500">By continuing you agree to our Terms & Privacy.</p>
