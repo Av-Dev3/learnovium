@@ -18,17 +18,17 @@ export default async function Home() {
       <AppHeader isLoggedIn={isAuthenticated} />
 
       {/* Hero Section */}
-      <section className="relative pt-28 pb-20 overflow-hidden">
-        {/* Background */}
+      <section className="relative pt-28 pb-24 overflow-hidden">
+        {/* Aurora + Grid background */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[-10%] left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-brand/10 blur-3xl" />
-          <div className="absolute top-0 right-[-10%] h-[28rem] w-[28rem] rounded-full bg-purple-500/10 blur-3xl" />
+          <div className="absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,rgba(99,102,241,0.18),transparent),radial-gradient(800px_400px_at_100%_20%,rgba(147,51,234,0.18),transparent)]" />
+          <div className="absolute inset-0 [mask-image:radial-gradient(closest-side,white,transparent)] opacity-[0.08]" style={{backgroundImage:"linear-gradient(to_right,rgba(0,0,0,.6)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,.6)_1px,transparent_1px)",backgroundSize:"56px_56px"}} />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 border border-[var(--border)]/70 bg-[var(--bg)]/60 backdrop-blur">
+            <div className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 border border-[var(--border)]/60 bg-[var(--bg)]/60 backdrop-blur shadow-sm">
               <Sparkles className="w-4 h-4 text-brand" />
               <span className="text-sm font-medium text-[var(--fg)]/80">AI-Powered Learning Platform</span>
             </div>
@@ -52,8 +52,9 @@ export default async function Home() {
               {isAuthenticated ? (
                 <Button 
                   size="lg" 
+                  shape="pill"
                   asChild 
-                  className="text-lg px-8 py-5 bg-gradient-to-r from-brand to-purple-600 text-white border-0 shadow-xl rounded-2xl"
+                  className="text-lg px-8 py-5 bg-gradient-to-r from-brand to-purple-600 text-white border-0 shadow-xl"
                 >
                   <Link href="/app">
                     Go to Dashboard
@@ -64,8 +65,9 @@ export default async function Home() {
                 <>
                   <Button 
                     size="lg" 
+                    shape="pill"
                     asChild 
-                  className="text-lg px-8 py-5 bg-gradient-to-r from-brand to-purple-600 text-white border-0 shadow-xl rounded-2xl"
+                    className="text-lg px-8 py-5 bg-gradient-to-r from-brand to-purple-600 text-white border-0 shadow-xl"
                   >
                     <Link href="/auth">
                       Start Learning Free
@@ -75,8 +77,9 @@ export default async function Home() {
                   <Button 
                     size="lg" 
                     variant="outline" 
+                    shape="pill"
                     asChild 
-                    className="text-lg px-8 py-5 border border-[var(--border)] hover:bg-muted rounded-2xl"
+                    className="text-lg px-8 py-5 border border-[var(--border)] hover:bg-muted"
                   >
                     <Link href="/auth">Watch Demo</Link>
                   </Button>

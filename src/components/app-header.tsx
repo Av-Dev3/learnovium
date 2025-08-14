@@ -67,16 +67,16 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
 	        {/* Right: Auth/Actions */}
 	        <div className="flex flex-1 items-center justify-end gap-2">
 	          <ThemeToggle />
-	          {!isLoggedIn ? (
-	            <>
-	              <Button variant="ghost" size="sm" asChild>
-	                <Link href="/auth/sign-in">Sign In</Link>
-	              </Button>
-	              <Button size="sm" asChild className="bg-gradient-to-r from-brand to-purple-600 hover:opacity-95 text-white border-0 shadow-md">
-	                <Link href="/auth">Get Started</Link>
-	              </Button>
-	            </>
-	          ) : (
+          {!isLoggedIn ? (
+            <>
+              <Button variant="ghost" size="sm" shape="pill" asChild>
+                <Link href="/auth/sign-in">Sign In</Link>
+              </Button>
+              <Button size="sm" shape="pill" asChild className="bg-gradient-to-r from-brand to-purple-600 hover:opacity-95 text-white border-0 shadow-md">
+                <Link href="/auth">Get Started</Link>
+              </Button>
+            </>
+          ) : (
 	            <DropdownMenu>
 	              <DropdownMenuTrigger asChild>
 	                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
@@ -113,7 +113,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
 	          {/* Mobile Menu */}
 	          <Sheet>
 	            <SheetTrigger asChild>
-	              <Button variant="ghost" size="sm" className="md:hidden">
+              <Button variant="ghost" size="sm" className="md:hidden">
 	                <Menu className="h-5 w-5" />
 	                <span className="sr-only">Toggle menu</span>
 	              </Button>

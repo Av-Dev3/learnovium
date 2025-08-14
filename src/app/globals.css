@@ -10,7 +10,7 @@
     --muted: hsl(220 14.3% 95.9%);
     --card: hsl(0 0% 100%);
     --border: hsl(214.3 31.8% 91.4%);
-    --radius: 0.5rem;
+    --radius: 0.75rem;
     --focus-ring: hsl(258 85% 55%);
   }
 
