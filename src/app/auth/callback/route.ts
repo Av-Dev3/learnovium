@@ -11,8 +11,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"));
   }
 
-  // Create a response that we can set cookies on
-  const res = NextResponse.next();
+  // Create the redirect response first
+  const redirectUrl = new URL(next, process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
+  const res = NextResponse.redirect(redirectUrl);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,10 +24,27 @@ export async function GET(req: NextRequest) {
           return req.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: { [key: string]: unknown }) {
-          res.cookies.set({ name, value, ...options });
+          // Set cookies directly on the redirect response
+          res.cookies.set({
+            name,
+            value,
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax" as const,
+            ...options,
+          });
         },
         remove(name: string, options: { [key: string]: unknown }) {
-          res.cookies.set({ name, value: "", ...options });
+          res.cookies.set({
+            name,
+            value: "",
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax" as const,
+            ...options,
+          });
         },
       },
     }
@@ -38,14 +56,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth?e=callback", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"));
   }
 
-  // Now redirect with the cookies set
-  const redirectUrl = new URL(next, process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
-  const finalRes = NextResponse.redirect(redirectUrl);
-  
-  // Copy cookies from the response that has the session cookies
-  res.cookies.getAll().forEach(cookie => {
-    finalRes.cookies.set(cookie);
-  });
-
-  return finalRes;
+  // Return the redirect response with cookies set
+  return res;
 } 
