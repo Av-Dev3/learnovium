@@ -206,7 +206,7 @@ function UserMenu() {
   };
 
   const toggleMenu = () => {
-    console.log("Dashboard menu toggling from:", isOpen, "to:", !isOpen);
+    console.log("Dashboard: Toggling user menu from:", isOpen, "to:", !isOpen);
     setIsOpen(prev => !prev);
   };
 
@@ -219,7 +219,7 @@ function UserMenu() {
         className="group relative h-11 w-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
         onClick={toggleMenu}
       >
-        <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300">
+        <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300 pointer-events-none">
           <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />
           <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
             {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
@@ -234,11 +234,6 @@ function UserMenu() {
 
       {isOpen && (
         <>
-          {/* Debug info */}
-          <div className="fixed top-0 left-0 z-[9999] bg-blue-500 text-white p-2 text-xs">
-            DASHBOARD MENU IS OPEN! isOpen: {isOpen.toString()}
-          </div>
-          
           {/* Backdrop with blur */}
           <div 
             className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" 
@@ -246,7 +241,7 @@ function UserMenu() {
           />
           
           {/* Modern Dropdown Menu */}
-          <div className="absolute right-0 top-14 z-50 w-80 bg-blue-500 border-4 border-yellow-400">
+          <div className="absolute right-0 top-14 z-50 w-80">
             <div className="relative">
               {/* Arrow pointer */}
               <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50" />
