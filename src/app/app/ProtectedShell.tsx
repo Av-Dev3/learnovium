@@ -373,6 +373,18 @@ function UserMenu() {
 }
 
 function MobileUserMenu() {
+  const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+
+  // Get user data on component mount
+  useEffect(() => {
+    const getUser = async () => {
+      const supabase = supabaseBrowser();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
+
   const handleSignOut = async () => {
     const supabase = supabaseBrowser();
     await supabase.auth.signOut();
@@ -389,17 +401,17 @@ function MobileUserMenu() {
         <div className="relative flex items-center space-x-4">
           <div className="relative">
             <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
-              <AvatarImage src="" alt="User" />
+              <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />
               <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
-                U
+                {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
               </AvatarFallback>
             </Avatar>
             {/* Online status */}
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-lg">User Account</h3>
-            <p className="text-indigo-100 text-sm">user@example.com</p>
+            <h3 className="font-bold text-lg">{user?.email || "User Account"}</h3>
+            <p className="text-indigo-100 text-sm">Premium Member</p>
             <div className="flex items-center mt-3 space-x-2">
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
                 Premium

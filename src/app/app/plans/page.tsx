@@ -124,7 +124,7 @@ export default function Plans() {
           >
             <option value="recent">Most Recent</option>
           </select>
-          <Button asChild>
+          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
             <Link href="/app/create">
               <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
               New Goal
@@ -160,7 +160,7 @@ export default function Plans() {
             <p className="text-muted-foreground mb-4 text-sm sm:text-base">
               Create your first learning goal to get started
             </p>
-            <Button asChild>
+            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
               <Link href="/app/create">
                 <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
                 Create Your First Goal
