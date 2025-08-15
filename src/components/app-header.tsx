@@ -83,11 +83,10 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
           </nav>
 
           {/* Right: Auth/Actions */}
-          <div className="flex items-center space-x-4">
-            <ThemeToggle />
-            
+          <div className="flex items-center space-x-3">
             {!isLoggedIn ? (
               <>
+                <ThemeToggle />
                 <Button variant="ghost" size="sm" shape="pill" asChild className="hidden sm:inline-flex">
                   <Link href="/auth/sign-in">Sign In</Link>
                 </Button>
@@ -96,24 +95,26 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 </Button>
               </>
             ) : (
-              <div className="relative">
-                <Button
-                  variant="ghost"
-                  className="group relative h-11 w-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-                  onClick={toggleUserMenu}
-                >
-                  <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300 pointer-events-none">
-                    <AvatarImage src={userAvatarUrl} alt={userName} />
-                    <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
-                      {userName ? userName.charAt(0).toUpperCase() : "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  
-                  {/* Animated indicator */}
-                  <div className={`absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full border-2 border-white transition-all duration-300 ${
-                    userMenuOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-60'
-                  }`} />
-                </Button>
+              <>
+                <ThemeToggle />
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    className="group relative h-11 w-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    onClick={toggleUserMenu}
+                  >
+                    <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300 pointer-events-none">
+                      <AvatarImage src={userAvatarUrl} alt={userName} />
+                      <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
+                        {userName ? userName.charAt(0).toUpperCase() : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    {/* Animated indicator */}
+                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full border-2 border-white transition-all duration-300 ${
+                      userMenuOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-60'
+                    }`} />
+                  </Button>
 
                 {userMenuOpen && buttonRect && typeof window !== 'undefined' && createPortal(
                   <>
@@ -214,7 +215,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                   </>,
                   document.body
                 )}
-              </div>
+                </div>
+              </>
             )}
           </div>
 
@@ -227,60 +229,61 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-l border-[var(--border)]/60">
-              <div className="flex flex-col h-full">
-                {/* Mobile Header - Match Dashboard Style */}
-                <div className="flex items-center justify-between p-6 border-b border-[var(--border)]/60">
+              <div className="flex flex-col h-full overflow-hidden">
+                {/* Mobile Header - Simplified */}
+                <div className="flex items-center p-6 border-b border-[var(--border)]/60 flex-shrink-0">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
                       <span className="text-white font-bold text-lg">L</span>
                     </div>
                     <h1 className="font-heading text-xl font-semibold">Learnovium</h1>
                   </div>
-                  <ThemeToggle />
                 </div>
                 
-                {/* Mobile Navigation - Match Dashboard Style */}
-                <nav className="flex-1 p-6 space-y-2">
-                  {navItems.map((item) => {
-                    const isItemActive = isActive(item.href);
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`group block p-4 rounded-2xl transition-all duration-200 ${
-                          isItemActive
-                            ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
-                            : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50"
-                        }`}
-                      >
-                        <div className="flex items-center space-x-4">
-                          <div className={`p-3 rounded-xl transition-all duration-200 ${
-                            isItemActive ? "bg-white/20" : "bg-[var(--muted)]/50 group-hover:bg-[var(--muted)]/70"
-                          }`}>
-                            <div className={`w-6 h-6 rounded-full ${
-                              isItemActive ? "bg-white" : "bg-[var(--fg,_#101010)]/60"
-                            }`} />
-                          </div>
-                          <div className="flex-1">
-                            <div className={`font-semibold text-base ${
-                              isItemActive ? "text-white" : "text-[var(--fg,_#101010)]"
+                {/* Scrollable Content Area */}
+                <div className="flex-1 overflow-y-auto">
+                  {/* Mobile Navigation */}
+                  <nav className="p-6 space-y-2">
+                    {navItems.map((item) => {
+                      const isItemActive = isActive(item.href);
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={`group block p-4 rounded-2xl transition-all duration-200 ${
+                            isItemActive
+                              ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
+                              : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50"
+                          }`}
+                        >
+                          <div className="flex items-center space-x-4">
+                            <div className={`p-3 rounded-xl transition-all duration-200 ${
+                              isItemActive ? "bg-white/20" : "bg-[var(--muted)]/50 group-hover:bg-[var(--muted)]/70"
                             }`}>
-                              {item.label}
+                              <div className={`w-6 h-6 rounded-full ${
+                                isItemActive ? "bg-white" : "bg-[var(--fg,_#101010)]/60"
+                              }`} />
                             </div>
-                            <div className={`text-sm ${
-                              isItemActive ? "text-white/80" : "text-[var(--fg,_#101010)]/50"
-                            }`}>
-                              Navigate to {item.label.toLowerCase()}
+                            <div className="flex-1">
+                              <div className={`font-semibold text-base ${
+                                isItemActive ? "text-white" : "text-[var(--fg,_#101010)]"
+                              }`}>
+                                {item.label}
+                              </div>
+                              <div className={`text-sm ${
+                                isItemActive ? "text-white/80" : "text-[var(--fg,_#101010)]/50"
+                              }`}>
+                                Navigate to {item.label.toLowerCase()}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </nav>
+                        </Link>
+                      );
+                    })}
+                  </nav>
 
-                {/* Mobile Footer - User Section */}
-                <div className="p-6 border-t border-[var(--border)]/60">
+                  {/* Mobile Footer - User Section */}
+                  <div className="p-6 border-t border-[var(--border)]/60">
                   {isLoggedIn ? (
                     <div className="space-y-4">
                       {/* Enhanced User Profile Card */}
@@ -371,6 +374,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                       </div>
                     </div>
                   )}
+                  </div>
                 </div>
               </div>
             </SheetContent>
