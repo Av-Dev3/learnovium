@@ -113,6 +113,11 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
 
                 {userMenuOpen && (
                   <>
+                    {/* Debug info */}
+                    <div className="fixed top-0 left-0 z-[9999] bg-red-500 text-white p-2 text-xs">
+                      MENU IS OPEN! userMenuOpen: {userMenuOpen.toString()}
+                    </div>
+                    
                     {/* Backdrop with blur */}
                     <div 
                       className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" 

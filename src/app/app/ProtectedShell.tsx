@@ -234,6 +234,11 @@ function UserMenu() {
 
       {isOpen && (
         <>
+          {/* Debug info */}
+          <div className="fixed top-0 left-0 z-[9999] bg-blue-500 text-white p-2 text-xs">
+            DASHBOARD MENU IS OPEN! isOpen: {isOpen.toString()}
+          </div>
+          
           {/* Backdrop with blur */}
           <div 
             className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" 
