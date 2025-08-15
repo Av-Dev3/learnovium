@@ -3,6 +3,7 @@
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { createPortal } from "react-dom";
 import { 
   Menu, 
   Home, 
@@ -44,8 +45,9 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
         <div className="lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="fixed top-4 left-4 z-50 bg-[var(--card)]/80 backdrop-blur border border-[var(--border)]/60 hover:bg-[var(--card)]/90">
-                <Menu className="h-5 w-5" />
+              <Button variant="ghost" size="sm" className="fixed top-4 left-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
+                <Menu className="h-5 w-5 text-[var(--fg)]" />
+                <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-r border-[var(--border)]/60">
@@ -188,6 +190,7 @@ function MobileAppNav() {
 function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
 
   // Get user data on component mount
   useEffect(() => {
@@ -205,8 +208,10 @@ function UserMenu() {
     window.location.href = "/auth";
   };
 
-  const toggleMenu = () => {
+  const toggleMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     console.log("Dashboard: Toggling user menu from:", isOpen, "to:", !isOpen);
+    const rect = event.currentTarget.getBoundingClientRect();
+    setButtonRect(rect);
     setIsOpen(prev => !prev);
   };
 
@@ -232,16 +237,24 @@ function UserMenu() {
         }`} />
       </Button>
 
-      {isOpen && (
+      {isOpen && buttonRect && typeof window !== 'undefined' && createPortal(
         <>
           {/* Backdrop with blur */}
           <div 
-            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" 
+            className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm" 
             onClick={() => setIsOpen(false)}
           />
           
           {/* Modern Dropdown Menu */}
-          <div className="absolute right-0 top-14 z-50 w-80">
+          <div 
+            className="fixed z-[110] w-80 sm:w-80"
+            style={{
+              top: buttonRect.bottom + 8,
+              left: window.innerWidth < 640 ? 8 : Math.max(8, Math.min(buttonRect.right - 320, window.innerWidth - 328)),
+              right: window.innerWidth < 640 ? 8 : 'auto',
+              width: window.innerWidth < 640 ? 'auto' : '320px',
+            }}
+          >
             <div className="relative">
               {/* Arrow pointer */}
               <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50" />
@@ -352,7 +365,8 @@ function UserMenu() {
               </div>
             </div>
           </div>
-        </>
+        </>,
+        document.body
       )}
     </div>
   );

@@ -125,23 +125,20 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                     
                     {/* Modern User Menu */}
                     <div 
-                      className="fixed z-[110] w-80"
+                      className="fixed z-[110] w-80 sm:w-80"
                       style={{
                         top: buttonRect.bottom + 8,
-                        right: window.innerWidth - buttonRect.right,
+                        left: window.innerWidth < 640 ? 8 : Math.max(8, Math.min(buttonRect.right - 320, window.innerWidth - 328)), // Full width on mobile with padding
+                        right: window.innerWidth < 640 ? 8 : 'auto', // Add right padding on mobile
+                        width: window.innerWidth < 640 ? 'auto' : '320px', // Auto width on mobile
                       }}
                     >
-                      {/* Debug indicator */}
-                      <div className="absolute -top-4 right-0 bg-red-500 text-white px-2 py-1 text-xs rounded">
-                        MENU VISIBLE - PORTAL
-                      </div>
-                      
                       <div className="relative">
                         {/* Arrow pointer */}
                         <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50 shadow-lg" />
                         
                         {/* Main menu container */}
-                        <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 border-4 border-blue-500 overflow-hidden">
+                        <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 border border-gray-200/50 overflow-hidden">
                           {/* Header with gradient */}
                           <div className="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
                             {/* Background pattern */}
@@ -224,8 +221,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
           {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="md:hidden p-2 hover:bg-muted/50 transition-colors">
-                <Menu className="h-5 w-5" />
+              <Button variant="ghost" size="sm" className="md:hidden bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
+                <Menu className="h-5 w-5 text-[var(--fg)]" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
