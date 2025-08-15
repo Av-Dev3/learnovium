@@ -40,6 +40,13 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
     console.log("Signing out...");
   };
 
+  const toggleUserMenu = () => {
+    console.log("Toggling user menu from:", userMenuOpen, "to:", !userMenuOpen);
+    setUserMenuOpen(prev => !prev);
+  };
+
+  console.log("AppHeader render - userMenuOpen:", userMenuOpen, "isLoggedIn:", isLoggedIn);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[var(--border)]/40 bg-[var(--bg)]/80 backdrop-blur-xl">
       <div className="container mx-auto px-4">
@@ -89,10 +96,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 <Button
                   variant="ghost"
                   className="group relative h-11 w-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-                  onClick={() => {
-                    console.log("User menu clicked, current state:", userMenuOpen);
-                    setUserMenuOpen(!userMenuOpen);
-                  }}
+                  onClick={toggleUserMenu}
                 >
                   <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300">
                     <AvatarImage src={userAvatarUrl} alt={userName} />

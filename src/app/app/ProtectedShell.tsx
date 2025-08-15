@@ -205,15 +205,19 @@ function UserMenu() {
     window.location.href = "/auth";
   };
 
+  const toggleMenu = () => {
+    console.log("Dashboard menu toggling from:", isOpen, "to:", !isOpen);
+    setIsOpen(prev => !prev);
+  };
+
+  console.log("UserMenu render - isOpen:", isOpen);
+
   return (
     <div className="relative">
       <Button
         variant="ghost"
         className="group relative h-11 w-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-        onClick={() => {
-          console.log("Dashboard user menu clicked, current state:", isOpen);
-          setIsOpen(!isOpen);
-        }}
+        onClick={toggleMenu}
       >
         <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300">
           <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />

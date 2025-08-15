@@ -10,15 +10,20 @@ import { supabaseServer } from "@/lib/supabaseServer";
 export default async function Home() {
   // Check authentication status server-side
   const supabase = await supabaseServer();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session }, error } = await supabase.auth.getSession();
   const isAuthenticated = !!session;
   const user = session?.user;
+
+  console.log("Homepage auth check - session:", !!session, "user:", user?.email, "error:", error);
+
+  // For testing purposes, let's force the user menu to show
+  const testAuth = true; // TEMPORARY: Force authentication for testing
 
   return (
     <div className="min-h-screen bg-[var(--bg)] overflow-x-hidden">
       <AppHeader 
-        isLoggedIn={isAuthenticated} 
-        userName={user?.email}
+        isLoggedIn={testAuth} 
+        userName={user?.email || "test@example.com"}
         userAvatarUrl={user?.user_metadata?.avatar_url}
       />
 
