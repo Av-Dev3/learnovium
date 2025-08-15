@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabaseBrowser } from "@/lib/supabaseClient";
 
 export function ProtectedShell({ children }: { children: React.ReactNode }) {
@@ -187,6 +187,17 @@ function MobileAppNav() {
 
 function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+
+  // Get user data on component mount
+  useEffect(() => {
+    const getUser = async () => {
+      const supabase = supabaseBrowser();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
 
   const handleSignOut = async () => {
     const supabase = supabaseBrowser();
@@ -202,9 +213,9 @@ function UserMenu() {
         onClick={() => setIsOpen(!isOpen)}
       >
         <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300">
-          <AvatarImage src="" alt="User" />
+          <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />
           <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
-            U
+            {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
           </AvatarFallback>
         </Avatar>
         
@@ -238,17 +249,17 @@ function UserMenu() {
                   <div className="relative flex items-center space-x-4">
                     <div className="relative">
                       <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
-                        <AvatarImage src="" alt="User" />
+                        <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />
                         <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
-                          U
+                          {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
                         </AvatarFallback>
                       </Avatar>
                       {/* Online status */}
                       <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-lg truncate">User Account</h3>
-                      <p className="text-indigo-100 text-sm truncate">user@example.com</p>
+                      <h3 className="font-bold text-lg truncate">{user?.email || "User Account"}</h3>
+                      <p className="text-indigo-100 text-sm truncate">{user?.email || "user@example.com"}</p>
                       <div className="flex items-center mt-2 space-x-2">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
                           Premium
@@ -263,44 +274,57 @@ function UserMenu() {
 
                 {/* Menu Items */}
                 <div className="p-3 space-y-1">
-                  <button className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                  <Link href="/app/dashboard" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-3">
-                      <User className="h-5 w-5 text-blue-600" />
+                      <Home className="h-5 w-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-sm">Profile Settings</div>
-                      <div className="text-xs text-gray-500">Manage your account</div>
+                      <div className="font-semibold text-sm">Dashboard</div>
+                      <div className="text-xs text-gray-500">View your progress</div>
                     </div>
                     <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
                       <ChevronRight className="h-4 w-4" />
                     </div>
-                  </button>
+                  </Link>
                   
-                  <button className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                  <Link href="/app/plans" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 group-hover:from-purple-100 group-hover:to-pink-200 transition-all duration-200 mr-3">
-                      <Settings className="h-5 w-5 text-purple-600" />
+                      <Target className="h-5 w-5 text-purple-600" />
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-sm">Preferences</div>
+                      <div className="font-semibold text-sm">Plans</div>
+                      <div className="text-xs text-gray-500">Manage your plans</div>
+                    </div>
+                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </Link>
+                  
+                  <Link href="/app/goals" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 group-hover:from-emerald-100 group-hover:to-teal-200 transition-all duration-200 mr-3">
+                      <Target className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm">Goals</div>
+                      <div className="text-xs text-gray-500">Track your goals</div>
+                    </div>
+                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </Link>
+                  
+                  <Link href="/app/settings" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-red-100 group-hover:from-orange-100 group-hover:to-red-200 transition-all duration-200 mr-3">
+                      <Settings className="h-5 w-5 text-orange-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm">Settings</div>
                       <div className="text-xs text-gray-500">Customize your experience</div>
                     </div>
                     <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
                       <ChevronRight className="h-4 w-4" />
                     </div>
-                  </button>
-                  
-                  <button className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 group-hover:from-emerald-100 group-hover:to-teal-200 transition-all duration-200 mr-3">
-                      <HelpCircle className="h-5 w-5 text-emerald-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-sm">Help & Support</div>
-                      <div className="text-xs text-gray-500">Get assistance</div>
-                    </div>
-                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                      <ChevronRight className="h-4 w-4" />
-                    </div>
-                  </button>
+                  </Link>
                 </div>
 
                 {/* Footer with sign out */}

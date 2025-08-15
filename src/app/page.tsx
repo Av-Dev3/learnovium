@@ -12,10 +12,15 @@ export default async function Home() {
   const supabase = await supabaseServer();
   const { data: { session } } = await supabase.auth.getSession();
   const isAuthenticated = !!session;
+  const user = session?.user;
 
   return (
     <div className="min-h-screen bg-[var(--bg)] overflow-x-hidden">
-      <AppHeader isLoggedIn={isAuthenticated} />
+      <AppHeader 
+        isLoggedIn={isAuthenticated} 
+        userName={user?.email}
+        userAvatarUrl={user?.user_metadata?.avatar_url}
+      />
 
       {/* Hero Section */}
       <section className="relative pt-28 pb-24 overflow-hidden">
