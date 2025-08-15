@@ -11,7 +11,9 @@ import {
   Plus, 
   Settings,
   LogOut,
-  User
+  User,
+  HelpCircle,
+  ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -196,74 +198,127 @@ function UserMenu() {
     <div className="relative">
       <Button
         variant="ghost"
-        className="relative h-10 w-10 rounded-full bg-[var(--card)]/80 backdrop-blur border border-[var(--border)]/60 hover:bg-[var(--card)]/90 hover:scale-105 transition-all duration-200"
+        className="group relative h-11 w-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Avatar className="h-8 w-8">
+        <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300">
           <AvatarImage src="" alt="User" />
-          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+          <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
             U
           </AvatarFallback>
         </Avatar>
+        
+        {/* Animated indicator */}
+        <div className={`absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full border-2 border-white transition-all duration-300 ${
+          isOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-60'
+        }`} />
       </Button>
 
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop with blur */}
           <div 
-            className="fixed inset-0 z-40" 
+            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" 
             onClick={() => setIsOpen(false)}
           />
           
-          {/* Dropdown Menu */}
-          <div className="absolute right-0 top-12 z-50 w-80 rounded-2xl bg-[var(--card)]/95 backdrop-blur-xl border border-[var(--border)]/60 shadow-2xl shadow-black/10 overflow-hidden">
-            {/* Header */}
-            <div className="p-6 border-b border-[var(--border)]/60 bg-gradient-to-r from-blue-500/10 to-purple-600/10">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-16 w-16 border-4 border-white/20">
-                  <AvatarImage src="" alt="User" />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl font-bold">
-                    U
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg">User Account</h3>
-                  <p className="text-sm text-[var(--fg)]/70">user@example.com</p>
+          {/* Modern Dropdown Menu */}
+          <div className="absolute right-0 top-14 z-50 w-80 transform opacity-0 scale-95 animate-in slide-in-from-top-2 duration-200">
+            <div className="relative">
+              {/* Arrow pointer */}
+              <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50" />
+              
+              {/* Main menu container */}
+              <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 border border-gray-200/50 overflow-hidden">
+                {/* Header with gradient */}
+                <div className="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
+                  {/* Background pattern */}
+                  <div className="absolute inset-0 bg-white/10 opacity-30" />
+                  
+                  <div className="relative flex items-center space-x-4">
+                    <div className="relative">
+                      <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
+                        <AvatarImage src="" alt="User" />
+                        <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
+                          U
+                        </AvatarFallback>
+                      </Avatar>
+                      {/* Online status */}
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-lg truncate">User Account</h3>
+                      <p className="text-indigo-100 text-sm truncate">user@example.com</p>
+                      <div className="flex items-center mt-2 space-x-2">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                          Premium
+                        </span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                          Verified
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Menu Items */}
+                <div className="p-3 space-y-1">
+                  <button className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-3">
+                      <User className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm">Profile Settings</div>
+                      <div className="text-xs text-gray-500">Manage your account</div>
+                    </div>
+                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </button>
+                  
+                  <button className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 group-hover:from-purple-100 group-hover:to-pink-200 transition-all duration-200 mr-3">
+                      <Settings className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm">Preferences</div>
+                      <div className="text-xs text-gray-500">Customize your experience</div>
+                    </div>
+                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </button>
+                  
+                  <button className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 group-hover:from-emerald-100 group-hover:to-teal-200 transition-all duration-200 mr-3">
+                      <HelpCircle className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm">Help & Support</div>
+                      <div className="text-xs text-gray-500">Get assistance</div>
+                    </div>
+                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </button>
+                </div>
+
+                {/* Footer with sign out */}
+                <div className="p-3 border-t border-gray-100">
+                  <button
+                    onClick={handleSignOut}
+                    className="group w-full flex items-center px-4 py-3 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
+                  >
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 group-hover:bg-red-100 transition-all duration-200 mr-3">
+                      <LogOut className="h-5 w-5 text-red-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm">Sign Out</div>
+                      <div className="text-xs text-red-500">End your session</div>
+                    </div>
+                  </button>
                 </div>
               </div>
-            </div>
-
-            {/* Menu Items */}
-            <div className="p-2">
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-12 px-4 rounded-xl hover:bg-[var(--muted)]/50 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                <User className="mr-3 h-5 w-5" />
-                Profile Settings
-              </Button>
-              
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-12 px-4 rounded-xl hover:bg-[var(--muted)]/50 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                <Settings className="mr-3 h-5 w-5" />
-                Preferences
-              </Button>
-            </div>
-
-            {/* Footer */}
-            <div className="p-2 border-t border-[var(--border)]/60">
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-12 px-4 rounded-xl hover:bg-red-500/10 hover:text-red-600 transition-colors"
-                onClick={handleSignOut}
-              >
-                <LogOut className="mr-3 h-5 w-5" />
-                Sign Out
-              </Button>
             </div>
           </div>
         </>
@@ -280,44 +335,84 @@ function MobileUserMenu() {
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center space-x-4 p-4 rounded-2xl bg-[var(--muted)]/30">
-        <Avatar className="h-12 w-12 border-2 border-white/20">
-          <AvatarImage src="" alt="User" />
-          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
-            U
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1">
-          <div className="font-semibold text-base">User Account</div>
-          <div className="text-sm text-[var(--fg)]/70">user@example.com</div>
+    <div className="space-y-4">
+      {/* Enhanced User Profile Card */}
+      <div className="relative p-6 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 bg-white/10 opacity-30" />
+        
+        <div className="relative flex items-center space-x-4">
+          <div className="relative">
+            <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
+              <AvatarImage src="" alt="User" />
+              <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
+                U
+              </AvatarFallback>
+            </Avatar>
+            {/* Online status */}
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-lg">User Account</h3>
+            <p className="text-indigo-100 text-sm">user@example.com</p>
+            <div className="flex items-center mt-3 space-x-2">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                Premium
+              </span>
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                Verified
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       
-      <Button
-        variant="ghost"
-        className="w-full justify-start h-12 px-4 rounded-xl hover:bg-[var(--muted)]/50 transition-colors"
-      >
-        <User className="mr-3 h-5 w-5" />
-        Profile Settings
-      </Button>
+      {/* Enhanced Menu Items */}
+      <div className="space-y-2">
+        <button className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-4">
+            <User className="h-6 w-6 text-blue-600" />
+          </div>
+          <div className="flex-1">
+            <div className="font-semibold text-base">Profile Settings</div>
+            <div className="text-sm text-gray-500">Manage your account</div>
+          </div>
+        </button>
+        
+        <button className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 group-hover:from-purple-100 group-hover:to-pink-200 transition-all duration-200 mr-4">
+            <Settings className="h-6 w-6 text-purple-600" />
+          </div>
+          <div className="flex-1">
+            <div className="font-semibold text-base">Preferences</div>
+            <div className="text-sm text-gray-500">Customize your experience</div>
+          </div>
+        </button>
+        
+        <button className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 group-hover:from-emerald-100 group-hover:to-teal-200 transition-all duration-200 mr-4">
+            <HelpCircle className="h-6 w-6 text-emerald-600" />
+          </div>
+          <div className="flex-1">
+            <div className="font-semibold text-base">Help & Support</div>
+            <div className="text-sm text-gray-500">Get assistance</div>
+          </div>
+        </button>
+      </div>
       
-      <Button
-        variant="ghost"
-        className="w-full justify-start h-12 px-4 rounded-xl hover:bg-[var(--muted)]/50 transition-colors"
-      >
-        <Settings className="mr-3 h-5 w-5" />
-        Preferences
-      </Button>
-      
-      <Button
-        variant="ghost"
-        className="w-full justify-start h-12 px-4 rounded-xl hover:bg-red-500/10 hover:text-red-600 transition-colors"
+      {/* Enhanced Sign Out */}
+      <button
         onClick={handleSignOut}
+        className="group w-full flex items-center p-4 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
       >
-        <LogOut className="mr-3 h-5 w-5" />
-        Sign Out
-      </Button>
+        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-red-50 group-hover:bg-red-100 transition-all duration-200 mr-4">
+          <LogOut className="h-6 w-6 text-red-600" />
+        </div>
+        <div className="flex-1">
+          <div className="font-semibold text-base">Sign Out</div>
+          <div className="text-sm text-red-500">End your session</div>
+        </div>
+      </button>
     </div>
   );
 }
