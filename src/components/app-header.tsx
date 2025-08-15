@@ -30,7 +30,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
   ];
 
   const userMenuItems = [
-    { href: "/app/dashboard", label: "Dashboard" },
+    { href: "/app", label: "Dashboard" },
     { href: "/app/plans", label: "Plans" },
     { href: "/app/goals", label: "Goals" },
     { href: "/app/settings", label: "Settings" },
@@ -302,7 +302,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                         
                         {/* Go to Dashboard */}
                         <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
-                          <Link href="/app/dashboard">
+                          <Link href="/app">
                             <div className="flex items-center justify-center space-x-2">
                               <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                               <span>Go to Dashboard</span>
