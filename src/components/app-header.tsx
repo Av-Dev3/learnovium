@@ -282,77 +282,43 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                     })}
                   </nav>
 
-                  {/* Mobile Footer - User Section */}
+                  {/* Mobile Footer - Simplified */}
                   <div className="p-6 border-t border-[var(--border)]/60">
-                  {isLoggedIn ? (
-                    <div className="space-y-4">
-                      {/* Enhanced User Profile Card */}
-                      <div className="relative p-6 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
-                        {/* Background pattern */}
-                        <div className="absolute inset-0 bg-white/10 opacity-30" />
-                        
-                        <div className="relative flex items-center space-x-4">
-                          <div className="relative">
-                            <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
-                              <AvatarImage src={userAvatarUrl} alt={userName} />
-                              <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
-                                {userName ? userName.charAt(0).toUpperCase() : "U"}
-                              </AvatarFallback>
-                            </Avatar>
-                            {/* Online status */}
-                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-lg">{userName || "User Account"}</h3>
-                            <p className="text-indigo-100 text-sm">Premium Member</p>
-                            <div className="flex items-center mt-3 space-x-2">
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                                Premium
-                              </span>
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                                Verified
-                              </span>
-                            </div>
+                    {isLoggedIn ? (
+                      <div className="space-y-4">
+                        {/* Simple User Info */}
+                        <div className="flex items-center space-x-3 p-4 rounded-2xl bg-[var(--muted)]/30">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage src={userAvatarUrl} alt={userName} />
+                            <AvatarFallback className="bg-brand text-white font-medium">
+                              {userName ? userName.charAt(0).toUpperCase() : "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-[var(--fg)]">{userName || "User"}</p>
+                            <p className="text-sm text-[var(--fg)]/60">Signed In</p>
                           </div>
                         </div>
-                      </div>
-                      
-                      {/* Enhanced Menu Items */}
-                      <div className="space-y-2">
-                        {userMenuItems.map((item) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
-                          >
-                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-4">
-                              <div className="w-2 h-2 rounded-full bg-blue-600" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-semibold text-base">{item.label}</div>
-                              <div className="text-sm text-gray-500">Navigate to {item.label.toLowerCase()}</div>
+                        
+                        {/* Go to Dashboard */}
+                        <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
+                          <Link href="/app/dashboard">
+                            <div className="flex items-center justify-center space-x-2">
+                              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                              <span>Go to Dashboard</span>
                             </div>
                           </Link>
-                        ))}
+                        </Button>
+                        
+                        {/* Sign Out */}
+                        <button
+                          onClick={handleSignOut}
+                          className="w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-2xl transition-colors"
+                        >
+                          Sign Out
+                        </button>
                       </div>
-                      
-                      {/* Enhanced Sign Out */}
-                      <button
-                        onClick={handleSignOut}
-                        className="group w-full flex items-center p-4 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
-                      >
-                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-red-50 group-hover:bg-red-100 transition-all duration-200 mr-4">
-                          <LogOut className="h-6 w-6 text-red-600" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-base">Sign Out</div>
-                          <div className="text-sm text-red-500">End your session</div>
-                        </div>
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {/* CTA Cards */}
+                    ) : (
                       <div className="space-y-3">
                         <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
                           <Link href="/auth">
@@ -372,8 +338,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                           </Link>
                         </Button>
                       </div>
-                    </div>
-                  )}
+                    )}
                   </div>
                 </div>
               </div>
