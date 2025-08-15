@@ -124,85 +124,18 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                       onClick={() => setUserMenuOpen(false)}
                     />
                     
-                    {/* Modern Dropdown Menu */}
-                    <div className="absolute right-0 top-14 z-50 w-80 bg-red-500 border-2 border-yellow-400">
-                      <div className="relative">
-                        {/* Arrow pointer */}
-                        <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50" />
-                        
-                        {/* Main menu container */}
-                        <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 border border-gray-200/50 overflow-hidden">
-                          {/* Header with gradient */}
-                          <div className="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
-                            {/* Background pattern */}
-                            <div className="absolute inset-0 bg-white/10 opacity-30" />
-                            
-                            <div className="relative flex items-center space-x-4">
-                              <div className="relative">
-                                <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
-                                  <AvatarImage src={userAvatarUrl} alt={userName} />
-                                  <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
-                                    {userName ? userName.charAt(0).toUpperCase() : "U"}
-                                  </AvatarFallback>
-                                </Avatar>
-                                {/* Online status */}
-                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h3 className="font-bold text-lg truncate">{userName || "User Account"}</h3>
-                                <p className="text-indigo-100 text-sm truncate">{userName || "user@example.com"}</p>
-                                <div className="flex items-center mt-2 space-x-2">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                                    Premium
-                                  </span>
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                                    Verified
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Menu Items */}
-                          <div className="p-3 space-y-1">
-                            {userMenuItems.map((item) => (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
-                                onClick={() => setUserMenuOpen(false)}
-                              >
-                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-3">
-                                  <div className="w-2 h-2 rounded-full bg-blue-600" />
-                                </div>
-                                <div className="flex-1">
-                                  <div className="font-semibold text-sm">{item.label}</div>
-                                  <div className="text-xs text-gray-500">Navigate to {item.label.toLowerCase()}</div>
-                                </div>
-                                <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                                  <ChevronRight className="h-4 w-4" />
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-
-                          {/* Footer with sign out */}
-                          <div className="p-3 border-t border-gray-100">
-                            <button
-                              onClick={handleSignOut}
-                              className="group w-full flex items-center px-4 py-3 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
-                            >
-                              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 group-hover:bg-red-100 transition-all duration-200 mr-3">
-                                <LogOut className="h-5 w-5 text-red-600" />
-                              </div>
-                              <div className="flex-1">
-                                <div className="font-semibold text-sm">Sign Out</div>
-                                <div className="text-xs text-red-500">End your session</div>
-                              </div>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                    {/* Simple Debug Menu - This should be impossible to miss! */}
+                    <div className="fixed top-20 right-4 z-[9999] w-80 bg-red-500 border-4 border-yellow-400 p-4 text-white text-center">
+                      <div className="text-lg font-bold">🎯 MENU CONTAINER IS HERE! 🎯</div>
+                      <div className="text-sm">This should be impossible to miss!</div>
+                      <div className="text-xs mt-2">userMenuOpen: {userMenuOpen.toString()}</div>
+                      <div className="text-xs">isLoggedIn: {isLoggedIn.toString()}</div>
+                      <button 
+                        onClick={() => setUserMenuOpen(false)}
+                        className="mt-2 px-4 py-2 bg-white text-red-500 rounded font-bold"
+                      >
+                        CLOSE MENU
+                      </button>
                     </div>
                   </>
                 )}
