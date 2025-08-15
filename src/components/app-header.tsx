@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +19,7 @@ interface AppHeaderProps {
 export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHeaderProps) {
   const pathname = usePathname();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
 
   const isActive = (path: string) => pathname === path;
 
@@ -40,8 +42,10 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
     console.log("Signing out...");
   };
 
-  const toggleUserMenu = () => {
+  const toggleUserMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     console.log("Homepage: Toggling user menu from:", userMenuOpen, "to:", !userMenuOpen);
+    const rect = event.currentTarget.getBoundingClientRect();
+    setButtonRect(rect);
     setUserMenuOpen(prev => !prev);
   };
 
@@ -111,22 +115,33 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                   }`} />
                 </Button>
 
-                {userMenuOpen && (
+                {userMenuOpen && buttonRect && typeof window !== 'undefined' && createPortal(
                   <>
                     {/* Backdrop with blur */}
                     <div 
-                      className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" 
+                      className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm" 
                       onClick={() => setUserMenuOpen(false)}
                     />
                     
                     {/* Modern User Menu */}
-                    <div className="absolute right-0 top-14 z-50 w-80">
+                    <div 
+                      className="fixed z-[110] w-80"
+                      style={{
+                        top: buttonRect.bottom + 8,
+                        right: window.innerWidth - buttonRect.right,
+                      }}
+                    >
+                      {/* Debug indicator */}
+                      <div className="absolute -top-4 right-0 bg-red-500 text-white px-2 py-1 text-xs rounded">
+                        MENU VISIBLE - PORTAL
+                      </div>
+                      
                       <div className="relative">
                         {/* Arrow pointer */}
                         <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50 shadow-lg" />
                         
                         {/* Main menu container */}
-                        <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 border border-gray-200/50 overflow-hidden">
+                        <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 border-4 border-blue-500 overflow-hidden">
                           {/* Header with gradient */}
                           <div className="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
                             {/* Background pattern */}
@@ -199,7 +214,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                         </div>
                       </div>
                     </div>
-                  </>
+                  </>,
+                  document.body
                 )}
               </div>
             )}
