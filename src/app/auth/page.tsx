@@ -25,7 +25,9 @@ export default function AuthPage() {
       if (mode === "magic") {
         const { error } = await supabase.auth.signInWithOtp({
           email,
-          options: { emailRedirectTo: `https://www.learnovium.com/auth/callback` },
+          options: {
+            emailRedirectTo: "https://www.learnovium.com/auth/callback",
+          },
         });
         if (error) throw error;
         setMsg("Magic link sent. Check your email.");
@@ -33,7 +35,14 @@ export default function AuthPage() {
       }
 
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            // IMPORTANT: confirmation email goes to server callback
+            emailRedirectTo: "https://www.learnovium.com/auth/callback",
+          },
+        });
         if (error) throw error;
         setMsg("Account created. Check your email to confirm (if required).");
         return;
@@ -44,7 +53,7 @@ export default function AuthPage() {
       if (error) throw error;
       window.location.href = "/app";
     } catch (e: unknown) {
-      const errorMessage = e instanceof Error ? e.message : String(e);
+      const errorMessage = e instanceof Error ? e.message : "Authentication failed.";
       setErr(errorMessage);
     } finally {
       setPending(false);
@@ -87,7 +96,7 @@ export default function AuthPage() {
             className="w-full rounded-lg border px-3 py-2"
           />
 
-          {mode !== "magic" && (
+        {mode !== "magic" && (
             <input
               type="password"
               required
@@ -115,10 +124,8 @@ export default function AuthPage() {
           </div>
         )}
 
-        {err && <p className="text-sm text-red-600">{err.includes("Email not confirmed") ? "Check your inbox and confirm your email, then sign in again." : err}</p>}
+        {err && <p className="text-sm text-red-600">{err}</p>}
         {msg && <p className="text-sm text-green-600">{msg}</p>}
-
-        <p className="text-xs text-neutral-500">By continuing you agree to our Terms & Privacy.</p>
       </div>
     </main>
   );

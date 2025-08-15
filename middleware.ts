@@ -3,7 +3,8 @@ import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
-  if (!pathname.startsWith("/app")) return NextResponse.next();
+  const isProtected = pathname.startsWith("/app");
+  if (!isProtected) return NextResponse.next();
 
   const res = NextResponse.next();
 
@@ -12,13 +13,11 @@ export async function middleware(req: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return req.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: { [key: string]: unknown }) {
+        get: (name: string) => req.cookies.get(name)?.value,
+        set: (name: string, value: string, options: { [key: string]: unknown }) => {
           res.cookies.set({ name, value, ...options });
         },
-        remove(name: string, options: { [key: string]: unknown }) {
+        remove: (name: string, options: { [key: string]: unknown }) => {
           res.cookies.set({ name, value: "", ...options });
         },
       },
@@ -26,7 +25,6 @@ export async function middleware(req: NextRequest) {
   );
 
   const { data } = await supabase.auth.getUser();
-
   if (!data?.user) {
     const url = req.nextUrl.clone();
     url.pathname = "/auth";
