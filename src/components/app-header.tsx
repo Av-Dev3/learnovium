@@ -113,7 +113,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                     />
                     
                     {/* Modern Dropdown Menu */}
-                    <div className="absolute right-0 top-14 z-50 w-80 transform opacity-0 scale-95 animate-in slide-in-from-top-2 duration-200">
+                    <div className="absolute right-0 top-14 z-50 w-80">
                       <div className="relative">
                         {/* Arrow pointer */}
                         <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50" />
@@ -138,7 +138,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h3 className="font-bold text-lg truncate">{userName || "User Account"}</h3>
-                                <p className="text-indigo-100 text-sm truncate">user@example.com</p>
+                                <p className="text-indigo-100 text-sm truncate">{userName || "user@example.com"}</p>
                                 <div className="flex items-center mt-2 space-x-2">
                                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
                                     Premium
@@ -154,7 +154,12 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                           {/* Menu Items */}
                           <div className="p-3 space-y-1">
                             {userMenuItems.map((item) => (
-                              <button key={item.href} className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
+                                onClick={() => setUserMenuOpen(false)}
+                              >
                                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-3">
                                   <div className="w-2 h-2 rounded-full bg-blue-600" />
                                 </div>
@@ -165,7 +170,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                                 <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
                                   <ChevronRight className="h-4 w-4" />
                                 </div>
-                              </button>
+                              </Link>
                             ))}
                           </div>
 

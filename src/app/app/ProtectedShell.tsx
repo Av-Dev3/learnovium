@@ -234,7 +234,7 @@ function UserMenu() {
           />
           
           {/* Modern Dropdown Menu */}
-          <div className="absolute right-0 top-14 z-50 w-80 transform opacity-0 scale-95 animate-in slide-in-from-top-2 duration-200">
+          <div className="absolute right-0 top-14 z-50 w-80">
             <div className="relative">
               {/* Arrow pointer */}
               <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50" />
