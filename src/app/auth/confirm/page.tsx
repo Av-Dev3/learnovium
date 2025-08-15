@@ -8,7 +8,18 @@ export default function ConfirmHashCatcher() {
   useEffect(() => {
     (async () => {
       const supabase = supabaseBrowser();
-      await supabase.auth.getSession(); // parses URL hash on first call
+      await supabase.auth.getSession(); // parse hash and store in client
+      // Bridge to server cookies
+      const { data } = await supabase.auth.getSession();
+      const at = data.session?.access_token;
+      const rt = data.session?.refresh_token;
+      if (at && rt) {
+        await fetch("/auth/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ access_token: at, refresh_token: rt }),
+        });
+      }
       router.replace("/app");
     })();
   }, [router]);
