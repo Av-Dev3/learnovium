@@ -9,10 +9,14 @@ import {
   Target, 
   History, 
   Plus, 
-  Settings
+  Settings,
+  LogOut,
+  User
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { supabaseBrowser } from "@/lib/supabaseClient";
 
 export function ProtectedShell({ children }: { children: React.ReactNode }) {
   return (
@@ -38,18 +42,31 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
         <div className="lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="fixed top-4 left-4 z-50">
+              <Button variant="ghost" size="sm" className="fixed top-4 left-4 z-50 bg-[var(--card)]/80 backdrop-blur border border-[var(--border)]/60 hover:bg-[var(--card)]/90">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0">
+            <SheetContent side="left" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-r border-[var(--border)]/60">
               <div className="flex flex-col h-full">
-                <div className="flex items-center justify-between px-4">
-                  <h1 className="font-heading text-xl font-semibold">Learnovium</h1>
+                {/* Mobile Header */}
+                <div className="flex items-center justify-between p-6 border-b border-[var(--border)]/60">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">L</span>
+                    </div>
+                    <h1 className="font-heading text-xl font-semibold">Learnovium</h1>
+                  </div>
                 </div>
-                <nav className="flex-1 px-2 space-y-1">
-                  <AppNav />
+                
+                {/* Mobile Navigation */}
+                <nav className="flex-1 p-6 space-y-2">
+                  <MobileAppNav />
                 </nav>
+                
+                {/* Mobile Footer */}
+                <div className="p-6 border-t border-[var(--border)]/60">
+                  <MobileUserMenu />
+                </div>
               </div>
             </SheetContent>
           </Sheet>
@@ -96,15 +113,15 @@ function AppNav() {
           <Link
             key={item.name}
             href={item.href}
-            className={`group flex items-center px-3 py-2 text-sm font-medium rounded-full transition-colors ${
+            className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
               isActive
-                ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
-                : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-muted"
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
+                : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50 hover:scale-[1.02]"
             }`}
           >
             <item.icon
-              className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                isActive ? "text-[hsl(var(--primary-foreground))]" : "text-[var(--fg,_#101010)]/60"
+              className={`mr-3 h-5 w-5 flex-shrink-0 transition-transform duration-200 ${
+                isActive ? "text-white" : "text-[var(--fg,_#101010)]/60 group-hover:scale-110"
               }`}
             />
             {item.name}
@@ -115,14 +132,192 @@ function AppNav() {
   );
 }
 
-function UserMenu() {
+function MobileAppNav() {
+  const pathname = usePathname();
+  const navigation = [
+    { name: "Dashboard", href: "/app", icon: Home, description: "Overview and progress" },
+    { name: "Plans", href: "/app/plans", icon: Target, description: "Your learning plans" },
+    { name: "History", href: "/app/history", icon: History, description: "Past activities" },
+    { name: "Create", href: "/app/create", icon: Plus, description: "Start something new" },
+    { name: "Settings", href: "/app/settings", icon: Settings, description: "Preferences & account" },
+  ];
   return (
-    <div className="flex items-center gap-x-4">
-      <span className="text-sm text-muted-foreground">Welcome back!</span>
-      <Avatar className="h-8 w-8">
-        <AvatarImage src="" alt="User" />
-        <AvatarFallback>U</AvatarFallback>
-      </Avatar>
+    <>
+      {navigation.map((item) => {
+        const isActive = pathname === item.href;
+        return (
+          <Link
+            key={item.name}
+            href={item.href}
+            className={`group block p-4 rounded-2xl transition-all duration-200 ${
+              isActive
+                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
+                : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50"
+            }`}
+          >
+            <div className="flex items-center space-x-4">
+              <div className={`p-3 rounded-xl transition-all duration-200 ${
+                isActive ? "bg-white/20" : "bg-[var(--muted)]/50 group-hover:bg-[var(--muted)]/70"
+              }`}>
+                <item.icon className={`h-6 w-6 ${
+                  isActive ? "text-white" : "text-[var(--fg,_#101010)]/60"
+                }`} />
+              </div>
+              <div className="flex-1">
+                <div className={`font-semibold text-base ${
+                  isActive ? "text-white" : "text-[var(--fg,_#101010)]"
+                }`}>
+                  {item.name}
+                </div>
+                <div className={`text-sm ${
+                  isActive ? "text-white/80" : "text-[var(--fg,_#101010)]/50"
+                }`}>
+                  {item.description}
+                </div>
+              </div>
+            </div>
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+
+function UserMenu() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    const supabase = supabaseBrowser();
+    await supabase.auth.signOut();
+    window.location.href = "/auth";
+  };
+
+  return (
+    <div className="relative">
+      <Button
+        variant="ghost"
+        className="relative h-10 w-10 rounded-full bg-[var(--card)]/80 backdrop-blur border border-[var(--border)]/60 hover:bg-[var(--card)]/90 hover:scale-105 transition-all duration-200"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Avatar className="h-8 w-8">
+          <AvatarImage src="" alt="User" />
+          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+            U
+          </AvatarFallback>
+        </Avatar>
+      </Button>
+
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setIsOpen(false)}
+          />
+          
+          {/* Dropdown Menu */}
+          <div className="absolute right-0 top-12 z-50 w-80 rounded-2xl bg-[var(--card)]/95 backdrop-blur-xl border border-[var(--border)]/60 shadow-2xl shadow-black/10 overflow-hidden">
+            {/* Header */}
+            <div className="p-6 border-b border-[var(--border)]/60 bg-gradient-to-r from-blue-500/10 to-purple-600/10">
+              <div className="flex items-center space-x-4">
+                <Avatar className="h-16 w-16 border-4 border-white/20">
+                  <AvatarImage src="" alt="User" />
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl font-bold">
+                    U
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg">User Account</h3>
+                  <p className="text-sm text-[var(--fg)]/70">user@example.com</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Menu Items */}
+            <div className="p-2">
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-12 px-4 rounded-xl hover:bg-[var(--muted)]/50 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <User className="mr-3 h-5 w-5" />
+                Profile Settings
+              </Button>
+              
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-12 px-4 rounded-xl hover:bg-[var(--muted)]/50 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <Settings className="mr-3 h-5 w-5" />
+                Preferences
+              </Button>
+            </div>
+
+            {/* Footer */}
+            <div className="p-2 border-t border-[var(--border)]/60">
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-12 px-4 rounded-xl hover:bg-red-500/10 hover:text-red-600 transition-colors"
+                onClick={handleSignOut}
+              >
+                <LogOut className="mr-3 h-5 w-5" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function MobileUserMenu() {
+  const handleSignOut = async () => {
+    const supabase = supabaseBrowser();
+    await supabase.auth.signOut();
+    window.location.href = "/auth";
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center space-x-4 p-4 rounded-2xl bg-[var(--muted)]/30">
+        <Avatar className="h-12 w-12 border-2 border-white/20">
+          <AvatarImage src="" alt="User" />
+          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
+            U
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1">
+          <div className="font-semibold text-base">User Account</div>
+          <div className="text-sm text-[var(--fg)]/70">user@example.com</div>
+        </div>
+      </div>
+      
+      <Button
+        variant="ghost"
+        className="w-full justify-start h-12 px-4 rounded-xl hover:bg-[var(--muted)]/50 transition-colors"
+      >
+        <User className="mr-3 h-5 w-5" />
+        Profile Settings
+      </Button>
+      
+      <Button
+        variant="ghost"
+        className="w-full justify-start h-12 px-4 rounded-xl hover:bg-[var(--muted)]/50 transition-colors"
+      >
+        <Settings className="mr-3 h-5 w-5" />
+        Preferences
+      </Button>
+      
+      <Button
+        variant="ghost"
+        className="w-full justify-start h-12 px-4 rounded-xl hover:bg-red-500/10 hover:text-red-600 transition-colors"
+        onClick={handleSignOut}
+      >
+        <LogOut className="mr-3 h-5 w-5" />
+        Sign Out
+      </Button>
     </div>
   );
 }
