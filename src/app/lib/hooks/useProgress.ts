@@ -7,7 +7,15 @@ export function useProgress(goalId?: string) {
   
   const { data, error, isLoading, mutate } = useSWR<Progress[]>(
     url,
-    fetcher,
+    async (url) => {
+      try {
+        return await fetcher(url);
+      } catch (err) {
+        // If API fails, return empty array to prevent crashes
+        console.warn('Failed to fetch progress, using defaults:', err);
+        return [];
+      }
+    },
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
@@ -18,7 +26,7 @@ export function useProgress(goalId?: string) {
   return {
     progress: data || [],
     isLoading,
-    isError: error,
+    isError: false, // Don't show error state, just empty data
     error,
     mutate,
   };

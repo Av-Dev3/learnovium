@@ -249,7 +249,7 @@ export default function History() {
             <p className="text-muted-foreground mb-4 text-sm sm:text-base">
               Complete your first lesson to start building your history
             </p>
-            <Button asChild>
+            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
               <a href="/app">
                 <Target className="h-4 w-4 mr-2" aria-hidden="true" />
                 Start Learning

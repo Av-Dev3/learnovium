@@ -172,7 +172,7 @@ export default function CreateGoal() {
             </div>
 
             <div className="flex justify-end">
-              <Button onClick={handleNext} disabled={!form.topic || !form.focus}>
+              <Button onClick={handleNext} disabled={!form.topic || !form.focus} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:transform-none">
                 Next <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
               </Button>
             </div>
@@ -263,7 +263,7 @@ export default function CreateGoal() {
               <Button variant="outline" onClick={handleBack}>
                 Back
               </Button>
-              <Button onClick={handleNext}>
+              <Button onClick={handleNext} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 Next <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
               </Button>
             </div>
@@ -321,7 +321,7 @@ export default function CreateGoal() {
               <Button variant="outline" onClick={handleBack}>
                 Back
               </Button>
-              <Button onClick={handleSubmit} disabled={isLoading}>
+              <Button onClick={handleSubmit} disabled={isLoading} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:transform-none">
                 {isLoading ? "Creating..." : "Create Learning Goal"}
               </Button>
             </div>

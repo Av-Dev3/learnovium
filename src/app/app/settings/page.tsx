@@ -209,7 +209,7 @@ export default function Settings() {
               </p>
             </div>
             
-            <Button onClick={handleProfileSave} className="w-full">
+            <Button onClick={handleProfileSave} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
               <Save className="h-4 w-4 mr-2" aria-hidden="true" />
               Save Profile
             </Button>
@@ -299,7 +299,7 @@ export default function Settings() {
             <Button 
               onClick={handleReminderSave} 
               disabled={isSaving}
-              className="w-full"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:transform-none"
             >
               <Save className="h-4 w-4 mr-2" aria-hidden="true" />
               {isSaving ? "Saving..." : "Save Reminders"}
