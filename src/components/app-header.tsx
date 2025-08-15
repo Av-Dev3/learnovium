@@ -226,79 +226,149 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] p-0 bg-[var(--bg)] border-l border-[var(--border)]">
+            <SheetContent side="right" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-l border-[var(--border)]/60">
               <div className="flex flex-col h-full">
-                {/* Simple Header */}
-                <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-brand to-purple-600 rounded-lg flex items-center justify-center">
-                      <span className="font-bold text-sm text-white">L</span>
+                {/* Mobile Header - Match Dashboard Style */}
+                <div className="flex items-center justify-between p-6 border-b border-[var(--border)]/60">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">L</span>
                     </div>
-                    <h3 className="font-semibold text-lg text-[var(--fg)]">Learnovium</h3>
+                    <h1 className="font-heading text-xl font-semibold">Learnovium</h1>
                   </div>
                   <ThemeToggle />
                 </div>
                 
-                {/* Simple Navigation */}
-                <div className="flex-1 p-4">
-                  <nav className="space-y-2">
-                    {navItems.map((item) => (
+                {/* Mobile Navigation - Match Dashboard Style */}
+                <nav className="flex-1 p-6 space-y-2">
+                  {navItems.map((item) => {
+                    const isItemActive = isActive(item.href);
+                    return (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className={`block px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          isActive(item.href)
-                            ? "bg-brand/10 text-brand"
-                            : "text-[var(--fg)]/70 hover:bg-muted/50 hover:text-[var(--fg)]"
+                        className={`group block p-4 rounded-2xl transition-all duration-200 ${
+                          isItemActive
+                            ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
+                            : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50"
                         }`}
                       >
-                        {item.label}
+                        <div className="flex items-center space-x-4">
+                          <div className={`p-3 rounded-xl transition-all duration-200 ${
+                            isItemActive ? "bg-white/20" : "bg-[var(--muted)]/50 group-hover:bg-[var(--muted)]/70"
+                          }`}>
+                            <div className={`w-6 h-6 rounded-full ${
+                              isItemActive ? "bg-white" : "bg-[var(--fg,_#101010)]/60"
+                            }`} />
+                          </div>
+                          <div className="flex-1">
+                            <div className={`font-semibold text-base ${
+                              isItemActive ? "text-white" : "text-[var(--fg,_#101010)]"
+                            }`}>
+                              {item.label}
+                            </div>
+                            <div className={`text-sm ${
+                              isItemActive ? "text-white/80" : "text-[var(--fg,_#101010)]/50"
+                            }`}>
+                              Navigate to {item.label.toLowerCase()}
+                            </div>
+                          </div>
+                        </div>
                       </Link>
-                    ))}
-                  </nav>
+                    );
+                  })}
+                </nav>
 
-                  {/* User Section */}
+                {/* Mobile Footer - User Section */}
+                <div className="p-6 border-t border-[var(--border)]/60">
                   {isLoggedIn ? (
-                    <div className="mt-6 pt-6 border-t border-[var(--border)]">
-                      <div className="flex items-center space-x-3 mb-4">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={userAvatarUrl} alt={userName} />
-                          <AvatarFallback className="bg-brand text-white text-sm font-medium">
-                            {userName ? userName.charAt(0).toUpperCase() : "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium text-[var(--fg)]">{userName || "User"}</p>
-                          <p className="text-xs text-[var(--fg)]/60">Premium Member</p>
+                    <div className="space-y-4">
+                      {/* Enhanced User Profile Card */}
+                      <div className="relative p-6 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
+                        {/* Background pattern */}
+                        <div className="absolute inset-0 bg-white/10 opacity-30" />
+                        
+                        <div className="relative flex items-center space-x-4">
+                          <div className="relative">
+                            <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
+                              <AvatarImage src={userAvatarUrl} alt={userName} />
+                              <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
+                                {userName ? userName.charAt(0).toUpperCase() : "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                            {/* Online status */}
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-lg">{userName || "User Account"}</h3>
+                            <p className="text-indigo-100 text-sm">Premium Member</p>
+                            <div className="flex items-center mt-3 space-x-2">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                                Premium
+                              </span>
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                                Verified
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       
-                      <div className="space-y-1">
+                      {/* Enhanced Menu Items */}
+                      <div className="space-y-2">
                         {userMenuItems.map((item) => (
                           <Link
                             key={item.href}
                             href={item.href}
-                            className="block px-3 py-2 rounded-lg text-sm text-[var(--fg)]/70 hover:bg-muted/50 hover:text-[var(--fg)] transition-colors"
+                            className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
                           >
-                            {item.label}
+                            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-4">
+                              <div className="w-2 h-2 rounded-full bg-blue-600" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-semibold text-base">{item.label}</div>
+                              <div className="text-sm text-gray-500">Navigate to {item.label.toLowerCase()}</div>
+                            </div>
                           </Link>
                         ))}
-                        <button
-                          onClick={handleSignOut}
-                          className="w-full text-left px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors"
-                        >
-                          Sign Out
-                        </button>
                       </div>
+                      
+                      {/* Enhanced Sign Out */}
+                      <button
+                        onClick={handleSignOut}
+                        className="group w-full flex items-center p-4 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
+                      >
+                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-red-50 group-hover:bg-red-100 transition-all duration-200 mr-4">
+                          <LogOut className="h-6 w-6 text-red-600" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-base">Sign Out</div>
+                          <div className="text-sm text-red-500">End your session</div>
+                        </div>
+                      </button>
                     </div>
                   ) : (
-                    <div className="mt-6 pt-6 border-t border-[var(--border)] space-y-3">
-                      <Button className="w-full" asChild>
-                        <Link href="/auth">Get Started</Link>
-                      </Button>
-                      <Button variant="outline" className="w-full" asChild>
-                        <Link href="/auth/sign-in">Sign In</Link>
-                      </Button>
+                    <div className="space-y-4">
+                      {/* CTA Cards */}
+                      <div className="space-y-3">
+                        <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
+                          <Link href="/auth">
+                            <div className="flex items-center justify-center space-x-2">
+                              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                              <span>Start Learning Free</span>
+                            </div>
+                          </Link>
+                        </Button>
+                        
+                        <Button variant="outline" className="w-full border-2 border-[var(--border)] hover:border-brand/50 hover:bg-muted/30 transition-all duration-300 rounded-2xl py-4 text-base font-medium" asChild>
+                          <Link href="/auth/sign-in">
+                            <div className="flex items-center justify-center space-x-2">
+                              <div className="w-2 h-2 bg-[var(--fg)]/60 rounded-full" />
+                              <span>Sign In</span>
+                            </div>
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
