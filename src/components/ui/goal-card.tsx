@@ -2,8 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Target, TrendingUp } from "lucide-react";
+import { Calendar, Target, TrendingUp, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 interface GoalCardProps {
   goal: {
@@ -18,9 +19,37 @@ interface GoalCardProps {
 }
 
 export function GoalCard({ goal }: GoalCardProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  
   const daysSinceCreation = Math.ceil(
     (Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)
   );
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this learning plan? This action cannot be undone.")) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/goals/${goal.id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Refresh the page to update the goals list
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        alert(`Failed to delete goal: ${error.error}`);
+      }
+    } catch (error) {
+      console.error("Error deleting goal:", error);
+      alert("Failed to delete goal. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <Card className="w-full hover:shadow-md transition-shadow">
@@ -33,9 +62,21 @@ export function GoalCard({ goal }: GoalCardProps) {
               {goal.focus}
             </CardDescription>
           </div>
-          <Badge variant="outline" className="text-xs">
-            v{goal.plan_version}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              v{goal.plan_version}
+            </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+              title="Delete plan"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">

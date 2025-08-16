@@ -90,4 +90,55 @@ export async function GET(
       { status: 500 }
     );
   }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { user } = await requireUser(req);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    
+    const { id } = await params;
+    const supa = await supabaseServer();
+
+    // First, delete related progress records
+    const { error: progressError } = await supa
+      .from("lesson_progress")
+      .delete()
+      .eq("goal_id", id)
+      .eq("user_id", user.id);
+
+    if (progressError) {
+      console.warn("Failed to delete progress records:", progressError.message);
+    }
+
+    // Then delete the goal
+    const { error: goalError } = await supa
+      .from("learning_goals")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
+
+    if (goalError) {
+      if (goalError.code === "PGRST116") {
+        return NextResponse.json({ error: "Goal not found" }, { status: 404 });
+      }
+      return NextResponse.json(
+        { error: `Failed to delete goal: ${goalError.message}` },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ message: "Goal deleted successfully" });
+  } catch (e: unknown) {
+    console.error("Error in DELETE /api/goals/[id]:", e);
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "Internal server error" },
+      { status: 500 }
+    );
+  }
 } 
