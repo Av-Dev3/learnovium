@@ -32,7 +32,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
   const userMenuItems = [
     { href: "/app", label: "Dashboard" },
     { href: "/app/plans", label: "Plans" },
-    { href: "/app/goals", label: "Goals" },
+            { href: "/app/plans", label: "Plans" },
     { href: "/app/settings", label: "Settings" },
   ];
 

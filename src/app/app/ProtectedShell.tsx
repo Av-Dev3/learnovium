@@ -338,13 +338,13 @@ function UserMenu() {
                     </div>
                   </Link>
                   
-                  <Link href="/app/goals" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                  <Link href="/app/plans" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 group-hover:from-emerald-100 group-hover:to-teal-200 transition-all duration-200 mr-3">
                       <Target className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-sm">Goals</div>
-                      <div className="text-xs text-gray-500">Track your goals</div>
+                      <div className="font-semibold text-sm">Plans</div>
+                      <div className="text-xs text-gray-500">Track your learning plans</div>
                     </div>
                     <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
                       <ChevronRight className="h-4 w-4" />
