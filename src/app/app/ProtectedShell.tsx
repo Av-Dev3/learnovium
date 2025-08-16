@@ -104,7 +104,7 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
 
 function AppNav() {
   const pathname = usePathname();
-  const { isAdmin } = useIsAdmin();
+  const { isAdmin, loading, error } = useIsAdmin();
   
   const navigation = [
     { name: "Dashboard", href: "/app", icon: Home },
@@ -114,8 +114,8 @@ function AppNav() {
     { name: "Settings", href: "/app/settings", icon: Settings },
   ];
 
-  // Add admin link if user is admin
-  if (isAdmin) {
+  // Add admin link if user is admin and no database errors
+  if (isAdmin && !loading && !error) {
     navigation.push({ name: "Admin", href: "/app/admin/metrics", icon: Shield });
   }
 
@@ -148,7 +148,7 @@ function AppNav() {
 
 function MobileAppNav() {
   const pathname = usePathname();
-  const { isAdmin } = useIsAdmin();
+  const { isAdmin, loading, error } = useIsAdmin();
   
   const navigation = [
     { name: "Dashboard", href: "/app", icon: Home, description: "Overview and progress" },
@@ -158,8 +158,8 @@ function MobileAppNav() {
     { name: "Settings", href: "/app/settings", icon: Settings, description: "Preferences & account" },
   ];
 
-  // Add admin link if user is admin
-  if (isAdmin) {
+  // Add admin link if user is admin and no database errors
+  if (isAdmin && !loading && !error) {
     navigation.push({ name: "Admin", href: "/app/admin/metrics", icon: Shield, description: "System administration" });
   }
 
