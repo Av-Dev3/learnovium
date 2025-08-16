@@ -116,13 +116,13 @@ function AppNav() {
 
   // Add admin link if user is admin and no database errors
   if (isAdmin && !loading && !error) {
-    navigation.push({ name: "Admin", href: "/app/admin/metrics", icon: Shield });
+            navigation.push({ name: "Admin", href: "/admin/metrics", icon: Shield });
   }
 
   return (
     <>
       {navigation.map((item) => {
-        const isActive = pathname === item.href || (item.href === "/app/admin/metrics" && pathname.startsWith("/app/admin"));
+        const isActive = pathname === item.href || (item.href === "/admin/metrics" && pathname.startsWith("/admin"));
         return (
           <Link
             key={item.name}
@@ -160,13 +160,13 @@ function MobileAppNav() {
 
   // Add admin link if user is admin and no database errors
   if (isAdmin && !loading && !error) {
-    navigation.push({ name: "Admin", href: "/app/admin/metrics", icon: Shield, description: "System administration" });
+    navigation.push({ name: "Admin", href: "/admin/metrics", icon: Shield, description: "System administration" });
   }
 
   return (
     <>
       {navigation.map((item) => {
-        const isActive = pathname === item.href || (item.href === "/app/admin/metrics" && pathname.startsWith("/app/admin"));
+        const isActive = pathname === item.href || (item.href === "/admin/metrics" && pathname.startsWith("/admin"));
         return (
           <Link
             key={item.name}
