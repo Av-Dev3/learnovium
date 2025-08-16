@@ -12,7 +12,7 @@ export default async function Page() {
   );
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth");
-  const { data: prof } = await supabase.from("profiles").select("is_admin").eq("user_id", user.id).single();
+  const { data: prof } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
   if (!prof?.is_admin) redirect("/app"); // or notFound()
 
   return <MetricsClient />;

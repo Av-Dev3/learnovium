@@ -19,7 +19,7 @@ export default function AdminLinkClient() {
           const { data: profile } = await supabase
             .from("profiles")
             .select("is_admin")
-            .eq("user_id", user.id)
+            .eq("id", user.id)
             .single();
           
           setIsAdmin(profile?.is_admin || false);
