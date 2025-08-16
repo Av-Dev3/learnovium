@@ -3,7 +3,7 @@
  * GET /api/admin/metrics/summary
  */
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { withAdminGuard } from "../../_guard";
 import { createClient } from "@supabase/supabase-js";
 import { getAdminConfigSR } from "@/lib/adminConfig";
@@ -21,7 +21,7 @@ function getServiceRoleClient() {
   );
 }
 
-async function handleSummary() {
+async function handleSummary(req: NextRequest, context: unknown, user: { id: string; email?: string }) {
   try {
     const supabase = getServiceRoleClient();
     const today = new Date().toISOString().split('T')[0];

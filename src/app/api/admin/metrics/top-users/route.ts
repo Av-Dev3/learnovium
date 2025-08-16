@@ -3,7 +3,7 @@
  * GET /api/admin/metrics/top-users
  */
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { withAdminGuard } from "../../_guard";
 import { createClient } from "@supabase/supabase-js";
 
@@ -20,7 +20,7 @@ function getServiceRoleClient() {
   );
 }
 
-async function handleTopUsers() {
+async function handleTopUsers(req: NextRequest, context: unknown, user: { id: string; email?: string }) {
   try {
     const supabase = getServiceRoleClient();
     

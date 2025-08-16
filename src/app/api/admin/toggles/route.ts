@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { withAdminGuard } from "../_guard";
 import { getAdminConfigSR, updateAdminConfigSR } from "@/lib/adminConfig";
 
-async function handleGetToggles() {
+async function handleGetToggles(req: NextRequest, context: unknown, user: { id: string; email?: string }) {
   try {
     const config = await getAdminConfigSR();
     
@@ -27,7 +27,7 @@ async function handleGetToggles() {
   }
 }
 
-async function handleUpdateToggles(req: NextRequest) {
+async function handleUpdateToggles(req: NextRequest, context: unknown, user: { id: string; email?: string }) {
   try {
     const body = await req.json();
     

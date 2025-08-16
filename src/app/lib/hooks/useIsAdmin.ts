@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { supabaseBrowser } from "@/lib/supabaseClient";
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
 
 /**
  * Hook to check if current user is an admin

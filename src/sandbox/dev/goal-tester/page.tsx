@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { supabaseBrowser } from "@/lib/supabaseClient";
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
 
 type Goal = { id: string; topic: string; focus: string | null; plan_version?: number; created_at?: string };
 

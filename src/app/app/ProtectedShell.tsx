@@ -20,7 +20,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { supabaseBrowser } from "@/lib/supabaseClient";
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import { useIsAdmin } from "@/app/lib/hooks";
 
 export function ProtectedShell({ children }: { children: React.ReactNode }) {

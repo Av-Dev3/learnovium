@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { supabaseBrowser } from "@/lib/supabaseClient";
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function TestWrite() {
   const [out, setOut] = useState("Ready. Click to run…");
@@ -33,7 +33,7 @@ export default function TestWrite() {
     if (selErr) {
       setOut(`Select error: ${selErr.message}`);
     } else {
-      setOut(`OK. Latest goals: ${data.map(d => d.topic).join(", ")}`);
+      setOut(`OK. Latest goals: ${data.map((d: { topic: string }) => d.topic).join(", ")}`);
     }
   };
 

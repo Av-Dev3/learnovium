@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Menu, ChevronRight, LogOut } from "lucide-react";
+import AdminLinkClient from "./AdminLinkClient";
 
 interface AppHeaderProps {
   isLoggedIn?: boolean;
@@ -97,6 +98,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
             ) : (
               <>
                 <ThemeToggle />
+                <AdminLinkClient />
                 <div className="relative">
                   <Button
                     variant="ghost"
