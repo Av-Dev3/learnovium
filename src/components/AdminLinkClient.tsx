@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Shield } from "lucide-react";
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function AdminLinkClient() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -11,10 +12,17 @@ export default function AdminLinkClient() {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-        const response = await fetch("/api/me/is-admin");
-        if (response.ok) {
-          const data = await response.json();
-          setIsAdmin(data.is_admin);
+        const supabase = supabaseBrowser();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("is_admin")
+            .eq("user_id", user.id)
+            .single();
+          
+          setIsAdmin(profile?.is_admin || false);
         }
       } catch (error) {
         console.error("Error checking admin status:", error);
