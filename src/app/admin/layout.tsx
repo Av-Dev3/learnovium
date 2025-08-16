@@ -28,10 +28,10 @@ export default async function AdminLayout({
             <div className="flex items-center space-x-6">
               <h1 className="text-xl font-semibold">Admin Panel</h1>
               <nav className="flex items-center space-x-4">
-                <Link href="/admin">
+                <Link href="/app/admin">
                   <Button variant="ghost" size="sm">Overview</Button>
                 </Link>
-                <Link href="/admin/metrics">
+                <Link href="/app/admin/metrics">
                   <Button variant="ghost" size="sm">AI Metrics</Button>
                 </Link>
               </nav>

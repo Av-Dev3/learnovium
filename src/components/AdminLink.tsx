@@ -29,7 +29,7 @@ export async function AdminLink() {
     // Render admin link for admin users
     return (
       <Link 
-        href="/admin/metrics" 
+        href="/app/admin/metrics" 
         className="text-sm font-medium"
       >
         Admin

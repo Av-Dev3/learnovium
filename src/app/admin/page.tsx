@@ -27,7 +27,7 @@ export default async function AdminPage() {
             Manage users, content, and platform settings.
           </p>
           <div className="mt-4">
-            <Link href="/admin/metrics">
+            <Link href="/app/admin/metrics">
               <Button variant="default">View AI Metrics Dashboard</Button>
             </Link>
           </div>

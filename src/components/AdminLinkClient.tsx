@@ -40,7 +40,7 @@ export default function AdminLinkClient() {
 
   return (
     <Link 
-              href="/admin/metrics" 
+      href="/app/admin/metrics" 
       className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
     >
       <Shield className="h-4 w-4" />
