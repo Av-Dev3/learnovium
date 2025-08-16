@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
-    const supa = await supabaseServer(req);
+    const supa = await supabaseServer();
     // Prove identity (optional hard gate by admin email here if you like)
     const { data: { user } } = await supa.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

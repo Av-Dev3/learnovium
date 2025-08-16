@@ -40,7 +40,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const msgs = buildPlannerPrompt(`Topic: ${goal.topic}\nFocus: ${goal.focus || "general"}\nUse this context:\n${context}`);
 
     // 4) Generate plan
-    const { data: plan } = await generatePlan(msgs);
+    const { data: plan } = await generatePlan(msgs, user.id, goalId);
 
     // 5) Save plan_json + bump version
     const { error: uErr } = await supabase

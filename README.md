@@ -39,7 +39,10 @@ AI-powered learning paths with daily micro-lessons and reminders.
    npm run dev
    ```
 
-4. **Open your browser**
+4. **Set up environment variables**
+   Create a `.env.local` file with the required environment variables (see Environment Variables section below)
+
+5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 🎯 Available Scripts
@@ -86,6 +89,48 @@ src/
 ## 🌙 Dark Mode
 
 The application supports both light and dark themes with automatic system preference detection. Users can manually toggle between themes using the theme toggle in the header.
+
+## 🔧 Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+### Required Variables
+```bash
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key
+
+# Admin Mission Control (Phase 7)
+DAILY_USER_BUDGET_USD=0.25
+DAILY_GLOBAL_BUDGET_USD=10.00
+```
+
+### Optional Variables
+```bash
+# Model Configuration
+OPENAI_MODEL_PLANNER=gpt-4o-mini
+OPENAI_MODEL_LESSON=gpt-4o-mini
+OPENAI_MODEL_VALIDATOR=gpt-4o-mini
+OPENAI_EMBED_MODEL=text-embedding-3-small
+
+# Admin Alerts
+ALERT_SLACK_WEBHOOK=your_slack_webhook_url
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### Admin Setup
+After running the database migration, set your user as an admin:
+```sql
+UPDATE profiles SET is_admin = true WHERE id = 'your-user-id';
+```
+
+Then access the admin dashboard at `/app/admin/metrics`.
 
 ## 📱 Responsive Design
 

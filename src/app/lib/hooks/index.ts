@@ -4,6 +4,7 @@ export { useLesson } from './useLesson';
 export { useProgress } from './useProgress';
 export { useCreateGoal } from './useCreateGoal';
 export { useReminders } from './useReminders';
+export { useIsAdmin } from './useIsAdmin';
 
 // Mutation helpers
 export {

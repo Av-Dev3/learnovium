@@ -14,12 +14,14 @@ import {
   LogOut,
   User,
   HelpCircle,
-  ChevronRight
+  ChevronRight,
+  Shield
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { supabaseBrowser } from "@/lib/supabaseClient";
+import { useIsAdmin } from "@/app/lib/hooks";
 
 export function ProtectedShell({ children }: { children: React.ReactNode }) {
   return (
@@ -102,6 +104,8 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
 
 function AppNav() {
   const pathname = usePathname();
+  const { isAdmin } = useIsAdmin();
+  
   const navigation = [
     { name: "Dashboard", href: "/app", icon: Home },
     { name: "Plans", href: "/app/plans", icon: Target },
@@ -109,10 +113,16 @@ function AppNav() {
     { name: "Create", href: "/app/create", icon: Plus },
     { name: "Settings", href: "/app/settings", icon: Settings },
   ];
+
+  // Add admin link if user is admin
+  if (isAdmin) {
+    navigation.push({ name: "Admin", href: "/app/admin/metrics", icon: Shield });
+  }
+
   return (
     <>
       {navigation.map((item) => {
-        const isActive = pathname === item.href;
+        const isActive = pathname === item.href || (item.href === "/app/admin/metrics" && pathname.startsWith("/app/admin"));
         return (
           <Link
             key={item.name}
@@ -138,6 +148,8 @@ function AppNav() {
 
 function MobileAppNav() {
   const pathname = usePathname();
+  const { isAdmin } = useIsAdmin();
+  
   const navigation = [
     { name: "Dashboard", href: "/app", icon: Home, description: "Overview and progress" },
     { name: "Plans", href: "/app/plans", icon: Target, description: "Your learning plans" },
@@ -145,10 +157,16 @@ function MobileAppNav() {
     { name: "Create", href: "/app/create", icon: Plus, description: "Start something new" },
     { name: "Settings", href: "/app/settings", icon: Settings, description: "Preferences & account" },
   ];
+
+  // Add admin link if user is admin
+  if (isAdmin) {
+    navigation.push({ name: "Admin", href: "/app/admin/metrics", icon: Shield, description: "System administration" });
+  }
+
   return (
     <>
       {navigation.map((item) => {
-        const isActive = pathname === item.href;
+        const isActive = pathname === item.href || (item.href === "/app/admin/metrics" && pathname.startsWith("/app/admin"));
         return (
           <Link
             key={item.name}

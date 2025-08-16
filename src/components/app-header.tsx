@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, X, ChevronRight, LogOut } from "lucide-react";
+import { Menu, ChevronRight, LogOut } from "lucide-react";
 
 interface AppHeaderProps {
   isLoggedIn?: boolean;

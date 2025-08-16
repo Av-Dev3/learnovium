@@ -6,7 +6,6 @@ import { buildLessonPrompt } from "@/lib/prompts";
 
 const LIMIT_WINDOW_MS = 60_000;
 declare global {
-  // eslint-disable-next-line no-var
   var __todayRate: Map<string, number> | undefined;
 }
 function rateKey(userId: string, goalId: string) {
@@ -61,7 +60,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const query = `${goal.topic} — ${goal.focus || "beginner daily lesson"}`;
     const { context } = await retrieveContextDB(query, 5, goal.topic, req);
     const msgs = buildLessonPrompt(`Today's focus: ${goal.focus || goal.topic}. Use this context:\n${context}`);
-    const { data: lesson } = await generateLesson(msgs);
+    const { data: lesson } = await generateLesson(msgs, user.id, goalId);
 
     const { error: wErr } = await supabase.from("lesson_log").insert({
       user_id: user.id,

@@ -26,7 +26,7 @@ type EnrichedResult = {
 
 export async function retrieveContextDB(query: string, k = 5, topicFilter?: string, req?: NextRequest) {
   const [qvec] = await embedTexts([query]);
-  const supa = await supabaseServer(req); // forwards Authorization if provided
+  const supa = await supabaseServer(); // forwards Authorization if provided
   const { data, error } = await supa.rpc("match_chunks", {
     query_embedding: qvec,
     match_count: k,

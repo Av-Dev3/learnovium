@@ -199,3 +199,4 @@ pids
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+migrations/20241215_admin_mission_control.sql

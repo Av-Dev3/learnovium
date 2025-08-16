@@ -17,7 +17,7 @@ export async function GET(
     
     const { id } = await params;
 
-    const supa = await supabaseServer(req);
+    const supa = await supabaseServer();
 
     // Fetch the goal
     const { data: goal, error: goalError } = await supa

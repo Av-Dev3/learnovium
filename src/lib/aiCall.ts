@@ -1,9 +1,10 @@
 import { openai, modelFor } from "@/lib/openai";
 import { z } from "zod";
 import { track } from "@/lib/obs";
+import { checkCapsOrThrow, logCall, createCallLog, withRetries } from "@/lib/aiGuard";
 
 type Msg = { role: "system" | "user" | "assistant"; content: string };
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+// const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 function coerceJSON(text: string) {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
@@ -33,53 +34,98 @@ async function chatJSON<T>(opts: {
   messages: Msg[];
   schema: z.ZodType<T>;
   temperature?: number;
+  userId?: string;
+  goalId?: string;
 }): Promise<{
   data: T;
   usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
 }> {
   const model = modelFor(opts.task);
-  let delay = 400, lastErr: unknown;
+  
+  // Check budget caps and endpoint status if userId provided
+  if (opts.userId) {
+    await checkCapsOrThrow(opts.userId, opts.task);
+  }
 
-  for (let attempt = 1; attempt <= 4; attempt++) {
+  // Use withRetries for better error handling
+  return withRetries(async () => {
+    const t0 = Date.now();
+    // let success = false;
+    let errorText: string | undefined;
+    let usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number } | undefined;
+
     try {
-      const t0 = Date.now();
       const res = await chatCore(model, opts.messages, opts.temperature ?? 0.7);
       const dt = Date.now() - t0;
 
       const text = res.choices[0]?.message?.content ?? "";
       const parsed = coerceJSON(text);
       const data = opts.schema.parse(parsed);
-      const usage = res.usage ? {
+      
+      usage = res.usage ? {
         prompt_tokens: res.usage.prompt_tokens ?? 0,
         completion_tokens: res.usage.completion_tokens ?? 0,
         total_tokens: res.usage.total_tokens ?? 0
       } : undefined;
 
+      // success = true;
+
+      // Log successful call
+      if (opts.userId) {
+        const callLog = createCallLog(
+          opts.userId,
+          opts.task,
+          model,
+          usage,
+          dt,
+          true,
+          undefined,
+          opts.goalId
+        );
+        await logCall(callLog);
+      }
+
+      // Keep existing tracking
       track({ task: opts.task, model, ms: dt, usage });
 
-      console.log(`[AI:${opts.task}] model=${model} tokens=${usage?.total_tokens ?? "?"}`);
+      const costStr = usage ? `$${(usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000).toFixed(6)}` : "?";
+      console.log(`[AI:${opts.task}] model=${model} tokens=${usage?.total_tokens ?? "?"} cost=${costStr}`);
       return { data, usage };
     } catch (err) {
-      lastErr = err;
-      if (attempt === 4) break;
-      await sleep(delay + Math.floor(Math.random() * 150));
-      delay *= 2;
+      const dt = Date.now() - t0;
+      errorText = err instanceof Error ? err.message : "Unknown error";
+      
+      // Log failed call
+      if (opts.userId) {
+        const callLog = createCallLog(
+          opts.userId,
+          opts.task,
+          model,
+          usage,
+          dt,
+          false,
+          errorText,
+          opts.goalId
+        );
+        await logCall(callLog);
+      }
+
+      throw err;
     }
-  }
-  throw lastErr instanceof Error ? lastErr : new Error("AI call failed");
+  }, { retries: 3, baseMs: 400 });
 }
 
-export async function generatePlan(messages: Msg[]) {
+export async function generatePlan(messages: Msg[], userId?: string, goalId?: string) {
   const { PlanJSON } = await import("@/types/ai");
-  return chatJSON({ task: "planner", messages, schema: PlanJSON, temperature: 0.6 });
+  return chatJSON({ task: "planner", messages, schema: PlanJSON, temperature: 0.6, userId, goalId });
 }
 
-export async function generateLesson(messages: Msg[]) {
+export async function generateLesson(messages: Msg[], userId?: string, goalId?: string) {
   const { LessonJSON } = await import("@/types/ai");
-  return chatJSON({ task: "lesson", messages, schema: LessonJSON, temperature: 0.6 });
+  return chatJSON({ task: "lesson", messages, schema: LessonJSON, temperature: 0.6, userId, goalId });
 }
 
-export async function validateLesson(messages: Msg[]) {
+export async function validateLesson(messages: Msg[], userId?: string, goalId?: string) {
   const { ValidationJSON } = await import("@/types/ai");
-  return chatJSON({ task: "validator", messages, schema: ValidationJSON, temperature: 0 });
+  return chatJSON({ task: "validator", messages, schema: ValidationJSON, temperature: 0, userId, goalId });
 }

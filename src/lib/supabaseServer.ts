@@ -1,10 +1,10 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+// import { NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
-export async function supabaseServer(_req?: NextRequest) {
+export async function supabaseServer() {
   // Pull cookies in/out for SSR so session is available in RSC
   const cookieStore = await cookies();
 

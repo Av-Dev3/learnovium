@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const supa = await supabaseServer(req);
+    const supa = await supabaseServer();
 
     // Verify the goal exists and belongs to the user
     const { data: goal, error: goalError } = await supa
@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const goal_id = searchParams.get("goal_id");
 
-    const supa = await supabaseServer(req);
+    const supa = await supabaseServer();
 
     let query = supa
       .from("lesson_progress")

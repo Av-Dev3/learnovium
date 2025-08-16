@@ -2,7 +2,6 @@ type Usage = { prompt_tokens?: number; completion_tokens?: number; total_tokens?
 type TrackArgs = { task: "planner"|"lesson"|"validator"; model: string; ms: number; usage?: Usage };
 
 declare global {
-  // eslint-disable-next-line no-var
   var __obsDaily: { date: string; tokens: number } | undefined;
 }
 

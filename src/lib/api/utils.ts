@@ -5,7 +5,7 @@ export async function requireUser(req: NextRequest) {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
     return { user: null, supabase: null, res: NextResponse.json({ error: "Supabase env missing" }, { status: 500 }) };
   }
-  const supabase = await supabaseServer(req);
+  const supabase = await supabaseServer();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) {
     return { user: null, supabase, res: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
