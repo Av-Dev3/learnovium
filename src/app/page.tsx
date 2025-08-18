@@ -7,6 +7,8 @@ import { ArrowRight, Target, Brain, Calendar, Sparkles, Zap, Shield, Users, Tren
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // Check authentication status server-side
   const supabase = await supabaseServer();

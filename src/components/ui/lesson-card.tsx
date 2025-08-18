@@ -53,7 +53,7 @@ export function LessonCard({ lesson, onStart }: LessonCardProps) {
           <p className="text-sm leading-relaxed">{lesson.content}</p>
         </div>
 
-        {lesson.quiz && (
+        {lesson.quiz && Array.isArray(lesson.quiz.options) && lesson.quiz.options.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Brain className="h-4 w-4" />
@@ -80,7 +80,7 @@ export function LessonCard({ lesson, onStart }: LessonCardProps) {
           </div>
         )}
 
-        {lesson.exercise && (
+        {lesson.exercise && Array.isArray(lesson.exercise.steps) && lesson.exercise.steps.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Zap className="h-4 w-4" />

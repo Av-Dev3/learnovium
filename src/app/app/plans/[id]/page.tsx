@@ -37,9 +37,7 @@ interface GoalResponse {
 
 async function getGoalPlan(goalId: string): Promise<GoalResponse> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/goals/${goalId}`, {
-      cache: 'no-store',
-    });
+    const response = await fetch(`/api/goals/${goalId}`, { cache: 'no-store' });
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -166,7 +164,7 @@ export default async function PlanDetailPage({
           </div>
 
           <div className="space-y-4">
-            {plan_json.modules.map((module) => (
+            {Array.isArray(plan_json.modules) && plan_json.modules.length > 0 ? plan_json.modules.map((module) => (
               <Card 
                 key={module.day} 
                 className={`transition-all hover:shadow-md ${
@@ -211,7 +209,13 @@ export default async function PlanDetailPage({
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            )) : (
+              <Card className="text-center">
+                <CardContent className="p-6 text-muted-foreground">
+                  No modules available for this plan yet.
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       ) : (

@@ -59,11 +59,11 @@ export function LessonDisplay({ lesson, isReused = false, className = "" }: Less
           <h3 className="text-lg font-semibold">Quiz</h3>
         </div>
         <div className="space-y-4">
-          {lesson.quiz.map((question, index) => (
+          {Array.isArray(lesson.quiz) && lesson.quiz.length > 0 && lesson.quiz.map((question, index) => (
             <div key={index} className="space-y-2">
               <p className="font-medium">{question.q}</p>
               <div className="grid grid-cols-1 gap-2">
-                {question.a.map((option, optionIndex) => (
+                {Array.isArray(question.a) && question.a.map((option, optionIndex) => (
                   <div
                     key={optionIndex}
                     className={`p-3 rounded-lg border cursor-pointer transition-colors ${
@@ -93,7 +93,7 @@ export function LessonDisplay({ lesson, isReused = false, className = "" }: Less
       </div>
 
       {/* Citations */}
-      {lesson.citations.length > 0 && (
+      {Array.isArray(lesson.citations) && lesson.citations.length > 0 && (
         <div className="pt-4 border-t">
           <p className="text-sm text-muted-foreground">
             <strong>Sources:</strong> {lesson.citations.join(", ")}
