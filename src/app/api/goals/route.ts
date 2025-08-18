@@ -54,11 +54,17 @@ export async function GET(req: NextRequest) {
 // POST /api/goals — create a new goal with template caching
 export async function POST(req: NextRequest) {
   try {
+    console.log("POST /api/goals - incoming request");
     const { user, supabase, res } = await requireUser(req);
-    if (!user) return res!;
+    if (!user) {
+      console.log("POST /api/goals - no user found");
+      return res!;
+    }
+    console.log("POST /api/goals - user:", user.id);
     
     const body = await req.json().catch(() => ({}));
     const { topic, focus, level, minutes_per_day, duration_days } = body || {};
+    console.log("POST /api/goals - body:", { topic, focus, level, minutes_per_day, duration_days });
     if (!topic) return NextResponse.json({ error: "Missing topic" }, { status: 400 });
 
     // Pull profile to build signature
@@ -88,6 +94,7 @@ export async function POST(req: NextRequest) {
         .eq("version", 1)
         .maybeSingle();
       template = templateData;
+      console.log("POST /api/goals - template found:", Boolean(template));
     } catch (error) {
       // plan_template table might not exist yet, continue with plan generation
       console.log("plan_template table not available, generating new plan");
@@ -109,7 +116,11 @@ export async function POST(req: NextRequest) {
         .select("id, topic, focus, plan_version, created_at")
         .single();
 
-      if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      if (error) {
+        console.error("POST /api/goals - insert (reuse) error:", error);
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+      console.log("POST /api/goals - goal created (reuse):", goal?.id);
       return NextResponse.json({ ...goal, reused: true }, { status: 201 });
     }
 
@@ -210,6 +221,7 @@ export async function POST(req: NextRequest) {
 
       if (tErr) {
         // If conflict due to race, re-query and continue
+        console.warn("POST /api/goals - template insert error, will re-query:", tErr?.message);
         const { data: t2 } = await supabase
           .from("plan_template")
           .select("id")
@@ -239,7 +251,11 @@ export async function POST(req: NextRequest) {
       .select("id, topic, focus, plan_version, created_at")
       .single();
 
-    if (gErr) return NextResponse.json({ error: gErr.message }, { status: 400 });
+    if (gErr) {
+      console.error("POST /api/goals - insert (new) error:", gErr);
+      return NextResponse.json({ error: gErr.message }, { status: 400 });
+    }
+    console.log("POST /api/goals - goal created (new):", goal?.id);
     return NextResponse.json({ ...goal, reused: false }, { status: 201 });
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : "Unknown error in POST /api/goals";
