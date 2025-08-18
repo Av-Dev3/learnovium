@@ -9,14 +9,21 @@ export type RAGIndex = {
 };
 
 export async function buildIndexFromSeeds() {
-  const packs = SEED_PACKS.map((p) => TopicPack.parse(p));
-  const allChunks = packs.flatMap((p) => p.chunks);
-  if (allChunks.length === 0) throw new Error("No chunks found in seeds");
+  try {
+    const packs = SEED_PACKS.map((p) => TopicPack.parse(p));
+    const allChunks = packs.flatMap((p) => p.chunks);
+    if (allChunks.length === 0) throw new Error("No chunks found in seeds");
 
-  const vectors = await embedTexts(allChunks.map((c) => c.text_summary));
-  const dim = vectors[0]?.length ?? 1536;
-  const store = new InMemoryVectorStore(dim);
-  store.upsert(allChunks.map((c, i) => ({ id: c.id, vector: vectors[i], meta: c })));
+    const vectors = await embedTexts(allChunks.map((c) => c.text_summary));
+    const dim = vectors[0]?.length ?? 1536;
+    const store = new InMemoryVectorStore(dim);
+    store.upsert(allChunks.map((c, i) => ({ id: c.id, vector: vectors[i], meta: c })));
 
-  return { store, chunks: allChunks };
+    return { store, chunks: allChunks };
+  } catch (error) {
+    console.error("Failed to build index from seeds:", error);
+    // Return a minimal working index
+    const store = new InMemoryVectorStore(1536);
+    return { store, chunks: [] };
+  }
 } 

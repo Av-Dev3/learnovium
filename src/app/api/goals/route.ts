@@ -91,29 +91,71 @@ export async function POST(req: NextRequest) {
     // Check budget caps before AI call
     await checkCapsOrThrow(user.id, "planner");
     
-    const msgs = await buildPlannerPromptWithRAG(
-      `Create a learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}`,
-      topic,
-      6
-    );
-    
-    const { data: planResult, usage } = await generatePlan(msgs, user.id);
-    const plan_json = planResult;
-    
-    // Log the AI call
-    const latency_ms = Date.now() - t0;
-    const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0;
-    
-    await logCall({
-      user_id: user.id,
-      endpoint: "planner",
-      model: "gpt-5-mini", // or get from usage
-      prompt_tokens: usage?.prompt_tokens || 0,
-      completion_tokens: usage?.completion_tokens || 0,
-      success: true,
-      latency_ms,
-      cost_usd,
-    });
+    let plan_json;
+    try {
+      const msgs = await buildPlannerPromptWithRAG(
+        `Create a learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}`,
+        topic,
+        6
+      );
+      
+      const { data: planResult, usage } = await generatePlan(msgs, user.id);
+      plan_json = planResult;
+      
+      // Log the AI call
+      const latency_ms = Date.now() - t0;
+      const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0;
+      
+      await logCall({
+        user_id: user.id,
+        endpoint: "planner",
+        model: "gpt-5-mini", // or get from usage
+        prompt_tokens: usage?.prompt_tokens || 0,
+        completion_tokens: usage?.completion_tokens || 0,
+        success: true,
+        latency_ms,
+        cost_usd,
+      });
+    } catch (error) {
+      console.error("AI plan generation failed:", error);
+      
+      // Create a fallback plan structure
+      plan_json = {
+        version: "1",
+        topic: topic,
+        total_days: 7,
+        modules: [
+          {
+            title: `${topic} Fundamentals`,
+            days: [
+              {
+                day_index: 1,
+                topic: `Introduction to ${topic}`,
+                objective: `Understand the basics of ${topic}`,
+                practice: `Review fundamental concepts`,
+                assessment: `Self-assessment quiz`,
+                est_minutes: Math.min(minutes_per_day || 30, 60)
+              }
+            ]
+          }
+        ],
+        citations: [`${topic} learning resources`]
+      };
+      
+      // Log the fallback
+      const latency_ms = Date.now() - t0;
+      await logCall({
+        user_id: user.id,
+        endpoint: "planner",
+        model: "fallback",
+        prompt_tokens: 0,
+        completion_tokens: 0,
+        success: false,
+        latency_ms,
+        cost_usd: 0,
+        error_text: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
 
     // Save template for future reuse
     let newTemplate: { id: string } | null = null;
