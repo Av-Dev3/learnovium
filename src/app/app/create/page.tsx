@@ -61,7 +61,11 @@ export default function CreateGoal() {
       });
 
       if (result) {
-        showSuccess("Learning goal created successfully!");
+        if (result.reused) {
+          showSuccess("Learning goal created successfully! (Reused existing plan)");
+        } else {
+          showSuccess("Learning goal created successfully!");
+        }
         router.push("/app");
       } else {
         showError("Failed to create learning goal");

@@ -2,8 +2,13 @@ import useSWR from 'swr';
 import { fetcher } from '../fetcher';
 import type { Lesson } from '../types';
 
+interface LessonResponse {
+  reused: boolean;
+  lesson: Lesson;
+}
+
 export function useLesson(goalId: string) {
-  const { data, error, isLoading, mutate } = useSWR<Lesson>(
+  const { data, error, isLoading, mutate } = useSWR<LessonResponse>(
     goalId ? `/api/goals/${goalId}/today` : null,
     fetcher,
     {
@@ -14,7 +19,8 @@ export function useLesson(goalId: string) {
   );
 
   return {
-    lesson: data,
+    lesson: data?.lesson,
+    isReused: data?.reused || false,
     isLoading,
     isError: error,
     error,

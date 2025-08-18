@@ -5,6 +5,8 @@ export interface Goal {
   plan_version: number;
   created_at: string;
   user_id: string;
+  plan_template_id?: string;
+  progress_pct?: number;
 }
 
 export interface Lesson {
@@ -62,10 +64,36 @@ export interface CreateGoalResponse {
   focus: string;
   plan_version: number;
   created_at: string;
+  reused?: boolean;
 }
 
 export interface ApiResponse<T> {
   data?: T;
   error?: string;
   message?: string;
+}
+
+// Template caching types
+export interface PlanTemplate {
+  id: string;
+  signature: string;
+  topic: string;
+  focus: string | null;
+  level: string | null;
+  minutes_per_day: number | null;
+  locale: string;
+  version: number;
+  source: string;
+  plan_json: any;
+  created_at: string;
+}
+
+export interface LessonTemplate {
+  id: string;
+  plan_template_id: string;
+  day_index: number;
+  version: number;
+  model: string;
+  lesson_json: any;
+  created_at: string;
 } 
