@@ -141,21 +141,27 @@ export async function POST(req: NextRequest) {
     
     let plan_json;
     try {
+      console.log("POST /api/goals - Starting AI plan generation...");
       const duration = (duration_days as number) || 7;
       const userLevel = level || 'beginner';
+      console.log("POST /api/goals - Building RAG prompt...");
       const msgs = await buildPlannerPromptWithRAG(
         `Create a ${duration}-day ${userLevel} level learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}. The plan must strictly have total_days=${duration} and be appropriate for ${userLevel} level students.`,
         topic,
         8
       );
       
+      console.log("POST /api/goals - Calling OpenAI...");
       const { data: planResult, usage } = await generatePlan(msgs, user.id);
+      console.log("POST /api/goals - OpenAI response received:", { planResult, usage });
       // Force total_days to requested duration if model deviates
       plan_json = { ...planResult, total_days: duration };
       
       // Log the AI call
       const latency_ms = Date.now() - t0;
       const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0;
+      
+      console.log("POST /api/goals - AI generation successful:", { latency_ms, cost_usd });
       
       // Temporarily disabled while setting up database migrations
       /*
@@ -171,7 +177,7 @@ export async function POST(req: NextRequest) {
       });
       */
     } catch (error) {
-      console.error("AI plan generation failed:", error);
+      console.error("POST /api/goals - AI plan generation failed:", error);
       
       // Create a fallback plan structure
       const userLevel = level || 'beginner';
@@ -196,6 +202,8 @@ export async function POST(req: NextRequest) {
         ],
         citations: [`${topic} learning resources`]
       };
+      
+      console.log("POST /api/goals - Using fallback plan:", plan_json);
       
       // Log the fallback
       const latency_ms = Date.now() - t0;
@@ -255,6 +263,17 @@ export async function POST(req: NextRequest) {
       console.log("plan_template table not available, skipping template caching");
     }
 
+    console.log("POST /api/goals - About to insert goal into database...");
+    console.log("POST /api/goals - Insert data:", {
+      user_id: user.id,
+      topic,
+      focus,
+      level,
+      plan_version: 1,
+      plan_json: typeof plan_json,
+      plan_json_keys: plan_json ? Object.keys(plan_json) : 'null'
+    });
+
     const { data: goal, error: gErr } = await supabase
       .from("learning_goals")
       .insert({
@@ -272,8 +291,16 @@ export async function POST(req: NextRequest) {
 
     if (gErr) {
       console.error("POST /api/goals - insert (new) error:", gErr);
+      console.error("POST /api/goals - Error details:", {
+        code: gErr.code,
+        message: gErr.message,
+        details: gErr.details,
+        hint: gErr.hint
+      });
       return NextResponse.json({ error: gErr.message }, { status: 400 });
     }
+    
+    console.log("POST /api/goals - Goal created successfully:", goal);
     console.log("POST /api/goals - goal created (new):", goal?.id);
     return NextResponse.json({ ...goal, reused: false }, { status: 201 });
   } catch (e: unknown) {

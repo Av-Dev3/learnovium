@@ -18,15 +18,22 @@ function supportsCustomTemp(model: string) {
 }
 
 async function chatCore(model: string, messages: Msg[], desiredTemp?: number) {
+  console.log("AI: chatCore called with model:", model, "temperature:", desiredTemp);
   const baseParams = { model, messages };
   if (supportsCustomTemp(model) && typeof desiredTemp === "number") {
-    return await openai.chat.completions.create({
+    console.log("AI: Using custom temperature:", desiredTemp);
+    const result = await openai.chat.completions.create({
       ...baseParams,
       temperature: desiredTemp,
     });
+    console.log("AI: chatCore with custom temp completed");
+    return result;
   }
   // Keep it simple: no response_format. We'll parse ourselves.
-  return await openai.chat.completions.create(baseParams);
+  console.log("AI: Using default temperature");
+  const result = await openai.chat.completions.create(baseParams);
+  console.log("AI: chatCore with default temp completed");
+  return result;
 }
 
 async function chatJSON<T>(opts: {
@@ -40,23 +47,30 @@ async function chatJSON<T>(opts: {
   data: T;
   usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
 }> {
+  console.log("AI: chatJSON called for task:", opts.task);
   const model = modelFor(opts.task);
+  console.log("AI: Using model:", model);
   
   // Budget enforcement is now handled in the API routes
   // No need to check caps here
 
   // Use withRetries for better error handling
   return withRetries(async () => {
+    console.log("AI: Starting OpenAI API call...");
     const t0 = Date.now();
     let usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number } | undefined;
 
     try {
       const res = await chatCore(model, opts.messages, opts.temperature ?? 0.7);
       const dt = Date.now() - t0;
+      console.log("AI: OpenAI API call successful, response received");
 
       const text = res.choices[0]?.message?.content ?? "";
+      console.log("AI: Raw response text length:", text.length);
       const parsed = coerceJSON(text);
+      console.log("AI: JSON parsed successfully");
       const data = opts.schema.parse(parsed);
+      console.log("AI: Schema validation successful");
       
       usage = res.usage ? {
         prompt_tokens: res.usage.prompt_tokens ?? 0,
@@ -71,14 +85,24 @@ async function chatJSON<T>(opts: {
       console.log(`[AI:${opts.task}] model=${model} tokens=${usage?.total_tokens ?? "?"} cost=${costStr}`);
       return { data, usage };
     } catch (err) {
+      console.error("AI: Error in chatJSON:", err);
       throw err;
     }
   }, { retries: 3, baseMs: 400 });
 }
 
 export async function generatePlan(messages: Msg[], userId?: string, goalId?: string) {
-  const { PlanJSON } = await import("@/types/ai");
-  return chatJSON({ task: "planner", messages, schema: PlanJSON, temperature: 0.6, userId, goalId });
+  console.log("AI: generatePlan called with", messages.length, "messages");
+  try {
+    const { PlanJSON } = await import("@/types/ai");
+    console.log("AI: PlanJSON schema imported successfully");
+    const result = await chatJSON({ task: "planner", messages, schema: PlanJSON, temperature: 0.6, userId, goalId });
+    console.log("AI: generatePlan completed successfully");
+    return result;
+  } catch (error) {
+    console.error("AI: generatePlan failed:", error);
+    throw error;
+  }
 }
 
 export async function generateLesson(messages: Msg[], userId?: string, goalId?: string) {
