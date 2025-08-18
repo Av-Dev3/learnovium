@@ -25,96 +25,118 @@ import { useIsAdmin } from "@/app/lib/hooks";
 import { Logo } from "@/components/Logo";
 
 export function ProtectedShell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen relative bg-[var(--bg)]">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,rgba(99,102,241,0.08),transparent),radial-gradient(800px_400px_at_100%_20%,rgba(147,51,234,0.08),transparent)]" />
-        <div className="absolute inset-0 [mask-image:radial-gradient(closest-side,white,transparent)] opacity-[0.06]" style={{backgroundImage:"linear-gradient(to_right,rgba(0,0,0,.6)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,.6)_1px,transparent_1px)",backgroundSize:"56px_56px"}} />
-      </div>
-      <div className="relative flex">
-        {/* Sidebar */}
-        <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
-          <div className="flex flex-col flex-grow bg-[var(--card)]/80 backdrop-blur border-r border-[var(--border)]/60 pt-5 pb-4 overflow-y-auto">
-            <div className="flex items-center space-x-3 px-4">
-              <Logo size="md" />
-              <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
-            </div>
-            <nav className="mt-8 flex-1 px-2 space-y-1">
-              <AppNav />
-            </nav>
-          </div>
+  try {
+    return (
+      <div className="min-h-screen relative bg-[var(--bg)]">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,rgba(99,102,241,0.08),transparent),radial-gradient(800px_400px_at_100%_20%,rgba(147,51,234,0.08),transparent)]" />
+          <div className="absolute inset-0 [mask-image:radial-gradient(closest-side,white,transparent)] opacity-[0.06]" style={{backgroundImage:"linear-gradient(to_right,rgba(0,0,0,.6)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,.6)_1px,transparent_1px)",backgroundSize:"56px_56px"}} />
         </div>
+        <div className="relative flex">
+          {/* Sidebar */}
+          <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
+            <div className="flex flex-col flex-grow bg-[var(--card)]/80 backdrop-blur border-r border-[var(--border)]/60 pt-5 pb-4 overflow-y-auto">
+              <div className="flex items-center space-x-3 px-4">
+                <Logo size="md" />
+                <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
+              </div>
+              <nav className="mt-8 flex-1 px-2 space-y-1">
+                <AppNav />
+              </nav>
+            </div>
+          </div>
 
-        {/* Mobile sidebar */}
-        <div className="lg:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="fixed top-4 left-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                <Menu className="h-5 w-5 text-[var(--fg)]" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-r border-[var(--border)]/60">
-              <div className="flex flex-col h-full">
-                {/* Mobile Header */}
-                <div className="flex items-center justify-between p-6 border-b border-[var(--border)]/60">
+          {/* Mobile sidebar */}
+          <div className="lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="fixed top-4 left-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
+                  <Menu className="h-5 w-5 text-[var(--fg)]" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-r border-[var(--border)]/60">
+                <div className="flex flex-col h-full">
+                  {/* Mobile Header */}
+                  <div className="flex items-center justify-between p-6 border-b border-[var(--border)]/60">
+                    <div className="flex items-center space-x-3">
+                      <Logo size="lg" />
+                      <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
+                    </div>
+                  </div>
+                  
+                  {/* Mobile Navigation */}
+                  <nav className="flex-1 p-6 space-y-2">
+                    <MobileAppNav />
+                  </nav>
+                  
+                  {/* Mobile Footer */}
+                  <div className="p-6 border-t border-[var(--border)]/60">
+                    <MobileUserMenu />
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* Main content */}
+          <div className="lg:pl-64 flex flex-col flex-1">
+            {/* Topbar */}
+            <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center border-b border-[var(--border)]/60 bg-[var(--bg)]/70 backdrop-blur-xl px-4 shadow-sm sm:px-6 lg:px-8">
+              {/* Mobile: Centered logo, Desktop: Left-aligned with right user menu */}
+              <div className="flex w-full items-center justify-between">
+                {/* Mobile Logo - Perfectly centered */}
+                <div className="flex lg:hidden flex-1 justify-center">
                   <div className="flex items-center space-x-3">
-                    <Logo size="lg" />
-                    <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
+                    <Logo size="md" />
+                    <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
                   </div>
                 </div>
                 
-                {/* Mobile Navigation */}
-                <nav className="flex-1 p-6 space-y-2">
-                  <MobileAppNav />
-                </nav>
-                
-                {/* Mobile Footer */}
-                <div className="p-6 border-t border-[var(--border)]/60">
-                  <MobileUserMenu />
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-
-        {/* Main content */}
-        <div className="lg:pl-64 flex flex-col flex-1">
-          {/* Topbar */}
-          <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center border-b border-[var(--border)]/60 bg-[var(--bg)]/70 backdrop-blur-xl px-4 shadow-sm sm:px-6 lg:px-8">
-            {/* Mobile: Centered logo, Desktop: Left-aligned with right user menu */}
-            <div className="flex w-full items-center justify-between">
-              {/* Mobile Logo - Perfectly centered */}
-              <div className="flex lg:hidden flex-1 justify-center">
-                <div className="flex items-center space-x-3">
+                {/* Desktop Logo - Left aligned */}
+                <div className="hidden lg:flex items-center space-x-3">
                   <Logo size="md" />
-                  <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
+                  <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
+                </div>
+                
+                {/* User Menu - Right aligned */}
+                <div className="flex items-center gap-x-4 lg:gap-x-6">
+                  <UserMenu />
                 </div>
               </div>
-              
-              {/* Desktop Logo - Left aligned */}
-              <div className="hidden lg:flex items-center space-x-3">
-                <Logo size="md" />
-                <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
-              </div>
-              
-              {/* User Menu - Right aligned */}
-              <div className="flex items-center gap-x-4 lg:gap-x-6">
-                <UserMenu />
-              </div>
             </div>
-          </div>
 
-          {/* Page content */}
-          <main className="flex-1">
-            <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-              {children}
-            </div>
-          </main>
+            {/* Page content */}
+            <main className="flex-1">
+              <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+                {children}
+              </div>
+            </main>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error("Critical error in ProtectedShell:", error);
+    // Fallback to a minimal layout if the main component fails
+    return (
+      <div className="min-h-screen bg-[var(--bg)] p-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center py-8">
+            <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
+            <p className="text-muted-foreground mb-4">Please refresh the page</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Refresh
+            </button>
+          </div>
+          {children}
+        </div>
+      </div>
+    );
+  }
 }
 
 function AppNav() {
@@ -131,7 +153,13 @@ function AppNav() {
 
   // Add admin link if user is admin and no database errors
   if (isAdmin && !loading && !error) {
-            navigation.push({ name: "Admin", href: "/admin/metrics", icon: Shield });
+    navigation.push({ name: "Admin", href: "/admin/metrics", icon: Shield });
+  }
+
+  // Safety check: ensure navigation is always an array
+  if (!Array.isArray(navigation)) {
+    console.warn("Navigation is not an array:", navigation);
+    return null;
   }
 
   return (
@@ -176,6 +204,12 @@ function MobileAppNav() {
   // Add admin link if user is admin and no database errors
   if (isAdmin && !loading && !error) {
     navigation.push({ name: "Admin", href: "/admin/metrics", icon: Shield, description: "System administration" });
+  }
+
+  // Safety check: ensure navigation is always an array
+  if (!Array.isArray(navigation)) {
+    console.warn("Mobile navigation is not an array:", navigation);
+    return null;
   }
 
   return (
