@@ -81,16 +81,24 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
         {/* Main content */}
         <div className="lg:pl-64 flex flex-col flex-1">
           {/* Topbar */}
-          <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-[var(--border)]/60 bg-[var(--bg)]/70 backdrop-blur-xl px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-            <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              {/* Logo for mobile dashboard header - centered */}
-              <div className="flex items-center justify-center flex-1 lg:hidden">
+          <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center border-b border-[var(--border)]/60 bg-[var(--bg)]/70 backdrop-blur-xl px-4 shadow-sm sm:px-6 lg:px-8">
+            {/* Mobile: Centered logo, Desktop: Left-aligned with right user menu */}
+            <div className="flex w-full items-center justify-between">
+              {/* Mobile Logo - Perfectly centered */}
+              <div className="flex lg:hidden flex-1 justify-center">
                 <div className="flex items-center space-x-3">
                   <Logo size="md" />
                   <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
                 </div>
               </div>
-              <div className="hidden lg:flex lg:flex-1"></div>
+              
+              {/* Desktop Logo - Left aligned */}
+              <div className="hidden lg:flex items-center space-x-3">
+                <Logo size="md" />
+                <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
+              </div>
+              
+              {/* User Menu - Right aligned */}
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <UserMenu />
               </div>
