@@ -13,14 +13,28 @@ export async function GET(req: NextRequest) {
   try {
     const { user, supabase, res } = await requireUser(req);
     if (!user) return res!;
+    
+    console.log("GET /api/goals - user:", user.id);
+    
     const { data, error } = await supabase
       .from("learning_goals")
       .select("id, topic, focus, plan_version, created_at")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      
+    if (error) {
+      console.error("GET /api/goals - Supabase error:", error);
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    
+    console.log("GET /api/goals - data:", data);
+    console.log("GET /api/goals - data type:", typeof data);
+    console.log("GET /api/goals - is array:", Array.isArray(data));
+    
     return NextResponse.json(data ?? []);
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : "Unknown error in GET /api/goals";
+    console.error("GET /api/goals - caught error:", e);
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

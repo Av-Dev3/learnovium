@@ -16,10 +16,25 @@ export default function Plans() {
   const [sortBy, setSortBy] = useState<"recent">("recent");
   const [filteredGoals, setFilteredGoals] = useState<typeof goals>([]);
 
+  // Debug logging
+  useEffect(() => {
+    console.log("Plans component - goals:", goals);
+    console.log("Plans component - isLoading:", isLoading);
+    console.log("Plans component - isError:", isError);
+    console.log("Plans component - error:", error);
+  }, [goals, isLoading, isError, error]);
+
   const filterAndSortGoals = useCallback(() => {
+    // Ensure goals is an array before processing
+    if (!Array.isArray(goals)) {
+      console.warn("Goals is not an array:", goals);
+      setFilteredGoals([]);
+      return;
+    }
+
     const filtered = goals.filter(goal =>
       goal.topic.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      goal.focus.toLowerCase().includes(searchTerm.toLowerCase())
+      (goal.focus && goal.focus.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     switch (sortBy) {
@@ -82,6 +97,18 @@ export default function Plans() {
       <ErrorState
         title="Plans Error"
         message={error?.message || "Failed to load learning plans"}
+        onRetry={() => window.location.reload()}
+      />
+    );
+  }
+
+  // Ensure goals is an array before proceeding
+  if (!Array.isArray(goals)) {
+    console.error("Goals is not an array:", goals);
+    return (
+      <ErrorState
+        title="Data Error"
+        message="Invalid data format received from server"
         onRetry={() => window.location.reload()}
       />
     );
