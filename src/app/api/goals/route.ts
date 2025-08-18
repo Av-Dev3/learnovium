@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/api/utils";
 import { canonicalizeSignature } from "@/lib/goalSignature";
 import { buildPlannerPromptWithRAG } from "@/lib/prompts";
 import { generatePlan } from "@/lib/aiCall";
+import { checkCapsOrThrow, logCall } from "@/lib/aiGuard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -78,14 +79,34 @@ export async function POST(req: NextRequest) {
     }
 
     // 2) No template yet: generate with RAG + GPT
+    const t0 = Date.now();
+    
+    // Check budget caps before AI call
+    await checkCapsOrThrow(user.id, "planner");
+    
     const msgs = await buildPlannerPromptWithRAG(
       `Create a learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}`,
       topic,
       6
     );
     
-    const { data: planResult } = await generatePlan(msgs, user.id);
+    const { data: planResult, usage } = await generatePlan(msgs, user.id);
     const plan_json = planResult;
+    
+    // Log the AI call
+    const latency_ms = Date.now() - t0;
+    const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0;
+    
+    await logCall({
+      user_id: user.id,
+      endpoint: "planner",
+      model: "gpt-5-mini", // or get from usage
+      prompt_tokens: usage?.prompt_tokens || 0,
+      completion_tokens: usage?.completion_tokens || 0,
+      success: true,
+      latency_ms,
+      cost_usd,
+    });
 
     // Save template for future reuse
     let newTemplate: { id: string } | null = null;

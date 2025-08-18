@@ -3,6 +3,7 @@ import { requireUser, dayIndexFrom } from "@/lib/api/utils";
 import { retrieveContextDB } from "@/rag/retriever_db";
 import { generateLesson } from "@/lib/aiCall";
 import { buildLessonPrompt } from "@/lib/prompts";
+import { checkCapsOrThrow, logCall } from "@/lib/aiGuard";
 
 const LIMIT_WINDOW_MS = 60_000;
 declare global {
@@ -76,10 +77,31 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     if (existing?.lesson_json) return NextResponse.json({ reused: false, lesson: existing.lesson_json });
 
     // Generate new lesson with RAG
+    const t0 = Date.now();
+    
+    // Check budget caps before AI call
+    await checkCapsOrThrow(user.id, "lesson");
+    
     const query = `${goal.topic} — ${goal.focus || "beginner daily lesson"}`;
     const { context } = await retrieveContextDB(query, 5, goal.topic, req);
     const msgs = buildLessonPrompt(`Today's focus: ${goal.focus || goal.topic}. Use this context:\n${context}`);
-    const { data: lesson } = await generateLesson(msgs, user.id, goalId);
+    const { data: lesson, usage } = await generateLesson(msgs, user.id, goalId);
+    
+    // Log the AI call
+    const latency_ms = Date.now() - t0;
+    const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0;
+    
+    await logCall({
+      user_id: user.id,
+      goal_id: goalId,
+      endpoint: "lesson",
+      model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+      prompt_tokens: usage?.prompt_tokens || 0,
+      completion_tokens: usage?.completion_tokens || 0,
+      success: true,
+      latency_ms,
+      cost_usd,
+    });
 
     // Write cache if template exists
     if (goal.plan_template_id) {

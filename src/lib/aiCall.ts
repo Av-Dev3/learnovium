@@ -1,7 +1,7 @@
 import { openai, modelFor } from "@/lib/openai";
 import { z } from "zod";
 import { track } from "@/lib/obs";
-import { checkCapsOrThrow, logCall, createCallLog, withRetries } from "@/lib/aiGuard";
+import { withRetries } from "@/lib/aiGuard";
 
 type Msg = { role: "system" | "user" | "assistant"; content: string };
 // const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -42,16 +42,12 @@ async function chatJSON<T>(opts: {
 }> {
   const model = modelFor(opts.task);
   
-  // Check budget caps and endpoint status if userId provided
-  if (opts.userId) {
-    await checkCapsOrThrow(opts.userId, opts.task);
-  }
+  // Budget enforcement is now handled in the API routes
+  // No need to check caps here
 
   // Use withRetries for better error handling
   return withRetries(async () => {
     const t0 = Date.now();
-    // let success = false;
-    let errorText: string | undefined;
     let usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number } | undefined;
 
     try {
@@ -68,23 +64,6 @@ async function chatJSON<T>(opts: {
         total_tokens: res.usage.total_tokens ?? 0
       } : undefined;
 
-      // success = true;
-
-      // Log successful call
-      if (opts.userId) {
-        const callLog = createCallLog(
-          opts.userId,
-          opts.task,
-          model,
-          usage,
-          dt,
-          true,
-          undefined,
-          opts.goalId
-        );
-        await logCall(callLog);
-      }
-
       // Keep existing tracking
       track({ task: opts.task, model, ms: dt, usage });
 
@@ -92,24 +71,6 @@ async function chatJSON<T>(opts: {
       console.log(`[AI:${opts.task}] model=${model} tokens=${usage?.total_tokens ?? "?"} cost=${costStr}`);
       return { data, usage };
     } catch (err) {
-      const dt = Date.now() - t0;
-      errorText = err instanceof Error ? err.message : "Unknown error";
-      
-      // Log failed call
-      if (opts.userId) {
-        const callLog = createCallLog(
-          opts.userId,
-          opts.task,
-          model,
-          usage,
-          dt,
-          false,
-          errorText,
-          opts.goalId
-        );
-        await logCall(callLog);
-      }
-
       throw err;
     }
   }, { retries: 3, baseMs: 400 });
