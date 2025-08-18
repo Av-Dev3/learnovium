@@ -18,13 +18,33 @@ import {
   Shield
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import { useIsAdmin } from "@/app/lib/hooks";
 import { Logo } from "@/components/Logo";
 
 export function ProtectedShell({ children }: { children: React.ReactNode }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Don't render anything until we're mounted on the client
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen relative bg-[var(--bg)]">
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand"></div>
+            <p className="mt-4 text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen relative bg-[var(--bg)]">
       <div className="pointer-events-none absolute inset-0">
@@ -242,10 +262,10 @@ function MobileAppNav() {
 
 function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
   const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
+  const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const router = useRouter();
 
-  // Get user data on component mount
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -263,9 +283,10 @@ function UserMenu() {
     try {
       const supabase = supabaseBrowser();
       await supabase.auth.signOut();
-      window.location.href = "/auth";
+      router.push("/auth");
     } catch (error) {
       console.error("Error signing out:", error);
+      router.push("/auth");
     }
   };
 
@@ -315,9 +336,9 @@ function UserMenu() {
             className="fixed z-[110] w-80 sm:w-80"
             style={{
               top: buttonRect.bottom + 8,
-              left: window.innerWidth < 640 ? 8 : Math.max(8, Math.min(buttonRect.right - 320, window.innerWidth - 328)),
-              right: window.innerWidth < 640 ? 8 : 'auto',
-              width: window.innerWidth < 640 ? 'auto' : '320px',
+              left: typeof window !== 'undefined' && window.innerWidth < 640 ? 8 : Math.max(8, Math.min(buttonRect.right - 320, (typeof window !== 'undefined' ? window.innerWidth : 1024) - 328)),
+              right: typeof window !== 'undefined' && window.innerWidth < 640 ? 8 : 'auto',
+              width: typeof window !== 'undefined' && window.innerWidth < 640 ? 'auto' : '320px',
             }}
           >
             <div className="relative">
@@ -439,8 +460,8 @@ function UserMenu() {
 
 function MobileUserMenu() {
   const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const router = useRouter();
 
-  // Get user data on component mount
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -458,9 +479,10 @@ function MobileUserMenu() {
     try {
       const supabase = supabaseBrowser();
       await supabase.auth.signOut();
-      window.location.href = "/auth";
+      router.push("/auth");
     } catch (error) {
       console.error("Error signing out:", error);
+      router.push("/auth");
     }
   };
 

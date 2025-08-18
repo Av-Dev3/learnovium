@@ -13,6 +13,13 @@ export function useIsAdmin() {
   useEffect(() => {
     // Prevent multiple checks
     if (hasChecked.current) return;
+    
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') {
+      setLoading(false);
+      return;
+    }
+    
     hasChecked.current = true;
 
     const checkAdminStatus = async () => {
