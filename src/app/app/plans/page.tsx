@@ -22,9 +22,14 @@ export default function Plans() {
     console.log("Plans component - isLoading:", isLoading);
     console.log("Plans component - isError:", isError);
     console.log("Plans component - error:", error);
-  }, [goals, isLoading, isError, error]);
+    console.log("Plans component - filteredGoals:", filteredGoals);
+    console.log("Plans component - searchTerm:", searchTerm);
+    console.log("Plans component - sortBy:", sortBy);
+  }, [goals, isLoading, isError, error, filteredGoals, searchTerm, sortBy]);
 
   const filterAndSortGoals = useCallback(() => {
+    console.log("filterAndSortGoals called with goals:", goals);
+    
     // Ensure goals is an array before processing
     if (!Array.isArray(goals)) {
       console.warn("Goals is not an array:", goals);
@@ -32,10 +37,16 @@ export default function Plans() {
       return;
     }
 
-    const filtered = goals.filter(goal =>
-      goal.topic.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (goal.focus && goal.focus.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    console.log("Goals is array, length:", goals.length);
+
+    const filtered = goals.filter(goal => {
+      console.log("Filtering goal:", goal);
+      const topicMatch = goal.topic.toLowerCase().includes(searchTerm.toLowerCase());
+      const focusMatch = goal.focus && goal.focus.toLowerCase().includes(searchTerm.toLowerCase());
+      return topicMatch || focusMatch;
+    });
+
+    console.log("Filtered goals:", filtered);
 
     switch (sortBy) {
       case "recent":
@@ -44,6 +55,7 @@ export default function Plans() {
         break;
     }
 
+    console.log("Final filtered goals:", filtered);
     setFilteredGoals(filtered);
   }, [goals, searchTerm, sortBy]);
 
@@ -71,21 +83,35 @@ export default function Plans() {
 
         {/* Goals Grid skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <LoadingState key={i} type="goal" />
-          ))}
+          {(() => {
+            try {
+              return Array.from({ length: 6 }).map((_, i) => (
+                <LoadingState key={i} type="goal" />
+              ));
+            } catch (error) {
+              console.error("Error in skeleton map:", error);
+              return <div>Loading...</div>;
+            }
+          })()}
         </div>
 
         {/* Summary Stats skeleton */}
         <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-muted/50 rounded-lg">
           <div className="h-5 w-20 sm:h-6 sm:w-24 bg-muted rounded animate-pulse mb-3 sm:mb-4" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i}>
-                <div className="h-6 w-12 sm:h-8 sm:w-16 bg-muted rounded animate-pulse mx-auto mb-1" />
-                <div className="h-3 w-16 sm:h-4 sm:w-20 bg-muted rounded animate-pulse mx-auto" />
-              </div>
-            ))}
+            {(() => {
+              try {
+                return Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i}>
+                    <div className="h-6 w-12 sm:h-8 sm:w-16 bg-muted rounded animate-pulse mx-auto mb-1" />
+                    <div className="h-3 w-16 sm:h-4 sm:w-20 bg-muted rounded animate-pulse mx-auto" />
+                  </div>
+                ));
+              } catch (error) {
+                console.error("Error in stats skeleton map:", error);
+                return <div>Loading...</div>;
+              }
+            })()}
           </div>
         </div>
       </div>
@@ -163,38 +189,57 @@ export default function Plans() {
       {/* Goals Grid */}
       <section aria-labelledby="goals-heading">
         <h2 id="goals-heading" className="sr-only">Learning Goals</h2>
-        {filteredGoals.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {filteredGoals.map((goal) => (
-              <GoalCard key={goal.id} goal={goal} />
-            ))}
-          </div>
-        ) : goals.length > 0 ? (
-          <div className="text-center py-8 sm:py-12">
-            <Search className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" aria-hidden="true" />
-            <h3 className="text-lg font-semibold mb-2">No goals match your search</h3>
-            <p className="text-muted-foreground mb-4 text-sm sm:text-base">
-              Try adjusting your search terms or filters
-            </p>
-            <Button variant="outline" onClick={() => setSearchTerm("")}>
-              Clear Search
-            </Button>
-          </div>
-        ) : (
-          <div className="text-center py-8 sm:py-12">
-            <Target className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" aria-hidden="true" />
-            <h3 className="text-lg font-semibold mb-2">No learning goals yet</h3>
-            <p className="text-muted-foreground mb-4 text-sm sm:text-base">
-              Create your first learning goal to get started
-            </p>
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
-              <Link href="/app/create">
-                <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
-                Create Your First Goal
-              </Link>
-            </Button>
-          </div>
-        )}
+        {(() => {
+          try {
+            if (filteredGoals.length > 0) {
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {filteredGoals.map((goal) => (
+                    <GoalCard key={goal.id} goal={goal} />
+                  ))}
+                </div>
+              );
+            } else if (goals.length > 0) {
+              return (
+                <div className="text-center py-8 sm:py-12">
+                  <Search className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" aria-hidden="true" />
+                  <h3 className="text-lg font-semibold mb-2">No goals match your search</h3>
+                  <p className="text-muted-foreground mb-4 text-sm sm:text-base">
+                    Try adjusting your search terms or filters
+                  </p>
+                  <Button variant="outline" onClick={() => setSearchTerm("")}>
+                    Clear Search
+                  </Button>
+                </div>
+              );
+            } else {
+              return (
+                <div className="text-center py-8 sm:py-12">
+                  <Target className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" aria-hidden="true" />
+                  <h3 className="text-lg font-semibold mb-2">No learning goals yet</h3>
+                  <p className="text-muted-foreground mb-4 text-sm sm:text-base">
+                    Create your first learning goal to get started
+                  </p>
+                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
+                    <Link href="/app/create">
+                      <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
+                      Create Your First Goal
+                    </Link>
+                  </Button>
+                </div>
+              );
+            }
+          } catch (error) {
+            console.error("Error in goals rendering:", error);
+            return (
+              <div className="text-center py-8">
+                <h3 className="text-lg font-semibold mb-2">Error rendering goals</h3>
+                <p className="text-muted-foreground mb-4">Please refresh the page</p>
+                <Button onClick={() => window.location.reload()}>Refresh</Button>
+              </div>
+            );
+          }
+        })()}
       </section>
 
       {/* Summary Stats */}
