@@ -3,7 +3,6 @@ import { requireUser } from "@/lib/api/utils";
 import { canonicalizeSignature } from "@/lib/goalSignature";
 import { buildPlannerPromptWithRAG } from "@/lib/prompts";
 import { generatePlan } from "@/lib/aiCall";
-import { checkCapsOrThrow, logCall } from "@/lib/aiGuard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -88,7 +87,7 @@ export async function POST(req: NextRequest) {
     });
 
     // 1) Try to reuse existing plan_template
-    let template = null;
+    const template = null;
     try {
       // Temporarily disabled while setting up database migrations
       /*
@@ -217,7 +216,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Save template for future reuse
-    let newTemplate: { id: string } | null = null;
+    const newTemplate: { id: string } | null = null;
     try {
       // Temporarily disabled while setting up database migrations
       /*

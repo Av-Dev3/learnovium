@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { GoalCard } from "@/components/ui/goal-card";
 import { LoadingState } from "@/components/ui/loading-state";
 import { ErrorState } from "@/components/ui/error-state";
@@ -21,7 +21,7 @@ export default function Plans() {
       return [];
     }
 
-    let filtered = goals.filter(goal => {
+    const filtered = goals.filter(goal => {
       if (!goal || typeof goal !== 'object') {
         return false;
       }
