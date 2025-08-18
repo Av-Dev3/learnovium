@@ -83,12 +83,14 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
           {/* Topbar */}
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-[var(--border)]/60 bg-[var(--bg)]/70 backdrop-blur-xl px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              {/* Logo for mobile dashboard header */}
-              <div className="flex items-center lg:hidden">
-                <Logo size="md" />
-                <span className="ml-3 font-heading text-lg font-semibold gradient-text lg:hidden">Learnovium</span>
+              {/* Logo for mobile dashboard header - centered */}
+              <div className="flex items-center justify-center flex-1 lg:hidden">
+                <div className="flex items-center space-x-3">
+                  <Logo size="md" />
+                  <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
+                </div>
               </div>
-              <div className="flex flex-1"></div>
+              <div className="hidden lg:flex lg:flex-1"></div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <UserMenu />
               </div>

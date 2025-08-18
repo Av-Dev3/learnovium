@@ -13,11 +13,14 @@ export function Logo({ size = 'md', className = '' }: LogoProps) {
   return (
     <div className={`${sizeClasses[size]} ${className}`}>
       <img
-        src="/logo.png"
+        src="/icon.png"
         alt="Learnovium"
         className="w-full h-full rounded-xl shadow-lg object-cover"
         onError={(e) => {
-          console.error('Logo image failed to load:', e);
+          console.error('Icon image failed to load, trying logo.png fallback:', e);
+          // Try fallback to logo.png
+          const target = e.target as HTMLImageElement;
+          target.src = '/logo.png';
         }}
         onLoad={() => {
           console.log('Logo image loaded successfully');
