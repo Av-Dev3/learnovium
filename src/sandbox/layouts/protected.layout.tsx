@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/Logo";
 
 export default function ProtectedLayout({
   children,
@@ -32,7 +33,7 @@ export default function ProtectedLayout({
         <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
           <div className="flex flex-col flex-grow bg-[var(--card)]/80 backdrop-blur border-r border-[var(--border)]/60 pt-5 pb-4 overflow-y-auto">
             <div className="flex items-center space-x-3">
-              <img src="/logo.png" alt="Learnovium" className="w-8 h-8 rounded-xl" />
+              <Logo size="md" />
               <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
             </div>
             <nav className="mt-8 flex-1 px-2 space-y-1">
@@ -53,8 +54,8 @@ export default function ProtectedLayout({
               <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <img src="/logo.png" alt="Learnovium" className="w-8 h-8 rounded-xl" />
-                    <h1 className="font-heading text-xl font-semibold">Learnovium</h1>
+                    <Logo size="md" />
+                    <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
                   </div>
                 </div>
                 <nav className="flex-1 px-2 space-y-1">

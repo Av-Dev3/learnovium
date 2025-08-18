@@ -3,6 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/Logo";
 
 export default async function AdminLayout({
   children,
@@ -27,7 +28,7 @@ export default async function AdminLayout({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-3">
-                <img src="/logo.png" alt="Learnovium" className="w-8 h-8 rounded-xl" />
+                <Logo size="md" />
                 <h1 className="text-xl font-semibold">Admin Panel</h1>
               </div>
               <nav className="flex items-center space-x-4">

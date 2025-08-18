@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Menu, ChevronRight, LogOut } from "lucide-react";
 import AdminLinkClient from "./AdminLinkClient";
+import { Logo } from "./Logo";
 
 interface AppHeaderProps {
   isLoggedIn?: boolean;
@@ -59,8 +60,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
           {/* Left: Logo */}
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
-              <img src="/logo.png" alt="Learnovium" className="w-10 h-10 rounded-2xl shadow-lg" />
-              <span className="font-heading text-xl font-bold text-[var(--fg)]">Learnovium</span>
+              <Logo size="lg" />
+              <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
             </Link>
           </div>
 
@@ -233,8 +234,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 {/* Mobile Header - Simplified */}
                 <div className="flex items-center p-6 border-b border-[var(--border)]/60 flex-shrink-0">
                   <div className="flex items-center space-x-3">
-                    <img src="/logo.png" alt="Learnovium" className="w-10 h-10 rounded-2xl shadow-lg" />
-                    <span className="font-heading text-xl font-bold text-[var(--fg)]">Learnovium</span>
+                    <Logo size="lg" />
+                    <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
                   </div>
                 </div>
                 
