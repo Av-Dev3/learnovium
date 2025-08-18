@@ -149,14 +149,15 @@ export default function CreateGoal() {
           <div className="space-y-4 sm:space-y-6">
             <div className="space-y-2">
               <Label htmlFor="duration">Plan duration</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2" id="duration">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2" id="duration" role="radiogroup" aria-label="Plan duration">
                 {[7,30,60,90].map((d) => (
                   <button
                     key={d}
-                    type="button"
+                    type="button" role="radio" tabIndex={0}
                     onClick={() => setForm(prev => ({ ...prev, durationDays: d as 7|30|60|90 }))}
-                    className={`px-3 py-2 border rounded-md text-sm ${form.durationDays === d ? "border-primary bg-primary/5" : "border-muted hover:border-muted-foreground/50"}`}
-                    aria-pressed={form.durationDays === d}
+                    className={`px-3 py-2 rounded-md text-sm transition-all duration-200 focus:outline-none focus:ring-2 ${form.durationDays === d ? "bg-primary text-primary-foreground shadow ring-primary" : "bg-background border border-muted text-muted-foreground hover:border-primary/50 hover:bg-muted/50"}`}
+                    aria-checked={form.durationDays === d} aria-pressed={form.durationDays === d}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setForm(prev => ({ ...prev, durationDays: d as 7|30|60|90 })); } }}
                   >
                     {d} days
                   </button>
