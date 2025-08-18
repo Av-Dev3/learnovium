@@ -30,14 +30,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://learnovium.com"),
+  metadataBase: new URL(process.env.NODE_ENV === 'production' ? "https://learnovium.com" : "http://localhost:3000"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://learnovium.com",
+    url: process.env.NODE_ENV === 'production' ? "https://learnovium.com" : "http://localhost:3000",
     title: "Learnovium - AI-Powered Learning Paths",
     description: "Master any skill with AI-powered learning paths. Get personalized daily lessons, track your progress, and achieve your learning goals.",
     siteName: "Learnovium",

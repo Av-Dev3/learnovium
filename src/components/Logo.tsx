@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
@@ -12,17 +10,12 @@ export function Logo({ size = 'md', className = '' }: LogoProps) {
     lg: 'w-10 h-10'
   };
 
-  console.log('Logo component rendered with size:', size);
-
   return (
-    <div className={`${sizeClasses[size]} ${className} bg-red-500 border-2 border-blue-500`}>
-      <Image
+    <div className={`${sizeClasses[size]} ${className}`}>
+      <img
         src="/logo.png"
         alt="Learnovium"
-        width={size === 'sm' ? 24 : size === 'md' ? 32 : 40}
-        height={size === 'sm' ? 24 : size === 'md' ? 32 : 40}
-        className="rounded-xl shadow-lg"
-        priority
+        className="w-full h-full rounded-xl shadow-lg object-cover"
         onError={(e) => {
           console.error('Logo image failed to load:', e);
         }}
