@@ -86,6 +86,7 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
               {/* Logo for mobile dashboard header */}
               <div className="flex items-center lg:hidden">
                 <Logo size="md" />
+                <span className="ml-3 font-heading text-lg font-semibold gradient-text lg:hidden">Learnovium</span>
               </div>
               <div className="flex flex-1"></div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">

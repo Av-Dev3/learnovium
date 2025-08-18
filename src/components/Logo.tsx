@@ -12,15 +12,23 @@ export function Logo({ size = 'md', className = '' }: LogoProps) {
     lg: 'w-10 h-10'
   };
 
+  console.log('Logo component rendered with size:', size);
+
   return (
-    <div className={`${sizeClasses[size]} ${className}`}>
+    <div className={`${sizeClasses[size]} ${className} bg-red-500 border-2 border-blue-500`}>
       <Image
-        src="/icon.png"
+        src="/logo.png"
         alt="Learnovium"
         width={size === 'sm' ? 24 : size === 'md' ? 32 : 40}
         height={size === 'sm' ? 24 : size === 'md' ? 32 : 40}
         className="rounded-xl shadow-lg"
         priority
+        onError={(e) => {
+          console.error('Logo image failed to load:', e);
+        }}
+        onLoad={() => {
+          console.log('Logo image loaded successfully');
+        }}
       />
     </div>
   );
