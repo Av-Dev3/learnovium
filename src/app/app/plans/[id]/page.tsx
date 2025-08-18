@@ -159,7 +159,7 @@ export default async function PlanDetailPage({
 
           <div className="pt-4 border-t">
             <Button asChild className="w-full">
-              <Link href="/app">
+              <Link href={`/app/plans/${goal.id}/lesson`}>
                 <BookOpen className="h-4 w-4 mr-2" />
                 Open Today&apos;s Lesson
               </Link>
