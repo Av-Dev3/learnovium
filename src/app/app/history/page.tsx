@@ -47,17 +47,25 @@ export default function History() {
   const { progress, isLoading: progressLoading, isError: progressError, error: progressErrorMsg } = useProgress();
   const { goals, isLoading: goalsLoading } = useGoals();
   
+  // Ensure arrays are always defined
+  const safeProgress = useMemo(() => Array.isArray(progress) ? progress : [], [progress]);
+  const safeGoals = useMemo(() => Array.isArray(goals) ? goals : [], [goals]);
+  
   const isLoading = progressLoading || goalsLoading;
   const isError = progressError;
 
   // Group progress by goal
   const progressByGoal = useMemo(() => {
-    if (!progress || !goals) return {};
+    if (!safeProgress || !safeGoals) return {};
     
     const grouped: Record<string, GoalProgress> = {};
     
-    goals.forEach(goal => {
-      const goalProgress = progress.filter(p => p.goal_id === goal.id);
+    safeGoals.forEach(goal => {
+      if (!goal || typeof goal !== 'object' || !goal.id) {
+        console.warn("Invalid goal in history:", goal);
+        return;
+      }
+      const goalProgress = safeProgress.filter(p => p && p.goal_id === goal.id);
       if (goalProgress.length > 0) {
         grouped[goal.id] = {
           goal,
@@ -73,22 +81,22 @@ export default function History() {
     });
     
     return grouped;
-  }, [progress, goals]);
+  }, [safeProgress, safeGoals]);
 
   // Calculate overall stats
   const overallStats = useMemo(() => {
-    if (!progress || !goals) return null;
+    if (!safeProgress || !safeGoals) return null;
     
-    const totalProgress = progress.length;
-    const completedProgress = progress.filter(p => p.completed_at).length;
-    const averageScore = progress.reduce((sum, p) => sum + p.score, 0) / totalProgress;
+    const totalProgress = safeProgress.length;
+    const completedProgress = safeProgress.filter(p => p && p.completed_at).length;
+    const averageScore = safeProgress.reduce((sum, p) => sum + (p ? p.score : 0), 0) / totalProgress;
     
     return {
       totalProgress,
       completedProgress,
       averageScore: Math.round(averageScore)
     };
-  }, [progress, goals]);
+  }, [safeProgress, safeGoals]);
 
   if (isLoading) {
     return (
@@ -134,7 +142,7 @@ export default function History() {
     );
   }
 
-  const hasProgress = Object.keys(progressByGoal).length > 0;
+  const hasProgress = overallStats && overallStats.totalProgress > 0;
 
   return (
     <div className="space-y-4 sm:space-y-6">

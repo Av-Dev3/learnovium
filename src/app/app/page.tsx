@@ -16,6 +16,9 @@ import { useLesson } from "@/app/lib/hooks";
 export default function Dashboard() {
   const { goals, isLoading, isError, error } = useGoals();
 
+  // Ensure goals is always an array
+  const safeGoals = Array.isArray(goals) ? goals : [];
+
   if (isLoading) {
     return (
       <div className="space-y-4 sm:space-y-6">
@@ -43,8 +46,8 @@ export default function Dashboard() {
         {/* Today's Lessons skeleton */}
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="h-5 w-36 sm:h-6 sm:w-48 bg-muted rounded animate-pulse" />
-            <div className="h-3 w-24 sm:h-4 sm:w-32 bg-muted rounded animate-pulse" />
+            <div className="h-5 w-36 sm:h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-3 w-24 sm:h-4 w-32 bg-muted rounded animate-pulse" />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {Array.from({ length: 2 }).map((_, i) => (
@@ -56,8 +59,8 @@ export default function Dashboard() {
         {/* Active Goals skeleton */}
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="h-5 w-36 sm:h-6 sm:w-48 bg-muted rounded animate-pulse" />
-            <div className="h-8 w-20 sm:h-10 sm:w-24 bg-muted rounded animate-pulse" />
+            <div className="h-5 w-36 sm:h-6 w-48 bg-muted rounded animate-pulse" />
+            <div className="h-8 w-20 sm:h-10 w-24 bg-muted rounded animate-pulse" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -99,111 +102,71 @@ export default function Dashboard() {
               <p className="text-blue-100 text-lg mb-4">
                 Continue your learning journey with today&apos;s lessons
               </p>
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-sm text-blue-100">Online</span>
-                </div>
-                <div className="text-sm text-blue-100">
-                  {new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </div>
-              </div>
             </div>
-            
-            {/* Decorative Elements */}
-            <div className="hidden md:block">
-              <div className="relative">
-                <div className="w-32 h-32 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <TrendingUp className="h-10 w-10 text-white" />
-                  </div>
-                </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-400 rounded-full border-2 border-white animate-bounce" />
+            <div className="hidden sm:flex items-center space-x-6">
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl font-bold">{totalStreak}</div>
+                <div className="text-blue-200 text-sm">Day Streak</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl font-bold">{completedToday}</div>
+                <div className="text-blue-200 text-sm">Completed Today</div>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Modern Stats Cards */}
-      <section aria-labelledby="stats-heading">
-        <h2 id="stats-heading" className="sr-only">Learning Statistics</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {/* Active Goals Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 border border-blue-200/50 dark:border-blue-800/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent" />
-            <div className="relative">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-blue-500/10 backdrop-blur-sm">
-                  <Target className="h-6 w-6 text-blue-600" aria-hidden="true" />
-                </div>
-                <div className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
-                  GOALS
-                </div>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{goals.length}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Active Goals</p>
-              </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+        <div className="bg-card border rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <Target className="h-3 w-3 sm:h-4 sm:w-4 text-white" aria-hidden="true" />
             </div>
-          </div>
-          
-          {/* Streak Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-green-100 dark:from-emerald-900/20 dark:to-green-900/20 p-6 border border-emerald-200/50 dark:border-emerald-800/50 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent" />
-            <div className="relative">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-emerald-500/10 backdrop-blur-sm">
-                  <TrendingUp className="h-6 w-6 text-emerald-600" aria-hidden="true" />
-                </div>
-                <div className="text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
-                  STREAK
-                </div>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{totalStreak}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Day Streak</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Completed Today Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-50 to-amber-100 dark:from-orange-900/20 dark:to-amber-900/20 p-6 border border-orange-200/50 dark:border-orange-800/50 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent" />
-            <div className="relative">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-orange-500/10 backdrop-blur-sm">
-                  <Calendar className="h-6 w-6 text-orange-600" aria-hidden="true" />
-                </div>
-                <div className="text-xs font-medium text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
-                  TODAY
-                </div>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{completedToday}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Completed Today</p>
-              </div>
+            <div>
+              <div className="text-lg sm:text-xl font-bold text-foreground">{safeGoals.length}</div>
+              <div className="text-sm text-muted-foreground">Active Goals</div>
             </div>
           </div>
         </div>
-      </section>
+        
+        <div className="bg-card border rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-white" aria-hidden="true" />
+            </div>
+            <div>
+              <div className="text-lg sm:text-xl font-bold text-foreground">{totalStreak}</div>
+              <div className="text-sm text-muted-foreground">Day Streak</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-card border rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-white" aria-hidden="true" />
+            </div>
+            <div>
+              <div className="text-lg sm:text-xl font-bold text-foreground">{completedToday}</div>
+              <div className="text-sm text-muted-foreground">Completed Today</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Today's Lessons */}
-      {goals.length > 0 && (
+      {safeGoals.length > 0 && (
         <section aria-labelledby="lessons-heading" className="relative">
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <div className="flex items-center justify-between">
               <div>
                 <h2 id="lessons-heading" className="text-2xl sm:text-3xl font-bold mb-2 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent">
                   Today&apos;s Lessons ✨
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {goals.length} lesson{goals.length !== 1 ? 's' : ''} ready for you
+                  {safeGoals.length} lesson{safeGoals.length !== 1 ? 's' : ''} ready for you
                 </p>
               </div>
               <div className="hidden sm:flex items-center space-x-2">
@@ -213,9 +176,13 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {goals.map((goal) => (
-              <GoalLessonCard key={goal.id} goal={goal} />
-            ))}
+            {safeGoals.map((goal) => {
+              if (!goal || typeof goal !== 'object' || !goal.id) {
+                console.warn("Invalid goal in dashboard:", goal);
+                return null;
+              }
+              return <GoalLessonCard key={goal.id} goal={goal} />;
+            }).filter(Boolean)}
           </div>
         </section>
       )}
@@ -241,11 +208,15 @@ export default function Dashboard() {
           </div>
         </div>
         
-        {goals.length > 0 ? (
+        {safeGoals.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {goals.map((goal) => (
-              <GoalCard key={goal.id} goal={goal} />
-            ))}
+            {safeGoals.map((goal) => {
+              if (!goal || typeof goal !== 'object' || !goal.id) {
+                console.warn("Invalid goal in dashboard:", goal);
+                return null;
+              }
+              return <GoalCard key={goal.id} goal={goal} />;
+            }).filter(Boolean)}
           </div>
         ) : (
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 border border-gray-200 dark:border-gray-700 p-12 text-center">
