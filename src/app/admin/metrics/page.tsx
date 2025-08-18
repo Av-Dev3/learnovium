@@ -3,6 +3,8 @@ import { createServerClient } from "@supabase/ssr";
 import { redirect } from "next/navigation";
 import MetricsClient from "@/components/admin/MetricsClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const cookieStore = await cookies();
   const supabase = createServerClient(

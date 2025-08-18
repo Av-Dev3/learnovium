@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   const cookieStore = await cookies();
   const supabase = createServerClient(
