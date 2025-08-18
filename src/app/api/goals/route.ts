@@ -68,25 +68,30 @@ export async function POST(req: NextRequest) {
     if (!topic) return NextResponse.json({ error: "Missing topic" }, { status: 400 });
 
     // Pull profile to build signature
+    // Temporarily disabled while setting up database migrations
+    /*
     const { data: profile } = await supabase
       .from("profiles")
       .select("level, minutes_per_day, tz")
       .eq("id", user.id)
       .maybeSingle();
+    */
 
     const signature = await canonicalizeSignature({
       topic,
       focus,
-      level: level || profile?.level || null,
-      minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
+      level: level || 'beginner', // Temporarily use default values
+      minutes_per_day: minutes_per_day || 30, // Temporarily use default values
       duration_days: duration_days || null,
-      locale: profile?.tz || "en",
+      locale: 'en', // Temporarily use default values
       version: 1,
     });
 
     // 1) Try to reuse existing plan_template
     let template = null;
     try {
+      // Temporarily disabled while setting up database migrations
+      /*
       const { data: templateData } = await supabase
         .from("plan_template")
         .select("id, plan_json")
@@ -95,6 +100,7 @@ export async function POST(req: NextRequest) {
         .maybeSingle();
       template = templateData;
       console.log("POST /api/goals - template found:", Boolean(template));
+      */
     } catch (error) {
       // plan_template table might not exist yet, continue with plan generation
       console.log("plan_template table not available, generating new plan");
@@ -102,17 +108,19 @@ export async function POST(req: NextRequest) {
 
     if (template) {
       // Link a new user-owned goal to the template instantly (no AI call)
-              const { data: goal, error } = await supabase
-          .from("learning_goals")
-          .insert({
-            user_id: user.id,
-            topic,
-            focus,
-            level,
-            plan_version: 1,
-            plan_json: template.plan_json,
-            ...(template.id && { plan_template_id: template.id }),
-          })
+      // Temporarily disabled while setting up database migrations
+      /*
+      const { data: goal, error } = await supabase
+        .from("learning_goals")
+        .insert({
+          user_id: user.id,
+          topic,
+          focus,
+          level,
+          plan_version: 1,
+          plan_json: template.plan_json,
+          ...(template.id && { plan_template_id: template.id }),
+        })
         .select("id, topic, focus, plan_version, created_at")
         .single();
 
@@ -122,13 +130,15 @@ export async function POST(req: NextRequest) {
       }
       console.log("POST /api/goals - goal created (reuse):", goal?.id);
       return NextResponse.json({ ...goal, reused: true }, { status: 201 });
+      */
     }
 
     // 2) No template yet: generate with RAG + GPT
     const t0 = Date.now();
     
     // Check budget caps before AI call
-    await checkCapsOrThrow(user.id, "planner");
+    // Temporarily disabled while setting up database migrations
+    // await checkCapsOrThrow(user.id, "planner");
     
     let plan_json;
     try {
@@ -148,6 +158,8 @@ export async function POST(req: NextRequest) {
       const latency_ms = Date.now() - t0;
       const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0;
       
+      // Temporarily disabled while setting up database migrations
+      /*
       await logCall({
         user_id: user.id,
         endpoint: "planner",
@@ -158,6 +170,7 @@ export async function POST(req: NextRequest) {
         latency_ms,
         cost_usd,
       });
+      */
     } catch (error) {
       console.error("AI plan generation failed:", error);
       
@@ -187,6 +200,8 @@ export async function POST(req: NextRequest) {
       
       // Log the fallback
       const latency_ms = Date.now() - t0;
+      // Temporarily disabled while setting up database migrations
+      /*
       await logCall({
         user_id: user.id,
         endpoint: "planner",
@@ -198,24 +213,27 @@ export async function POST(req: NextRequest) {
         cost_usd: 0,
         error_text: error instanceof Error ? error.message : "Unknown error"
       });
+      */
     }
 
     // Save template for future reuse
     let newTemplate: { id: string } | null = null;
     try {
-              const { data: templateData, error: tErr } = await supabase
-          .from("plan_template")
-          .insert({
-            signature,
-            topic,
-            focus,
-            level: level || profile?.level || null,
-            minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
-            duration_days: duration_days || null,
-            plan_json,
-            locale: profile?.tz || "en",
-            version: 1,
-          })
+      // Temporarily disabled while setting up database migrations
+      /*
+      const { data: templateData, error: tErr } = await supabase
+        .from("plan_template")
+        .insert({
+          signature,
+          topic,
+          focus,
+          level: level || profile?.level || null,
+          minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
+          duration_days: duration_days || null,
+          plan_json,
+          locale: profile?.tz || "en",
+          version: 1,
+        })
         .select("id")
         .single();
 
@@ -232,6 +250,7 @@ export async function POST(req: NextRequest) {
       } else {
         newTemplate = templateData;
       }
+      */
     } catch (error) {
       // plan_template table might not exist yet, continue without caching
       console.log("plan_template table not available, skipping template caching");
@@ -246,7 +265,8 @@ export async function POST(req: NextRequest) {
         level,
         plan_version: 1,
         plan_json,
-        ...(newTemplate?.id && { plan_template_id: newTemplate.id }),
+        // Temporarily disabled while setting up database migrations
+        // ...(newTemplate?.id && { plan_template_id: newTemplate.id }),
       })
       .select("id, topic, focus, plan_version, created_at")
       .single();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { GoalCard } from "@/components/ui/goal-card";
 import { LoadingState } from "@/components/ui/loading-state";
 import { ErrorState } from "@/components/ui/error-state";
@@ -14,75 +14,33 @@ export default function Plans() {
   const { goals, isLoading, isError, error } = useGoals();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"recent">("recent");
-  const [filteredGoals, setFilteredGoals] = useState<typeof goals>([]);
 
-  // Debug logging
-  useEffect(() => {
-    console.log("Plans component - goals:", goals);
-    console.log("Plans component - isLoading:", isLoading);
-    console.log("Plans component - isError:", isError);
-    console.log("Plans component - error:", error);
-    console.log("Plans component - filteredGoals:", filteredGoals);
-    console.log("Plans component - searchTerm:", searchTerm);
-    console.log("Plans component - sortBy:", sortBy);
-    
-    // Log the raw goals data for debugging
-    if (goals) {
-      console.log("Plans component - goals type:", typeof goals);
-      console.log("Plans component - goals isArray:", Array.isArray(goals));
-      console.log("Plans component - goals length:", goals.length);
-      console.log("Plans component - goals keys:", goals.length > 0 ? Object.keys(goals[0]) : "no goals");
+  // Use useMemo to compute filtered goals instead of useState + useEffect
+  const filteredGoals = useMemo(() => {
+    if (!goals || !Array.isArray(goals)) {
+      return [];
     }
-  }, [goals, isLoading, isError, error, filteredGoals, searchTerm, sortBy]);
 
-  const filterAndSortGoals = useCallback(() => {
-    try {
-      console.log("filterAndSortGoals called with goals:", goals);
-      
-      // Ensure goals is an array before processing
-      if (!goals || !Array.isArray(goals)) {
-        console.warn("Goals is not an array:", goals);
-        setFilteredGoals([]);
-        return;
+    let filtered = goals.filter(goal => {
+      if (!goal || typeof goal !== 'object') {
+        return false;
       }
+      const topicMatch = goal.topic?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
+      const focusMatch = goal.focus && goal.focus.toLowerCase().includes(searchTerm.toLowerCase());
+      return topicMatch || focusMatch;
+    });
 
-      console.log("Goals is array, length:", goals.length);
-
-      const filtered = goals.filter(goal => {
-        if (!goal || typeof goal !== 'object') {
-          console.warn("Invalid goal object:", goal);
-          return false;
-        }
-        console.log("Filtering goal:", goal);
-        const topicMatch = goal.topic?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
-        const focusMatch = goal.focus && goal.focus.toLowerCase().includes(searchTerm.toLowerCase());
-        return topicMatch || focusMatch;
+    // Sort by recent
+    if (sortBy === "recent") {
+      filtered.sort((a, b) => {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return dateB - dateA;
       });
-
-      console.log("Filtered goals:", filtered);
-
-      switch (sortBy) {
-        case "recent":
-        default:
-          filtered.sort((a, b) => {
-            const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
-            const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
-            return dateB - dateA;
-          });
-          break;
-      }
-
-      console.log("Final filtered goals:", filtered);
-      setFilteredGoals(filtered);
-    } catch (error) {
-      console.error("Error in filterAndSortGoals:", error);
-      setFilteredGoals([]);
     }
-  }, [goals, searchTerm, sortBy]);
 
-  useEffect(() => {
-    filterAndSortGoals();
-  }, [filterAndSortGoals]);
+    return filtered;
+  }, [goals, searchTerm, sortBy]);
 
   // Early return if still loading or if goals is not properly initialized
   if (isLoading || !goals || !Array.isArray(goals)) {
@@ -200,26 +158,11 @@ export default function Plans() {
           <h2 id="goals-heading" className="sr-only">Learning Goals</h2>
           {(() => {
             try {
-              // Additional safety check for filteredGoals
-              if (!filteredGoals || !Array.isArray(filteredGoals)) {
-                console.warn("filteredGoals is not an array:", filteredGoals);
-                setFilteredGoals([]);
-                return (
-                  <div className="text-center py-8">
-                    <h3 className="text-lg font-semibold mb-2">Data Error</h3>
-                    <p className="text-muted-foreground mb-4">Please refresh the page</p>
-                    <Button onClick={() => window.location.reload()}>Refresh</Button>
-                  </div>
-                );
-              }
-
               if (filteredGoals.length > 0) {
                 return (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {filteredGoals.map((goal) => {
-                      // Additional safety check for each goal
                       if (!goal || typeof goal !== 'object' || !goal.id) {
-                        console.warn("Invalid goal in filteredGoals:", goal);
                         return null;
                       }
                       return <GoalCard key={goal.id} goal={goal} />;
