@@ -6,6 +6,9 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MarkCompleteButton } from "@/app/components/MarkCompleteButton";
+import { headers } from "next/headers";
+
+export const dynamic = "force-dynamic";
 
 interface PlanModule {
   day: number;
@@ -37,7 +40,19 @@ interface GoalResponse {
 
 async function getGoalPlan(goalId: string): Promise<GoalResponse> {
   try {
-    const response = await fetch(`/api/goals/${goalId}`, { cache: 'no-store' });
+    const hdrs = await headers();
+    const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host");
+    const protocol = hdrs.get("x-forwarded-proto") ?? "http";
+    const url = `${protocol}://${host}/api/goals/${goalId}`;
+
+    const response = await fetch(url, {
+      cache: 'no-store',
+      headers: {
+        // Forward cookies so the API route can authenticate the user
+        cookie: hdrs.get('cookie') ?? '',
+        accept: 'application/json',
+      },
+    });
 
     if (!response.ok) {
       if (response.status === 404) {
