@@ -63,7 +63,8 @@ export default function Plans() {
     filterAndSortGoals();
   }, [filterAndSortGoals]);
 
-  if (isLoading) {
+  // Early return if still loading or if goals is not an array
+  if (isLoading || !Array.isArray(goals)) {
     return (
       <div className="space-y-4 sm:space-y-6">
         {/* Header skeleton */}
