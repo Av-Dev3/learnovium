@@ -23,6 +23,18 @@ interface GoalCardProps {
 export function GoalCard({ goal }: GoalCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   
+  // Safety check for goal data
+  if (!goal || typeof goal !== 'object' || !goal.id || !goal.topic || !goal.focus || !goal.created_at) {
+    console.warn("Invalid goal data passed to GoalCard:", goal);
+    return (
+      <Card className="w-full border-red-200 bg-red-50">
+        <CardContent className="p-4 text-center text-red-600">
+          <p>Invalid goal data</p>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   const daysSinceCreation = Math.ceil(
     (Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)
   );

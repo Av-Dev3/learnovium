@@ -10,11 +10,17 @@ export function useGoals() {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
       dedupingInterval: 60000, // 1 minute
+      fallbackData: [], // Provide empty array as fallback
+      errorRetryCount: 3,
+      errorRetryInterval: 1000,
     }
   );
 
+  // Ensure we always return a safe value
+  const safeGoals = Array.isArray(data) ? data : [];
+
   return {
-    goals: data || [],
+    goals: safeGoals,
     isLoading,
     isError: error,
     error,

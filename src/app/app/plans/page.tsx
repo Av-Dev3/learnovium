@@ -32,7 +32,7 @@ export default function Plans() {
       console.log("filterAndSortGoals called with goals:", goals);
       
       // Ensure goals is an array before processing
-      if (!Array.isArray(goals)) {
+      if (!goals || !Array.isArray(goals)) {
         console.warn("Goals is not an array:", goals);
         setFilteredGoals([]);
         return;
@@ -41,8 +41,12 @@ export default function Plans() {
       console.log("Goals is array, length:", goals.length);
 
       const filtered = goals.filter(goal => {
+        if (!goal || typeof goal !== 'object') {
+          console.warn("Invalid goal object:", goal);
+          return false;
+        }
         console.log("Filtering goal:", goal);
-        const topicMatch = goal.topic.toLowerCase().includes(searchTerm.toLowerCase());
+        const topicMatch = goal.topic?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
         const focusMatch = goal.focus && goal.focus.toLowerCase().includes(searchTerm.toLowerCase());
         return topicMatch || focusMatch;
       });
@@ -52,7 +56,11 @@ export default function Plans() {
       switch (sortBy) {
         case "recent":
         default:
-          filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+          filtered.sort((a, b) => {
+            const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+            const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+            return dateB - dateA;
+          });
           break;
       }
 
@@ -68,8 +76,8 @@ export default function Plans() {
     filterAndSortGoals();
   }, [filterAndSortGoals]);
 
-  // Early return if still loading or if goals is not an array
-  if (isLoading || !Array.isArray(goals)) {
+  // Early return if still loading or if goals is not properly initialized
+  if (isLoading || !goals || !Array.isArray(goals)) {
     return (
       <div className="space-y-4 sm:space-y-6">
         {/* Header skeleton */}
@@ -89,35 +97,21 @@ export default function Plans() {
 
         {/* Goals Grid skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {(() => {
-            try {
-              return Array.from({ length: 6 }).map((_, i) => (
-                <LoadingState key={i} type="goal" />
-              ));
-            } catch (error) {
-              console.error("Error in skeleton map:", error);
-              return <div>Loading...</div>;
-            }
-          })()}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <LoadingState key={i} type="goal" />
+          ))}
         </div>
 
         {/* Summary Stats skeleton */}
         <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-muted/50 rounded-lg">
           <div className="h-5 w-20 sm:h-6 sm:w-24 bg-muted rounded animate-pulse mb-3 sm:mb-4" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
-            {(() => {
-              try {
-                return Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i}>
-                    <div className="h-6 w-12 sm:h-8 sm:w-16 bg-muted rounded animate-pulse mx-auto mb-1" />
-                    <div className="h-3 w-16 sm:h-4 sm:w-20 bg-muted rounded animate-pulse mx-auto" />
-                  </div>
-                ));
-              } catch (error) {
-                console.error("Error in stats skeleton map:", error);
-                return <div>Loading...</div>;
-              }
-            })()}
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i}>
+                <div className="h-6 w-12 sm:h-8 sm:w-16 bg-muted rounded animate-pulse mx-auto mb-1" />
+                <div className="h-3 w-16 sm:h-4 sm:w-20 bg-muted rounded animate-pulse mx-auto" />
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -198,15 +192,33 @@ export default function Plans() {
           <h2 id="goals-heading" className="sr-only">Learning Goals</h2>
           {(() => {
             try {
+              // Additional safety check for filteredGoals
+              if (!filteredGoals || !Array.isArray(filteredGoals)) {
+                console.warn("filteredGoals is not an array:", filteredGoals);
+                setFilteredGoals([]);
+                return (
+                  <div className="text-center py-8">
+                    <h3 className="text-lg font-semibold mb-2">Data Error</h3>
+                    <p className="text-muted-foreground mb-4">Please refresh the page</p>
+                    <Button onClick={() => window.location.reload()}>Refresh</Button>
+                  </div>
+                );
+              }
+
               if (filteredGoals.length > 0) {
                 return (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    {filteredGoals.map((goal) => (
-                      <GoalCard key={goal.id} goal={goal} />
-                    ))}
+                    {filteredGoals.map((goal) => {
+                      // Additional safety check for each goal
+                      if (!goal || typeof goal !== 'object' || !goal.id) {
+                        console.warn("Invalid goal in filteredGoals:", goal);
+                        return null;
+                      }
+                      return <GoalCard key={goal.id} goal={goal} />;
+                    }).filter(Boolean)}
                   </div>
                 );
-              } else if (goals.length > 0) {
+              } else if (goals && goals.length > 0) {
                 return (
                   <div className="text-center py-8 sm:py-12">
                     <Search className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" aria-hidden="true" />
@@ -252,7 +264,7 @@ export default function Plans() {
         {/* Summary Stats */}
         {(() => {
           try {
-            if (goals.length > 0) {
+            if (goals && goals.length > 0) {
               return (
                 <section aria-labelledby="stats-heading">
                   <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-muted/50 rounded-lg">
