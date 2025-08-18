@@ -243,31 +243,41 @@ export default function Plans() {
       </section>
 
       {/* Summary Stats */}
-      {goals.length > 0 && (
-        <section aria-labelledby="stats-heading">
-          <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-muted/50 rounded-lg">
-            <h2 id="stats-heading" className="text-lg font-semibold mb-3 sm:mb-4 text-center">Progress Overview</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-blue-600">{totalGoals}</div>
-                <div className="text-xs sm:text-sm text-muted-foreground">Total Goals</div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-green-600">{activeGoals}</div>
-                <div className="text-xs sm:text-sm text-muted-foreground">Active</div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-purple-600">{completedGoals}</div>
-                <div className="text-xs sm:text-sm text-muted-foreground">Completed</div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-orange-600">{totalStreak}</div>
-                <div className="text-xs sm:text-sm text-muted-foreground">Total Streak</div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      {(() => {
+        try {
+          if (goals.length > 0) {
+            return (
+              <section aria-labelledby="stats-heading">
+                <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-muted/50 rounded-lg">
+                  <h2 id="stats-heading" className="text-lg font-semibold mb-3 sm:mb-4 text-center">Progress Overview</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
+                    <div>
+                      <div className="text-xl sm:text-2xl font-bold text-blue-600">{totalGoals}</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">Total Goals</div>
+                    </div>
+                    <div>
+                      <div className="text-xl sm:text-2xl font-bold text-green-600">{activeGoals}</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">Active</div>
+                    </div>
+                    <div>
+                      <div className="text-xl sm:text-2xl font-bold text-purple-600">{completedGoals}</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">Completed</div>
+                    </div>
+                    <div>
+                      <div className="text-xl sm:text-2xl font-bold text-orange-600">{totalStreak}</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">Total Streak</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            );
+          }
+          return null;
+        } catch (error) {
+          console.error("Error in summary stats rendering:", error);
+          return null;
+        }
+      })()}
     </div>
   );
 }
