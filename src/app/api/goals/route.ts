@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("level, minutes_per_day, tz")
-      .eq("user_id", user.id)
+      .eq("id", user.id)
       .maybeSingle();
 
     const signature = await canonicalizeSignature({
@@ -52,12 +52,19 @@ export async function POST(req: NextRequest) {
     });
 
     // 1) Try to reuse existing plan_template
-    const { data: template } = await supabase
-      .from("plan_template")
-      .select("id, plan_json")
-      .eq("signature", signature)
-      .eq("version", 1)
-      .maybeSingle();
+    let template = null;
+    try {
+      const { data: templateData } = await supabase
+        .from("plan_template")
+        .select("id, plan_json")
+        .eq("signature", signature)
+        .eq("version", 1)
+        .maybeSingle();
+      template = templateData;
+    } catch (error) {
+      // plan_template table might not exist yet, continue with plan generation
+      console.log("plan_template table not available, generating new plan");
+    }
 
     if (template) {
       // Link a new user-owned goal to the template instantly (no AI call)
@@ -69,7 +76,7 @@ export async function POST(req: NextRequest) {
           focus,
           plan_version: 1,
           plan_json: template.plan_json,
-          plan_template_id: template.id,
+          ...(template.id && { plan_template_id: template.id }),
         })
         .select("id, topic, focus, plan_version, created_at")
         .single();
@@ -110,32 +117,37 @@ export async function POST(req: NextRequest) {
 
     // Save template for future reuse
     let newTemplate: { id: string } | null = null;
-    const { data: templateData, error: tErr } = await supabase
-      .from("plan_template")
-      .insert({
-        signature,
-        topic,
-        focus,
-        level: level || profile?.level || null,
-        minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
-        locale: profile?.tz || "en",
-        version: 1,
-        plan_json,
-      })
-      .select("id")
-      .single();
-
-    if (tErr) {
-      // If conflict due to race, re-query and continue
-      const { data: t2 } = await supabase
+    try {
+      const { data: templateData, error: tErr } = await supabase
         .from("plan_template")
+        .insert({
+          signature,
+          topic,
+          focus,
+          level: level || profile?.level || null,
+          minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
+          locale: profile?.tz || "en",
+          version: 1,
+          plan_json,
+        })
         .select("id")
-        .eq("signature", signature)
-        .eq("version", 1)
-        .maybeSingle();
-      if (t2) newTemplate = t2;
-    } else {
-      newTemplate = templateData;
+        .single();
+
+      if (tErr) {
+        // If conflict due to race, re-query and continue
+        const { data: t2 } = await supabase
+          .from("plan_template")
+          .select("id")
+          .eq("signature", signature)
+          .eq("version", 1)
+          .maybeSingle();
+        if (t2) newTemplate = t2;
+      } else {
+        newTemplate = templateData;
+      }
+    } catch (error) {
+      // plan_template table might not exist yet, continue without caching
+      console.log("plan_template table not available, skipping template caching");
     }
 
     const { data: goal, error: gErr } = await supabase
@@ -146,7 +158,7 @@ export async function POST(req: NextRequest) {
         focus,
         plan_version: 1,
         plan_json,
-        plan_template_id: newTemplate?.id ?? null,
+        ...(newTemplate?.id && { plan_template_id: newTemplate.id }),
       })
       .select("id, topic, focus, plan_version, created_at")
       .single();

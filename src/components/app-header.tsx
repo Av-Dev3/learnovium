@@ -59,9 +59,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
           {/* Left: Logo */}
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <span className="font-heading text-lg font-bold text-white">L</span>
-              </div>
+              <img src="/logo.png" alt="Learnovium" className="w-10 h-10 rounded-2xl shadow-lg" />
               <span className="font-heading text-xl font-bold text-[var(--fg)]">Learnovium</span>
             </Link>
           </div>
@@ -235,9 +233,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 {/* Mobile Header - Simplified */}
                 <div className="flex items-center p-6 border-b border-[var(--border)]/60 flex-shrink-0">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                      <span className="font-heading text-lg font-bold text-white">L</span>
-                    </div>
+                    <img src="/logo.png" alt="Learnovium" className="w-10 h-10 rounded-2xl shadow-lg" />
                     <span className="font-heading text-xl font-bold text-[var(--fg)]">Learnovium</span>
                   </div>
                 </div>

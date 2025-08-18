@@ -34,7 +34,8 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
         {/* Sidebar */}
         <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:z-50">
           <div className="flex flex-col flex-grow bg-[var(--card)]/80 backdrop-blur border-r border-[var(--border)]/60 pt-5 pb-4 overflow-y-auto">
-            <div className="flex items-center space-x-2 px-4">
+            <div className="flex items-center space-x-3 px-4">
+              <img src="/logo.png" alt="Learnovium" className="w-8 h-8 rounded-xl" />
               <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
             </div>
             <nav className="mt-8 flex-1 px-2 space-y-1">
@@ -57,9 +58,7 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
                 {/* Mobile Header */}
                 <div className="flex items-center justify-between p-6 border-b border-[var(--border)]/60">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">L</span>
-                    </div>
+                    <img src="/logo.png" alt="Learnovium" className="w-10 h-10 rounded-xl" />
                     <h1 className="font-heading text-xl font-semibold">Learnovium</h1>
                   </div>
                 </div>
@@ -83,6 +82,10 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
           {/* Topbar */}
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-[var(--border)]/60 bg-[var(--bg)]/70 backdrop-blur-xl px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+              {/* Logo for mobile dashboard header */}
+              <div className="flex items-center lg:hidden">
+                <img src="/logo.png" alt="Learnovium" className="w-8 h-8 rounded-xl" />
+              </div>
               <div className="flex flex-1"></div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <UserMenu />

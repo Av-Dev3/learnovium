@@ -26,7 +26,10 @@ export default async function AdminLayout({
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
-              <h1 className="text-xl font-semibold">Admin Panel</h1>
+              <div className="flex items-center space-x-3">
+                <img src="/logo.png" alt="Learnovium" className="w-8 h-8 rounded-xl" />
+                <h1 className="text-xl font-semibold">Admin Panel</h1>
+              </div>
               <nav className="flex items-center space-x-4">
                 <Link href="/app/admin">
                   <Button variant="ghost" size="sm">Overview</Button>
