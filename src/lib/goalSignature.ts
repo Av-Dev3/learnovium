@@ -5,6 +5,7 @@ export type GoalSignatureInput = {
   minutes_per_day?: number | null;  // profile.minutes_per_day
   locale?: string | null;           // profile.tz or 'en'
   version?: number | null;          // plan_version default 1
+  duration_days?: number | null;    // 7 | 30 | 60 | 90
 };
 
 export async function canonicalizeSignature(i: GoalSignatureInput): Promise<string> {
@@ -12,9 +13,10 @@ export async function canonicalizeSignature(i: GoalSignatureInput): Promise<stri
   const focus = (i.focus ?? "").trim().toLowerCase();
   const level = (i.level ?? "").trim().toLowerCase();
   const minutes = String(i.minutes_per_day ?? 0);
+  const duration = String(i.duration_days ?? 0);
   const locale = (i.locale ?? "en").trim().toLowerCase();
   const version = String(i.version ?? 1);
-  const raw = [topic, focus, level, minutes, locale, version].join("|");
+  const raw = [topic, focus, level, minutes, duration, locale, version].join("|");
   
   // Use Web Crypto API for browser compatibility, fallback to Node.js crypto
   if (typeof window !== 'undefined' && window.crypto) {

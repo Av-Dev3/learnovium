@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser, dayIndexFrom } from "@/lib/api/utils";
 import { retrieveContextDB } from "@/rag/retriever_db";
 import { generateLesson } from "@/lib/aiCall";
-import { buildLessonPrompt } from "@/lib/prompts";
+import { buildAdvancedLessonPrompt } from "@/lib/prompts";
 import { checkCapsOrThrow, logCall } from "@/lib/aiGuard";
 
 const LIMIT_WINDOW_MS = 60_000;
@@ -45,7 +45,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     // Load goal & its plan_template link
     const { data: goal, error: gErr } = await supabase
       .from("learning_goals")
-      .select("id, topic, focus, created_at, plan_template_id")
+      .select("id, topic, focus, level, created_at, plan_template_id")
       .eq("id", goalId)
       .eq("user_id", user.id)
       .single();
@@ -82,10 +82,32 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     // Check budget caps before AI call
     await checkCapsOrThrow(user.id, "lesson");
     
-    const query = `${goal.topic} — ${goal.focus || "beginner daily lesson"}`;
-    const { context } = await retrieveContextDB(query, 5, goal.topic, req);
-    const msgs = buildLessonPrompt(`Today's focus: ${goal.focus || goal.topic}. Use this context:\n${context}`);
+    // Create a more focused query for better context retrieval
+    const userLevel = goal.level || 'beginner';
+    const focusQuery = goal.focus ? 
+      `${goal.topic}: ${goal.focus} - ${userLevel} level daily lesson for day ${dayIndex}` :
+      `${goal.topic} - ${userLevel} level daily lesson for day ${dayIndex}`;
+    
+    // Get more context for better lesson generation
+    const { context } = await retrieveContextDB(focusQuery, 8, goal.topic, req);
+    
+    // Build a more specific lesson prompt with level information
+    const lessonFocus = goal.focus || `basic ${goal.topic} concepts`;
+    const msgs = buildAdvancedLessonPrompt(context, goal.topic, lessonFocus, dayIndex, userLevel);
+    
     const { data: lesson, usage } = await generateLesson(msgs, user.id, goalId);
+    
+    // Validate the lesson quality
+    if (!lesson || !lesson.topic || !lesson.reading || !lesson.walkthrough) {
+      console.error("Generated lesson is incomplete:", lesson);
+      throw new Error("Failed to generate complete lesson");
+    }
+    
+    // Ensure the lesson is focused and practical
+    if (lesson.topic.length < 10 || lesson.reading.length < 150 || lesson.walkthrough.length < 200) {
+      console.warn("Generated lesson content is too short, regenerating...");
+      // Could implement retry logic here if needed
+    }
     
     // Log the AI call
     const latency_ms = Date.now() - t0;

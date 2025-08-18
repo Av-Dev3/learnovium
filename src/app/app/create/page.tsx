@@ -24,6 +24,7 @@ export default function CreateGoal() {
     focus: "",
     level: "beginner" as "beginner" | "intermediate" | "advanced",
     minutesPerDay: 30,
+    durationDays: 7 as 7 | 30 | 60 | 90,
     channels: [] as string[]
   });
 
@@ -57,6 +58,7 @@ export default function CreateGoal() {
         focus: form.focus,
         level: form.level,
         minutes_per_day: form.minutesPerDay,
+        duration_days: form.durationDays,
         channels: form.channels
       });
 
@@ -145,6 +147,23 @@ export default function CreateGoal() {
         <section aria-labelledby="topic-heading">
           <h2 id="topic-heading" className="sr-only">Topic and Focus</h2>
           <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="duration">Plan duration</Label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2" id="duration">
+                {[7,30,60,90].map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setForm(prev => ({ ...prev, durationDays: d as 7|30|60|90 }))}
+                    className={`px-3 py-2 border rounded-md text-sm ${form.durationDays === d ? "border-primary bg-primary/5" : "border-muted hover:border-muted-foreground/50"}`}
+                    aria-pressed={form.durationDays === d}
+                  >
+                    {d} days
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground">Choose how long you want this plan to run.</p>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="topic">What do you want to learn?</Label>
               <Input
@@ -301,6 +320,10 @@ export default function CreateGoal() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">Daily Commitment</Label>
                   <p className="font-medium">{form.minutesPerDay} minutes</p>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-muted-foreground">Plan Duration</Label>
+                  <p className="font-medium">{form.durationDays} days</p>
                 </div>
               </div>
 

@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     if (!user) return res!;
     
     const body = await req.json().catch(() => ({}));
-    const { topic, focus, level, minutes_per_day } = body || {};
+    const { topic, focus, level, minutes_per_day, duration_days } = body || {};
     if (!topic) return NextResponse.json({ error: "Missing topic" }, { status: 400 });
 
     // Pull profile to build signature
@@ -61,6 +61,7 @@ export async function POST(req: NextRequest) {
       focus,
       level: level || profile?.level || null,
       minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
+      duration_days: duration_days || null,
       locale: profile?.tz || "en",
       version: 1,
     });
@@ -82,16 +83,17 @@ export async function POST(req: NextRequest) {
 
     if (template) {
       // Link a new user-owned goal to the template instantly (no AI call)
-      const { data: goal, error } = await supabase
-        .from("learning_goals")
-        .insert({
-          user_id: user.id,
-          topic,
-          focus,
-          plan_version: 1,
-          plan_json: template.plan_json,
-          ...(template.id && { plan_template_id: template.id }),
-        })
+              const { data: goal, error } = await supabase
+          .from("learning_goals")
+          .insert({
+            user_id: user.id,
+            topic,
+            focus,
+            level,
+            plan_version: 1,
+            plan_json: template.plan_json,
+            ...(template.id && { plan_template_id: template.id }),
+          })
         .select("id, topic, focus, plan_version, created_at")
         .single();
 
@@ -107,14 +109,17 @@ export async function POST(req: NextRequest) {
     
     let plan_json;
     try {
+      const duration = (duration_days as number) || 7;
+      const userLevel = level || 'beginner';
       const msgs = await buildPlannerPromptWithRAG(
-        `Create a learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}`,
+        `Create a ${duration}-day ${userLevel} level learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}. The plan must strictly have total_days=${duration} and be appropriate for ${userLevel} level students.`,
         topic,
-        6
+        8
       );
       
       const { data: planResult, usage } = await generatePlan(msgs, user.id);
-      plan_json = planResult;
+      // Force total_days to requested duration if model deviates
+      plan_json = { ...planResult, total_days: duration };
       
       // Log the AI call
       const latency_ms = Date.now() - t0;
@@ -134,20 +139,21 @@ export async function POST(req: NextRequest) {
       console.error("AI plan generation failed:", error);
       
       // Create a fallback plan structure
+      const userLevel = level || 'beginner';
       plan_json = {
         version: "1",
         topic: topic,
         total_days: 7,
         modules: [
           {
-            title: `${topic} Fundamentals`,
+            title: `${topic} ${userLevel.charAt(0).toUpperCase() + userLevel.slice(1)} Fundamentals`,
             days: [
               {
                 day_index: 1,
-                topic: `Introduction to ${topic}`,
-                objective: `Understand the basics of ${topic}`,
-                practice: `Review fundamental concepts`,
-                assessment: `Self-assessment quiz`,
+                topic: `${userLevel.charAt(0).toUpperCase() + userLevel.slice(1)} Introduction to ${topic}`,
+                objective: `Understand the ${userLevel} level basics of ${topic}`,
+                practice: `Review fundamental ${userLevel} level concepts`,
+                assessment: `${userLevel} level self-assessment quiz`,
                 est_minutes: Math.min(minutes_per_day || 30, 60)
               }
             ]
@@ -174,18 +180,19 @@ export async function POST(req: NextRequest) {
     // Save template for future reuse
     let newTemplate: { id: string } | null = null;
     try {
-      const { data: templateData, error: tErr } = await supabase
-        .from("plan_template")
-        .insert({
-          signature,
-          topic,
-          focus,
-          level: level || profile?.level || null,
-          minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
-          locale: profile?.tz || "en",
-          version: 1,
-          plan_json,
-        })
+              const { data: templateData, error: tErr } = await supabase
+          .from("plan_template")
+          .insert({
+            signature,
+            topic,
+            focus,
+            level: level || profile?.level || null,
+            minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
+            duration_days: duration_days || null,
+            plan_json,
+            locale: profile?.tz || "en",
+            version: 1,
+          })
         .select("id")
         .single();
 
@@ -212,6 +219,7 @@ export async function POST(req: NextRequest) {
         user_id: user.id,
         topic,
         focus,
+        level,
         plan_version: 1,
         plan_json,
         ...(newTemplate?.id && { plan_template_id: newTemplate.id }),

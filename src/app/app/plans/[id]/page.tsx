@@ -30,6 +30,7 @@ interface GoalResponse {
     id: string;
     topic: string;
     focus: string;
+    level?: string;
     created_at: string;
     plan_version: number;
   };
@@ -100,6 +101,14 @@ export default async function PlanDetailPage({
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">{goal.topic}</h1>
           <p className="text-lg text-muted-foreground">{goal.focus}</p>
+          {goal.level && (
+            <div className="flex items-center gap-2">
+              <Target className="h-4 w-4 text-blue-600" />
+              <Badge variant="secondary" className="capitalize">
+                {goal.level} Level
+              </Badge>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-6 mt-4 text-sm text-muted-foreground">

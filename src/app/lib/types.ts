@@ -55,6 +55,7 @@ export interface CreateGoalRequest {
   focus: string;
   level?: 'beginner' | 'intermediate' | 'advanced';
   minutes_per_day?: number;
+  duration_days?: 7 | 30 | 60 | 90;
   channels?: string[];
 }
 
