@@ -84,7 +84,7 @@ export interface PlanTemplate {
   locale: string;
   version: number;
   source: string;
-  plan_json: any;
+  plan_json: Record<string, unknown>;
   created_at: string;
 }
 
@@ -94,6 +94,6 @@ export interface LessonTemplate {
   day_index: number;
   version: number;
   model: string;
-  lesson_json: any;
+  lesson_json: Record<string, unknown>;
   created_at: string;
 } 

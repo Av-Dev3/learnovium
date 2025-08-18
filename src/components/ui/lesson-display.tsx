@@ -1,5 +1,4 @@
 import { CachedBadge } from "./cached-badge";
-import { Badge } from "./badge";
 import { Clock, BookOpen, Target, Brain } from "lucide-react";
 
 interface LessonDisplayProps {

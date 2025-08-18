@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    const signature = canonicalizeSignature({
+    const signature = await canonicalizeSignature({
       topic,
       focus,
       level: level || profile?.level || null,
@@ -88,7 +88,8 @@ export async function POST(req: NextRequest) {
     const plan_json = planResult;
 
     // Save template for future reuse
-    const { data: newTemplate, error: tErr } = await supabase
+    let newTemplate: { id: string } | null = null;
+    const { data: templateData, error: tErr } = await supabase
       .from("plan_template")
       .insert({
         signature,
@@ -111,7 +112,9 @@ export async function POST(req: NextRequest) {
         .eq("signature", signature)
         .eq("version", 1)
         .maybeSingle();
-      if (t2) newTemplate = t2 as any;
+      if (t2) newTemplate = t2;
+    } else {
+      newTemplate = templateData;
     }
 
     const { data: goal, error: gErr } = await supabase
@@ -122,7 +125,7 @@ export async function POST(req: NextRequest) {
         focus,
         plan_version: 1,
         plan_json,
-        plan_template_id: (newTemplate as any)?.id ?? null,
+        plan_template_id: newTemplate?.id ?? null,
       })
       .select("id, topic, focus, plan_version, created_at")
       .single();

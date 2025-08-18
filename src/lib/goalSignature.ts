@@ -7,7 +7,7 @@ export type GoalSignatureInput = {
   version?: number | null;          // plan_version default 1
 };
 
-export function canonicalizeSignature(i: GoalSignatureInput) {
+export async function canonicalizeSignature(i: GoalSignatureInput): Promise<string> {
   const topic = (i.topic ?? "").trim().toLowerCase();
   const focus = (i.focus ?? "").trim().toLowerCase();
   const level = (i.level ?? "").trim().toLowerCase();
@@ -15,7 +15,19 @@ export function canonicalizeSignature(i: GoalSignatureInput) {
   const locale = (i.locale ?? "en").trim().toLowerCase();
   const version = String(i.version ?? 1);
   const raw = [topic, focus, level, minutes, locale, version].join("|");
-  // Simple SHA-256 (node crypto)
-  const crypto = require("crypto");
-  return crypto.createHash("sha256").update(raw).digest("hex");
+  
+  // Use Web Crypto API for browser compatibility, fallback to Node.js crypto
+  if (typeof window !== 'undefined' && window.crypto) {
+    // Browser environment
+    const encoder = new TextEncoder();
+    const data = encoder.encode(raw);
+    const hash = await window.crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  } else {
+    // Node.js environment - use dynamic import
+    const crypto = await import('crypto');
+    return crypto.createHash("sha256").update(raw).digest("hex");
+  }
 }
