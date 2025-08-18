@@ -12,9 +12,20 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     const { user, supabase, res } = await requireUser(req);
-    if (!user) return res!;
+    if (!user) {
+      console.log("GET /api/goals - no user found");
+      return res!;
+    }
     
     console.log("GET /api/goals - user:", user.id);
+    console.log("GET /api/goals - user email:", user.email);
+    
+    // Check if the learning_goals table exists and has data
+    const { data: tableCheck, error: tableError } = await supabase
+      .from("learning_goals")
+      .select("count", { count: "exact", head: true });
+    
+    console.log("GET /api/goals - table check:", { tableCheck, tableError });
     
     const { data, error } = await supabase
       .from("learning_goals")
@@ -30,6 +41,7 @@ export async function GET(req: NextRequest) {
     console.log("GET /api/goals - data:", data);
     console.log("GET /api/goals - data type:", typeof data);
     console.log("GET /api/goals - is array:", Array.isArray(data));
+    console.log("GET /api/goals - data length:", data?.length);
     
     return NextResponse.json(data ?? []);
   } catch (e: unknown) {

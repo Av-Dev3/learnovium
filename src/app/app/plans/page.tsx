@@ -25,6 +25,14 @@ export default function Plans() {
     console.log("Plans component - filteredGoals:", filteredGoals);
     console.log("Plans component - searchTerm:", searchTerm);
     console.log("Plans component - sortBy:", sortBy);
+    
+    // Log the raw goals data for debugging
+    if (goals) {
+      console.log("Plans component - goals type:", typeof goals);
+      console.log("Plans component - goals isArray:", Array.isArray(goals));
+      console.log("Plans component - goals length:", goals.length);
+      console.log("Plans component - goals keys:", goals.length > 0 ? Object.keys(goals[0]) : "no goals");
+    }
   }, [goals, isLoading, isError, error, filteredGoals, searchTerm, sortBy]);
 
   const filterAndSortGoals = useCallback(() => {
