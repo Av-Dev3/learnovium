@@ -38,6 +38,9 @@ export default async function AdminLayout({
                   <Button variant="ghost" size="sm">Overview</Button>
                 </Link>
                 <Link href="/app/admin/metrics">
+                  <Button variant="ghost" size="sm">Metrics</Button>
+                </Link>
+                <Link href="/app/admin/ai-metrics">
                   <Button variant="ghost" size="sm">AI Metrics</Button>
                 </Link>
               </nav>

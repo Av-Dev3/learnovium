@@ -68,64 +68,27 @@ Focus on making this lesson immediately useful and actionable.` },
 
 export function buildAdvancedLessonPrompt(context: string, topic: string, focus: string, dayIndex: number, level: string = 'beginner') {
   return [
-    { role: "system" as const, content: `You are a master educator specializing in ${topic}. You create comprehensive, detailed daily lessons that are:
-
-CRITICAL REQUIREMENTS:
-1. ONE SKILL PER LESSON - Each lesson teaches exactly one specific, measurable skill
-2. IMMEDIATELY ACTIONABLE - Students can practice the skill right after reading
-3. CONTEXT-DRIVEN - Use the provided context as inspiration, but create ORIGINAL content
-4. PROGRESSIVE DIFFICULTY - Day ${dayIndex} should be appropriate for the student's level
-5. REAL-WORLD APPLICATION - Include practical examples and exercises
-6. LEVEL-APPROPRIATE - This lesson is for ${level} level students
-7. COPYRIGHT-SAFE - Never copy text directly from sources. Synthesize information and express it in your own words.
-8. JSON OUTPUT - You MUST return valid JSON that matches the LessonJSON schema EXACTLY.
-9. SUBSTANTIAL CONTENT - Each field should be filled with meaningful, educational content.
-
-LESSON STRUCTURE (EXACT SCHEMA REQUIREMENTS):
-- topic: String between 10-100 characters (specific skill being learned, e.g., "Playing the G Major Chord")
-- reading: String between 800-1500 characters (comprehensive lesson content with examples, terminology, step-by-step instructions, and why this skill matters)
-- walkthrough: String between 400-800 characters (additional practice tips and common mistakes to avoid)
-- quiz: Array of exactly 2 questions, each with:
-  * q: String between 20-200 characters (thoughtful application question, not memorization)
-  * a: Array of exactly 4 answer options, each 10-100 characters (realistic, educational choices)
-  * correct_index: Number 0-3 (index of correct answer)
-- exercise: String between 100-300 characters (specific, actionable practice session with clear instructions)
-- citations: Array of 1-3 citation strings (each at least 10 characters, reference the context sources)
-- est_minutes: Number between 5-20 (realistic completion time)
-
-IMPORTANT: Use the context as a knowledge base to understand the topic, then create completely original lesson content. Never copy phrases, sentences, or exact explanations from the sources.
-
-CRITICAL: You MUST respond with ONLY valid JSON that matches the LessonJSON schema EXACTLY. No markdown, no backticks, no commentary.` },
+    { role: "system" as const, content: `You are a senior teacher. Produce a single JSON object that VALIDATES against LessonJSON. No prose, no backticks.
+Constraints:
+- audience: ${level}, day ${dayIndex}
+- focus: ${focus}
+- originality: use context only as background, write in your own words
+- quality: substantial, practical, copyright-safe
+Schema fields & lengths:
+- topic: 10-100 chars
+- reading: 800-1500 chars (this is the main lesson content)
+- walkthrough: 400-800 chars (extra practice tips, mistakes to avoid)
+- quiz: 2 items; q: 20-200; a: 4 options 10-100; correct_index: 0-3
+- exercise: 100-300 chars
+- citations: 1-3 strings (>=10 chars)
+- est_minutes: 5-20
+Output: ONLY JSON strictly matching the schema.` },
     { role: "user" as const, content:
-`Learning Context:
-Topic: ${topic}
-Focus: ${focus}
-Level: ${level}
-Day: ${dayIndex}
-
-Context Information (use as knowledge base only):
+`Context (condensed, use only for grounding; do not copy):
 ${context}
 
-Create a comprehensive lesson for Day ${dayIndex} that teaches ONE specific skill related to ${focus}. 
-The lesson should be immediately actionable and build toward mastering ${topic}.
-This lesson is for ${level} level students, so adjust the complexity and depth accordingly.
-
-CRITICAL: Use the context to understand the topic, but create completely original lesson content. 
-Never copy text directly from sources. Synthesize the information and express everything in your own words.
-This ensures copyright safety and creates better, more engaging lessons.
-
-Remember: Focus on ONE skill, make it practical, and ensure students can practice it right away.
-
-IMPORTANT: Return ONLY valid JSON that matches the LessonJSON schema EXACTLY. No markdown, no backticks, no commentary.
-
-SCHEMA REQUIREMENTS:
-- topic: 10-100 characters (specific skill name)
-- reading: 800-1500 characters (main lesson content with examples and step-by-step instructions)
-- walkthrough: 400-800 characters (additional practice tips)
-- quiz: Exactly 2 questions with 4 answer options each
-- exercise: 100-300 characters (specific practice instructions)
-- citations: 1-3 citation strings
-- est_minutes: 5-20 minutes` },
+Task: Create LessonJSON for topic "${topic}" teaching ONE concrete skill aligned with "${focus}" for a ${level} learner on day ${dayIndex}. Emphasize clarity and actionability.
+Return ONLY the JSON object.` },
   ];
 }
 

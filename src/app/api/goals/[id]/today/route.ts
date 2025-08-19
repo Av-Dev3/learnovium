@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser, dayIndexFrom } from "@/lib/api/utils";
 // import { retrieveContextDB } from "@/rag/retriever_db"; // Temporarily disabled
+import { retrieveContext } from "@/rag/retriever"; // Fallback RAG retriever
 import { generateLesson } from "@/lib/aiCall";
 import { buildAdvancedLessonPrompt } from "@/lib/prompts";
-// import { checkCapsOrThrow, logCall } from "@/lib/aiGuard"; // Temporarily disabled
+import { logCall } from "@/lib/aiGuard"; // Re-enabled for AI call tracking
 
 const LIMIT_WINDOW_MS = 5_000; // Reduced from 60 seconds to 5 seconds for better UX
 declare global {
@@ -89,7 +90,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     // Generate new lesson with RAG
-    // const t0 = Date.now(); // Temporarily disabled
+    const t0 = Date.now();
     
     // Check budget caps before AI call
     // Temporarily disabled while setting up database migrations
@@ -98,16 +99,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     // Create a more focused query for better context retrieval
     const userLevel = goal.level || 'beginner';
     const focusQuery = goal.focus ? 
-      `${goal.topic}: ${goal.focus} - ${userLevel} level daily lesson for day ${dayIndex}` :
-      `${goal.topic} - ${userLevel} level daily lesson for day ${dayIndex}`;
-    
-    // Get more context for better context retrieval
-    // Temporarily disabled while setting up database migrations
-    // const { context } = await retrieveContextDB(focusQuery, 8, goal.topic, req);
-    
-    // Use fallback RAG for now
-    const { retrieveContext } = await import("@/rag/retriever");
-    const { context } = await retrieveContext(focusQuery, 8, goal.topic);
+      `${goal.topic} — focus: ${goal.focus} (level: ${userLevel}, day ${dayIndex})` :
+      `${goal.topic} fundamentals (level: ${userLevel}, day ${dayIndex})`;
+
+    // Retrieve a small, high-signal RAG context to minimize tokens
+    const { context } = await retrieveContext(focusQuery, 3, goal.topic);
     
     // Build a more specific lesson prompt with level information
     const lessonFocus = goal.focus || `basic ${goal.topic} concepts`;
@@ -129,23 +125,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       }
       
       // Log the AI call
-      // const latency_ms = Date.now() - t0; // Temporarily disabled
-      // const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0; // Temporarily disabled
+      const latency_ms = Date.now() - t0;
+      const cost_usd = _usage ? (_usage.prompt_tokens * 0.00015/1000 + _usage.completion_tokens * 0.0006/1000) : 0;
       
-      // Temporarily disabled while setting up database migrations
-      /*
-      await logCall({
-        user_id: user.id,
-        goal_id: goalId,
-        endpoint: "lesson",
-        model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
-        prompt_tokens: usage?.prompt_tokens || 0,
-        completion_tokens: usage?.completion_tokens || 0,
-        success: true,
-        latency_ms,
-        cost_usd,
-      });
-      */
+      // Log the AI call for tracking
+      try {
+        await logCall({
+          user_id: user.id,
+          goal_id: goalId,
+          endpoint: "lesson",
+          model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          prompt_tokens: _usage?.prompt_tokens || 0,
+          completion_tokens: _usage?.completion_tokens || 0,
+          success: true,
+          latency_ms,
+          cost_usd,
+        });
+        console.log("AI call logged successfully");
+      } catch (logError) {
+        console.error("Failed to log AI call:", logError);
+      }
       
       // Write cache if template exists
       if (goal.plan_template_id) {

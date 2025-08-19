@@ -81,6 +81,14 @@ export default async function DashboardPage() {
     .limit(6);
 
   console.log("Dashboard: Loaded goals:", goals?.length || 0);
+  if (goals && goals.length > 0) {
+    console.log("Dashboard: First goal sample:", {
+      id: goals[0].id,
+      topic: goals[0].topic,
+      created_at: goals[0].created_at,
+      has_plan_json: !!goals[0].plan_json
+    });
+  }
 
   const items: Array<{
     goalId: string;
@@ -120,19 +128,41 @@ export default async function DashboardPage() {
         lessonSnippet = snippet(l.reading || l.walkthrough || "");
         estMinutes = l.est_minutes;
         hasLesson = true;
-        console.log(`Dashboard: Using cached lesson for goal ${g.id}:`, { title: lessonTitle, snippet: lessonSnippet?.substring(0, 50) });
+        console.log(`Dashboard: Using cached lesson for goal ${g.id}:`, { 
+          title: lessonTitle, 
+          snippet: lessonSnippet?.substring(0, 50),
+          reading_length: l.reading?.length || 0,
+          walkthrough_length: l.walkthrough?.length || 0
+        });
       } else if (g.plan_json) {
         // Fall back to showing today&apos;s plan day title if no lesson cached yet
         try {
           const plan = g.plan_json as PlanData;
+          console.log(`Dashboard: Plan data for goal ${g.id}:`, {
+            has_modules: !!plan.modules,
+            modules_count: plan.modules?.length || 0
+          });
+          
           // Locate the plan day by dayIndex
           const flatDays = (plan.modules || []).flatMap((m: PlanModule) => m.days || []);
+          console.log(`Dashboard: Flat days for goal ${g.id}:`, {
+            total_days: flatDays.length,
+            day_indices: flatDays.map((d: PlanDay) => d.day_index)
+          });
+          
           const day = flatDays.find((d: PlanDay) => d.day_index === dayIndex);
           if (day) {
             lessonTitle = day.topic || `Day ${dayIndex}`;
             lessonSnippet = snippet(day.objective || day.practice || day.assessment || "");
             estMinutes = day.est_minutes;
-            console.log(`Dashboard: Using plan data for goal ${g.id}:`, { title: lessonTitle, snippet: lessonSnippet?.substring(0, 50) });
+            console.log(`Dashboard: Using plan data for goal ${g.id}:`, { 
+              title: lessonTitle, 
+              snippet: lessonSnippet?.substring(0, 50),
+              day_index: day.day_index,
+              has_objective: !!day.objective,
+              has_practice: !!day.practice,
+              has_assessment: !!day.assessment
+            });
           } else {
             // No plan day found for today, show a message to generate lesson
             lessonTitle = `Day ${dayIndex}`;
@@ -153,6 +183,16 @@ export default async function DashboardPage() {
         estMinutes = undefined;
         console.log(`Dashboard: No plan data for goal ${g.id}`);
       }
+
+      console.log(`Dashboard: Final item for goal ${g.id}:`, {
+        goalId: g.id,
+        goalTopic: g.topic,
+        dayIndex,
+        lessonTitle,
+        lessonSnippet: lessonSnippet?.substring(0, 50),
+        estMinutes,
+        hasLesson
+      });
 
       items.push({
         goalId: g.id,
