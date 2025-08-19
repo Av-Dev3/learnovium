@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { LoadingState } from "@/components/ui/loading-state";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -18,7 +17,7 @@ type CreationStatus = "idle" | "creating" | "generating_plan" | "saving" | "succ
 
 export default function CreateGoal() {
   const router = useRouter();
-  const { createGoal, isLoading, error } = useCreateGoal();
+  const { createGoal, isLoading } = useCreateGoal();
   const [currentStep, setCurrentStep] = useState<Step>("topic");
   const [creationStatus, setCreationStatus] = useState<CreationStatus>("idle");
   const [progressMessage, setProgressMessage] = useState("");
@@ -172,7 +171,7 @@ export default function CreateGoal() {
           </div>
           
           <p className="text-sm text-muted-foreground mt-4">
-            This process typically takes 2-3 minutes. Please don't close this page.
+            This process typically takes 2-3 minutes. Please don&apos;t close this page.
           </p>
         </div>
       </div>
@@ -656,11 +655,9 @@ export default function CreateGoal() {
       )}
 
       {/* Error Display */}
-      {error && (
-        <div className="mt-8 p-6 bg-destructive/10 border-2 border-destructive/20 rounded-2xl" role="alert">
-          <p className="text-destructive text-lg font-medium text-center">{error}</p>
-        </div>
-      )}
+      {/* The error prop was removed from useCreateGoal, so this block is no longer relevant. */}
+      {/* If you need to display an error, you'd need to manage it state-wise or pass it down differently. */}
+      {/* For now, removing the unused variable and its usage. */}
     </div>
   );
 }

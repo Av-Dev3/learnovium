@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/api/utils";
-import { canonicalizeSignature } from "@/lib/goalSignature";
+import { supabaseServer } from "@/lib/supabaseServer";
 import { buildPlannerPromptWithRAG } from "@/lib/prompts";
 import { generatePlan } from "@/lib/aiCall";
+// import { canonicalizeSignature } from "@/lib/goalSignature"; // Temporarily disabled
+// import { checkCapsOrThrow, logCall } from "@/lib/aiGuard"; // Temporarily disabled
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -75,19 +77,19 @@ export async function POST(req: NextRequest) {
       .eq("id", user.id)
       .maybeSingle();
     */
-
-    const signature = await canonicalizeSignature({
-      topic,
-      focus,
-      level: level || 'beginner', // Temporarily use default values
-      minutes_per_day: minutes_per_day || 30, // Temporarily use default values
-      duration_days: duration_days || null,
-      locale: 'en', // Temporarily use default values
-      version: 1,
-    });
+    
+    // const signature = await canonicalizeSignature({ // Temporarily disabled
+    //   topic,
+    //   focus,
+    //   level: level || 'beginner', // Temporarily use default values
+    //   minutes_per_day: minutes_per_day || 30, // Temporarily use default values
+    //   duration_days: duration_days || null,
+    //   locale: 'en', // Temporarily use default values
+    //   version: 1,
+    // });
 
     // 1) Try to reuse existing plan_template
-    const template = null;
+    // const template = null; // Temporarily disabled
     try {
       // Temporarily disabled while setting up database migrations
       /*
@@ -100,15 +102,16 @@ export async function POST(req: NextRequest) {
       template = templateData;
       console.log("POST /api/goals - template found:", Boolean(template));
       */
-    } catch (error) {
+    } catch {
       // plan_template table might not exist yet, continue with plan generation
       console.log("plan_template table not available, generating new plan");
     }
 
+    // Temporarily disabled template reuse
+    /*
     if (template) {
       // Link a new user-owned goal to the template instantly (no AI call)
       // Temporarily disabled while setting up database migrations
-      /*
       const { data: goal, error } = await supabase
         .from("learning_goals")
         .insert({
@@ -129,8 +132,8 @@ export async function POST(req: NextRequest) {
       }
       console.log("POST /api/goals - goal created (reuse):", goal?.id);
       return NextResponse.json({ ...goal, reused: true }, { status: 201 });
-      */
     }
+    */
 
     // 2) No template yet: generate with RAG + GPT
     const t0 = Date.now();
@@ -206,7 +209,7 @@ export async function POST(req: NextRequest) {
       console.log("POST /api/goals - Using fallback plan:", plan_json);
       
       // Log the fallback
-      const latency_ms = Date.now() - t0;
+      // const latency_ms = Date.now() - t0; // Temporarily disabled
       // Temporarily disabled while setting up database migrations
       /*
       await logCall({
@@ -224,7 +227,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Save template for future reuse
-    const newTemplate: { id: string } | null = null;
+    // const newTemplate: { id: string } | null = null; // Temporarily disabled
     try {
       // Temporarily disabled while setting up database migrations
       /*
@@ -258,7 +261,7 @@ export async function POST(req: NextRequest) {
         newTemplate = templateData;
       }
       */
-    } catch (error) {
+    } catch {
       // plan_template table might not exist yet, continue without caching
       console.log("plan_template table not available, skipping template caching");
     }
