@@ -80,6 +80,8 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false })
     .limit(6);
 
+  console.log("Dashboard: Loaded goals:", goals?.length || 0);
+
   const items: Array<{
     goalId: string;
     goalTopic: string;
@@ -94,6 +96,8 @@ export default async function DashboardPage() {
     // For each goal, try to read today&apos;s cached lesson from lesson_log only (no generation)
     for (const g of goals) {
       const dayIndex = computeDayIndex(g.created_at as string);
+      console.log(`Dashboard: Processing goal ${g.id}, day ${dayIndex}`);
+      
       let lessonTitle: string | undefined;
       let lessonSnippet: string | undefined;
       let estMinutes: number | undefined;
@@ -108,12 +112,15 @@ export default async function DashboardPage() {
         .eq("day_index", dayIndex)
         .maybeSingle();
 
+      console.log(`Dashboard: Lesson log lookup for goal ${g.id}, day ${dayIndex}:`, existing ? "found" : "not found");
+
       if (existing?.lesson_json) {
         const l = existing.lesson_json as LessonData;
         lessonTitle = l.topic;
         lessonSnippet = snippet(l.reading || l.walkthrough || "");
         estMinutes = l.est_minutes;
         hasLesson = true;
+        console.log(`Dashboard: Using cached lesson for goal ${g.id}:`, { title: lessonTitle, snippet: lessonSnippet?.substring(0, 50) });
       } else if (g.plan_json) {
         // Fall back to showing today&apos;s plan day title if no lesson cached yet
         try {
@@ -125,8 +132,11 @@ export default async function DashboardPage() {
             lessonTitle = day.topic || `Day ${dayIndex}`;
             lessonSnippet = snippet(day.objective || day.practice || day.assessment || "");
             estMinutes = day.est_minutes;
+            console.log(`Dashboard: Using plan data for goal ${g.id}:`, { title: lessonTitle, snippet: lessonSnippet?.substring(0, 50) });
           }
-        } catch {}
+        } catch (error) {
+          console.log(`Dashboard: Error processing plan_json for goal ${g.id}:`, error);
+        }
       }
 
       items.push({
@@ -140,6 +150,8 @@ export default async function DashboardPage() {
       });
     }
   }
+
+  console.log("Dashboard: Final items to display:", items.length);
 
   return (
     <Container>

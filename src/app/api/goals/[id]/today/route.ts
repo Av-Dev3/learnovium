@@ -150,6 +150,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       // Write cache if template exists
       if (goal.plan_template_id) {
         try {
+          console.log("Attempting to cache lesson template...");
           await supabase.from("lesson_template").insert({
             plan_template_id: goal.plan_template_id,
             day_index: dayIndex,
@@ -165,6 +166,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
       // Also write to user-specific lesson_log for backward compatibility
       try {
+        console.log("Attempting to save lesson log...");
         const { error: wErr } = await supabase.from("lesson_log").insert({
           user_id: user.id,
           goal_id: goalId,
@@ -182,6 +184,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       } catch (error) {
         console.log("Lesson log save failed:", error);
       }
+      
+      console.log("Returning lesson with data:", {
+        topic: lesson.topic,
+        reading_length: lesson.reading?.length || 0,
+        walkthrough_length: lesson.walkthrough?.length || 0,
+        quiz_count: lesson.quiz?.length || 0,
+        exercise: lesson.exercise?.substring(0, 50) + "...",
+        est_minutes: lesson.est_minutes
+      });
       
       return NextResponse.json({ reused: false, lesson });
     } catch (error) {

@@ -120,6 +120,15 @@ export default function LessonPage() {
     );
   }
 
+  console.log("Lesson page: Received lesson data:", {
+    topic: lesson.topic,
+    reading: lesson.reading?.substring(0, 100) + "...",
+    walkthrough: lesson.walkthrough?.substring(0, 100) + "...",
+    quiz_count: lesson.quiz?.length || 0,
+    exercise: lesson.exercise?.substring(0, 100) + "...",
+    est_minutes: lesson.est_minutes
+  });
+
   const correctAnswers = selectedAnswers.filter((answer, index) => 
     answer === lesson.quiz[index]?.correct_index
   ).length;
