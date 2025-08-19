@@ -3,6 +3,17 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 export async function GET(request: NextRequest) {
   try {
+    // Simple test response first
+    console.log("AI metrics API called");
+    
+    // Test if we can even get here
+    if (request.url.includes('test')) {
+      return NextResponse.json({ 
+        message: "AI metrics API is working", 
+        timestamp: new Date().toISOString() 
+      });
+    }
+    
     const supabase = await supabaseServer();
     
     // Check if user is admin
