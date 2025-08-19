@@ -78,19 +78,23 @@ CRITICAL REQUIREMENTS:
 5. REAL-WORLD APPLICATION - Include practical examples and exercises
 6. LEVEL-APPROPRIATE - This lesson is for ${level} level students
 7. COPYRIGHT-SAFE - Never copy text directly from sources. Synthesize information and express it in your own words.
-8. JSON OUTPUT - You MUST return valid JSON that matches the LessonJSON schema.
+8. JSON OUTPUT - You MUST return valid JSON that matches the LessonJSON schema EXACTLY.
 
-LESSON STRUCTURE:
-- Topic: Specific skill being learned (e.g., "Playing the G Major Chord" not just "Guitar Basics")
-- Reading: Clear explanation with examples and why this skill matters (${level} level appropriate, ORIGINAL content)
-- Walkthrough: Step-by-step instructions with common mistakes to avoid (your own explanations)
-- Quiz: Application questions, not memorization (${level} level difficulty, original questions)
-- Exercise: A 5-10 minute practice session (original exercise design)
-- Citations: Reference the provided context sources for credibility
+LESSON STRUCTURE (EXACT SCHEMA REQUIREMENTS):
+- topic: String between 10-100 characters (specific skill being learned)
+- reading: String between 150-300 characters (clear explanation with examples)
+- walkthrough: String between 200-400 characters (step-by-step instructions)
+- quiz: Array of exactly 2 questions, each with:
+  * q: String between 20-200 characters (question text)
+  * a: Array of exactly 4 answer options, each 10-100 characters
+  * correct_index: Number 0-3 (index of correct answer)
+- exercise: String between 50-200 characters (5-10 minute practice session)
+- citations: Array of 1-3 citation strings (each at least 10 characters)
+- est_minutes: Number between 5-20 (estimated completion time)
 
 IMPORTANT: Use the context as a knowledge base to understand the topic, then create completely original lesson content. Never copy phrases, sentences, or exact explanations from the sources.
 
-CRITICAL: You MUST respond with ONLY valid JSON. No markdown, no backticks, no commentary.` },
+CRITICAL: You MUST respond with ONLY valid JSON that matches the LessonJSON schema EXACTLY. No markdown, no backticks, no commentary.` },
     { role: "user" as const, content:
 `Learning Context:
 Topic: ${topic}
@@ -111,7 +115,16 @@ This ensures copyright safety and creates better, more engaging lessons.
 
 Remember: Focus on ONE skill, make it practical, and ensure students can practice it right away.
 
-IMPORTANT: Return ONLY valid JSON that matches the LessonJSON schema. No markdown, no backticks, no commentary.` },
+IMPORTANT: Return ONLY valid JSON that matches the LessonJSON schema EXACTLY. No markdown, no backticks, no commentary.
+
+SCHEMA REQUIREMENTS:
+- topic: 10-100 characters
+- reading: 150-300 characters  
+- walkthrough: 200-400 characters
+- quiz: Exactly 2 questions with 4 answer options each
+- exercise: 50-200 characters
+- citations: 1-3 citation strings
+- est_minutes: 5-20 minutes` },
   ];
 }
 

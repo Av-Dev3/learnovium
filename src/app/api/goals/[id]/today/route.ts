@@ -177,12 +177,47 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         level: goal.level
       });
       
-      // Return a more helpful error message
-      const errorMessage = error instanceof Error ? error.message : "Unknown error in lesson generation";
-      return NextResponse.json({ 
-        error: errorMessage,
-        details: "The AI failed to generate a valid lesson. This might be due to malformed output or context issues."
-      }, { status: 500 });
+      // Try to generate a fallback lesson
+      try {
+        console.log("Attempting to generate fallback lesson...");
+        const fallbackLesson = {
+          topic: `Basic ${goal.topic} Concepts - Day ${dayIndex}`,
+          reading: `Today we'll focus on fundamental ${goal.topic} principles. This lesson covers essential concepts that will build your foundation for more advanced topics. Take your time to understand each concept before moving forward.`,
+          walkthrough: `Start by reviewing the key concepts in the reading section. Then practice the basic exercises step by step. Don't rush - mastery comes from understanding fundamentals. If you encounter difficulties, break down complex ideas into smaller parts.`,
+          quiz: [
+            {
+              q: "What is the main focus of today's lesson?",
+              a: ["Advanced techniques", "Basic fundamentals", "Complex theories", "Quick shortcuts"],
+              correct_index: 1
+            },
+            {
+              q: "How should you approach learning these concepts?",
+              a: ["Skip difficult parts", "Take your time", "Memorize everything", "Rush through quickly"],
+              correct_index: 1
+            }
+          ],
+          exercise: `Practice the basic concepts covered today for 10 minutes. Focus on understanding rather than speed.`,
+          citations: ["Learning fundamentals"],
+          est_minutes: 15
+        };
+        
+        console.log("Fallback lesson generated successfully");
+        return NextResponse.json({ 
+          reused: false, 
+          lesson: fallbackLesson,
+          fallback: true,
+          original_error: error instanceof Error ? error.message : "Unknown error"
+        });
+      } catch (fallbackError) {
+        console.error("Fallback lesson generation also failed:", fallbackError);
+        
+        // Return a more helpful error message
+        const errorMessage = error instanceof Error ? error.message : "Unknown error in lesson generation";
+        return NextResponse.json({ 
+          error: errorMessage,
+          details: "The AI failed to generate a valid lesson and fallback generation also failed. This might be due to malformed output or context issues."
+        }, { status: 500 });
+      }
     }
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : "Unknown error in GET /today";
