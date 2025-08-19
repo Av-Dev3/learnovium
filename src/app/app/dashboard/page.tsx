@@ -3,6 +3,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Container } from "@/components/layout/container";
 import { supabaseServer } from "@/lib/supabaseServer";
 
+interface LessonData {
+  topic?: string;
+  reading?: string;
+  walkthrough?: string;
+  est_minutes?: number;
+}
+
+interface PlanDay {
+  day_index: number;
+  topic?: string;
+  objective?: string;
+  practice?: string;
+  assessment?: string;
+  est_minutes?: number;
+}
+
+interface PlanModule {
+  days?: PlanDay[];
+}
+
+interface PlanData {
+  modules?: PlanModule[];
+}
+
 function computeDayIndex(startISO: string) {
   const start = new Date(startISO);
   const now = new Date();
@@ -85,7 +109,7 @@ export default async function DashboardPage() {
         .maybeSingle();
 
       if (existing?.lesson_json) {
-        const l = existing.lesson_json as any;
+        const l = existing.lesson_json as LessonData;
         lessonTitle = l.topic;
         lessonSnippet = snippet(l.reading || l.walkthrough || "");
         estMinutes = l.est_minutes;
@@ -93,10 +117,10 @@ export default async function DashboardPage() {
       } else if (g.plan_json) {
         // Fall back to showing today&apos;s plan day title if no lesson cached yet
         try {
-          const plan = g.plan_json as any;
+          const plan = g.plan_json as PlanData;
           // Locate the plan day by dayIndex
-          const flatDays = (plan.modules || []).flatMap((m: any) => m.days || []);
-          const day = flatDays.find((d: any) => d.day_index === dayIndex);
+          const flatDays = (plan.modules || []).flatMap((m: PlanModule) => m.days || []);
+          const day = flatDays.find((d: PlanDay) => d.day_index === dayIndex);
           if (day) {
             lessonTitle = day.topic || `Day ${dayIndex}`;
             lessonSnippet = snippet(day.objective || day.practice || day.assessment || "");
