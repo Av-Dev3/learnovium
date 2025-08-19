@@ -7,9 +7,27 @@ type Msg = { role: "system" | "user" | "assistant"; content: string };
 // const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 function coerceJSON(text: string) {
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const raw = fenced ? fenced[1] : text;
-  return JSON.parse(raw);
+  try {
+    // First, try to find JSON in code blocks
+    const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fenced) {
+      const raw = fenced[1].trim();
+      return JSON.parse(raw);
+    }
+    
+    // If no code blocks, try to find JSON in the text
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    
+    // If still no JSON found, try to parse the entire text
+    return JSON.parse(text.trim());
+  } catch (error) {
+    console.error("JSON parsing failed. Raw text:", text.substring(0, 200) + "...");
+    console.error("JSON parsing error:", error);
+    throw new Error(`Failed to parse AI response as JSON. The AI should return valid JSON but returned: "${text.substring(0, 100)}..."`);
+  }
 }
 
 // Budget models (e.g., gpt-5-mini) reject custom temperature.

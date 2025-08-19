@@ -78,6 +78,7 @@ CRITICAL REQUIREMENTS:
 5. REAL-WORLD APPLICATION - Include practical examples and exercises
 6. LEVEL-APPROPRIATE - This lesson is for ${level} level students
 7. COPYRIGHT-SAFE - Never copy text directly from sources. Synthesize information and express it in your own words.
+8. JSON OUTPUT - You MUST return valid JSON that matches the LessonJSON schema.
 
 LESSON STRUCTURE:
 - Topic: Specific skill being learned (e.g., "Playing the G Major Chord" not just "Guitar Basics")
@@ -87,7 +88,9 @@ LESSON STRUCTURE:
 - Exercise: A 5-10 minute practice session (original exercise design)
 - Citations: Reference the provided context sources for credibility
 
-IMPORTANT: Use the context as a knowledge base to understand the topic, then create completely original lesson content. Never copy phrases, sentences, or exact explanations from the sources.` },
+IMPORTANT: Use the context as a knowledge base to understand the topic, then create completely original lesson content. Never copy phrases, sentences, or exact explanations from the sources.
+
+CRITICAL: You MUST respond with ONLY valid JSON. No markdown, no backticks, no commentary.` },
     { role: "user" as const, content:
 `Learning Context:
 Topic: ${topic}
@@ -106,7 +109,9 @@ CRITICAL: Use the context to understand the topic, but create completely origina
 Never copy text directly from sources. Synthesize the information and express everything in your own words.
 This ensures copyright safety and creates better, more engaging lessons.
 
-Remember: Focus on ONE skill, make it practical, and ensure students can practice it right away.` },
+Remember: Focus on ONE skill, make it practical, and ensure students can practice it right away.
+
+IMPORTANT: Return ONLY valid JSON that matches the LessonJSON schema. No markdown, no backticks, no commentary.` },
   ];
 }
 

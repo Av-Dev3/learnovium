@@ -80,7 +80,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     */
 
     // Generate new lesson with RAG
-    const t0 = Date.now();
+    // const t0 = Date.now(); // Temporarily disabled
     
     // Check budget caps before AI call
     // Temporarily disabled while setting up database migrations
@@ -104,66 +104,86 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const lessonFocus = goal.focus || `basic ${goal.topic} concepts`;
     const msgs = buildAdvancedLessonPrompt(context, goal.topic, lessonFocus, dayIndex, userLevel);
     
-    const { data: lesson, usage } = await generateLesson(msgs, user.id, goalId);
-    
-    // Validate the lesson quality
-    if (!lesson || !lesson.topic || !lesson.reading || !lesson.walkthrough) {
-      console.error("Generated lesson is incomplete:", lesson);
-      throw new Error("Failed to generate complete lesson");
-    }
-    
-    // Ensure the lesson is focused and practical
-    if (lesson.topic.length < 10 || lesson.reading.length < 150 || lesson.walkthrough.length < 200) {
-      console.warn("Generated lesson content is too short, regenerating...");
-      // Could implement retry logic here if needed
-    }
-    
-    // Log the AI call
-    // const latency_ms = Date.now() - t0; // Temporarily disabled
-    // const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0; // Temporarily disabled
-    
-    // Temporarily disabled while setting up database migrations
-    /*
-    await logCall({
-      user_id: user.id,
-      goal_id: goalId,
-      endpoint: "lesson",
-      model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
-      prompt_tokens: usage?.prompt_tokens || 0,
-      completion_tokens: usage?.completion_tokens || 0,
-      success: true,
-      latency_ms,
-      cost_usd,
-    });
-    */
-
-    // Write cache if template exists
-    // Temporarily disabled while setting up database migrations
-    /*
-    if (goal.plan_template_id) {
-      await supabase.from("lesson_template").insert({
-        plan_template_id: goal.plan_template_id,
-        day_index: dayIndex,
-        version: 1,
+    try {
+      const { data: lesson, usage: _usage } = await generateLesson(msgs, user.id, goalId);
+      
+      // Validate the lesson quality
+      if (!lesson || !lesson.topic || !lesson.reading || !lesson.walkthrough) {
+        console.error("Generated lesson is incomplete:", lesson);
+        throw new Error("Failed to generate complete lesson");
+      }
+      
+      // Ensure the lesson is focused and practical
+      if (lesson.topic.length < 10 || lesson.reading.length < 150 || lesson.walkthrough.length < 200) {
+        console.warn("Generated lesson content is too short, regenerating...");
+        // Could implement retry logic here if needed
+      }
+      
+      // Log the AI call
+      // const latency_ms = Date.now() - t0; // Temporarily disabled
+      // const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0; // Temporarily disabled
+      
+      // Temporarily disabled while setting up database migrations
+      /*
+      await logCall({
+        user_id: user.id,
+        goal_id: goalId,
+        endpoint: "lesson",
         model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
-        lesson_json: lesson,
-      }).select("id").maybeSingle();
+        prompt_tokens: usage?.prompt_tokens || 0,
+        completion_tokens: usage?.completion_tokens || 0,
+        success: true,
+        latency_ms,
+        cost_usd,
+      });
+      */
+      
+      // Write cache if template exists
+      // Temporarily disabled while setting up database migrations
+      /*
+      if (goal.plan_template_id) {
+        await supabase.from("lesson_template").insert({
+          plan_template_id: goal.plan_template_id,
+          day_index: dayIndex,
+          version: 1,
+          model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          lesson_json: lesson,
+        }).select("id").maybeSingle();
+      }
+
+      // Also write to user-specific lesson_log for backward compatibility
+      const { error: wErr } = await supabase.from("lesson_log").insert({
+        user_id: user.id,
+        goal_id: goalId,
+        day_index: dayIndex,
+        chunk_ids: null, // uuid[] column; we'll store null until we track actual chunk IDs
+        model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+        citations: lesson.citations || [],  // jsonb array is OK
+        lesson_json: lesson,                // <-- now exists and is jsonb
+      });
+      if (wErr) return NextResponse.json({ error: wErr.message }, { status: 400 });
+      */
+      
+      return NextResponse.json({ reused: false, lesson });
+    } catch (error) {
+      console.error("Lesson generation failed:", error);
+      console.error("Error details:", {
+        message: error instanceof Error ? error.message : "Unknown error",
+        stack: error instanceof Error ? error.stack : undefined,
+        goalId,
+        dayIndex,
+        topic: goal.topic,
+        focus: goal.focus,
+        level: goal.level
+      });
+      
+      // Return a more helpful error message
+      const errorMessage = error instanceof Error ? error.message : "Unknown error in lesson generation";
+      return NextResponse.json({ 
+        error: errorMessage,
+        details: "The AI failed to generate a valid lesson. This might be due to malformed output or context issues."
+      }, { status: 500 });
     }
-
-    // Also write to user-specific lesson_log for backward compatibility
-    const { error: wErr } = await supabase.from("lesson_log").insert({
-      user_id: user.id,
-      goal_id: goalId,
-      day_index: dayIndex,
-      chunk_ids: null, // uuid[] column; we'll store null until we track actual chunk IDs
-      model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
-      citations: lesson.citations || [],  // jsonb array is OK
-      lesson_json: lesson,                // <-- now exists and is jsonb
-    });
-    if (wErr) return NextResponse.json({ error: wErr.message }, { status: 400 });
-    */
-
-    return NextResponse.json({ reused: false, lesson });
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : "Unknown error in GET /today";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
