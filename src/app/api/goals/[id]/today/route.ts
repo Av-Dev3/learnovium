@@ -54,30 +54,39 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const dayIndex = dayIndexFrom(goal.created_at || new Date().toISOString());
 
     // If we have a template, try to reuse lesson
-    // Temporarily disabled while setting up database migrations
-    /*
     if (goal.plan_template_id) {
-      const { data: cached } = await supabase
-        .from("lesson_template")
-        .select("lesson_json")
-        .eq("plan_template_id", goal.plan_template_id)
-        .eq("day_index", dayIndex)
-        .eq("version", 1)
-        .maybeSingle();
+      try {
+        const { data: cached } = await supabase
+          .from("lesson_template")
+          .select("lesson_json")
+          .eq("plan_template_id", goal.plan_template_id)
+          .eq("day_index", dayIndex)
+          .eq("version", 1)
+          .maybeSingle();
 
-      if (cached?.lesson_json) {
-        return NextResponse.json({ reused: true, lesson: cached.lesson_json });
+        if (cached?.lesson_json) {
+          console.log("Using cached lesson template");
+          return NextResponse.json({ reused: true, lesson: cached.lesson_json });
+        }
+      } catch (error) {
+        console.log("Template lookup failed, proceeding with generation:", error);
       }
     }
 
     // Check for existing user-specific lesson (fallback)
-    const { data: existing } = await supabase
-      .from("lesson_log")
-      .select("id, lesson_json")
-      .eq("user_id", user.id).eq("goal_id", goalId).eq("day_index", dayIndex)
-      .maybeSingle();
-    if (existing?.lesson_json) return NextResponse.json({ reused: false, lesson: existing.lesson_json });
-    */
+    try {
+      const { data: existing } = await supabase
+        .from("lesson_log")
+        .select("id, lesson_json")
+        .eq("user_id", user.id).eq("goal_id", goalId).eq("day_index", dayIndex)
+        .maybeSingle();
+      if (existing?.lesson_json) {
+        console.log("Using cached user lesson");
+        return NextResponse.json({ reused: false, lesson: existing.lesson_json });
+      }
+    } catch (error) {
+      console.log("Lesson log lookup failed, proceeding with generation:", error);
+    }
 
     // Generate new lesson with RAG
     // const t0 = Date.now(); // Temporarily disabled
@@ -139,30 +148,40 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       */
       
       // Write cache if template exists
-      // Temporarily disabled while setting up database migrations
-      /*
       if (goal.plan_template_id) {
-        await supabase.from("lesson_template").insert({
-          plan_template_id: goal.plan_template_id,
-          day_index: dayIndex,
-          version: 1,
-          model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
-          lesson_json: lesson,
-        }).select("id").maybeSingle();
+        try {
+          await supabase.from("lesson_template").insert({
+            plan_template_id: goal.plan_template_id,
+            day_index: dayIndex,
+            version: 1,
+            model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+            lesson_json: lesson,
+          }).select("id").maybeSingle();
+          console.log("Lesson template cached successfully");
+        } catch (error) {
+          console.log("Failed to cache lesson template:", error);
+        }
       }
 
       // Also write to user-specific lesson_log for backward compatibility
-      const { error: wErr } = await supabase.from("lesson_log").insert({
-        user_id: user.id,
-        goal_id: goalId,
-        day_index: dayIndex,
-        chunk_ids: null, // uuid[] column; we'll store null until we track actual chunk IDs
-        model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
-        citations: lesson.citations || [],  // jsonb array is OK
-        lesson_json: lesson,                // <-- now exists and is jsonb
-      });
-      if (wErr) return NextResponse.json({ error: wErr.message }, { status: 400 });
-      */
+      try {
+        const { error: wErr } = await supabase.from("lesson_log").insert({
+          user_id: user.id,
+          goal_id: goalId,
+          day_index: dayIndex,
+          chunk_ids: null, // uuid[] column; we'll store null until we track actual chunk IDs
+          model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          citations: lesson.citations || [],  // jsonb array is OK
+          lesson_json: lesson,                // <-- now exists and is jsonb
+        });
+        if (wErr) {
+          console.log("Failed to save lesson log:", wErr);
+        } else {
+          console.log("Lesson log saved successfully");
+        }
+      } catch (error) {
+        console.log("Lesson log save failed:", error);
+      }
       
       return NextResponse.json({ reused: false, lesson });
     } catch (error) {
@@ -181,23 +200,23 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       try {
         console.log("Attempting to generate fallback lesson...");
         const fallbackLesson = {
-          topic: `Basic ${goal.topic} Concepts - Day ${dayIndex}`,
-          reading: `Today we'll focus on fundamental ${goal.topic} principles. This lesson covers essential concepts that will build your foundation for more advanced topics. Take your time to understand each concept before moving forward.`,
-          walkthrough: `Start by reviewing the key concepts in the reading section. Then practice the basic exercises step by step. Don't rush - mastery comes from understanding fundamentals. If you encounter difficulties, break down complex ideas into smaller parts.`,
+          topic: `${goal.topic} Fundamentals - Day ${dayIndex}`,
+          reading: `Today's lesson focuses on essential ${goal.topic} concepts. We'll cover the foundational principles that every ${goal.level} level student needs to master. This includes understanding basic terminology, core concepts, and practical applications. Take time to absorb each concept before moving to the practice section.`,
+          walkthrough: `Begin by reading through the concepts carefully. Then practice each step methodically. Start with simple exercises and gradually increase difficulty. Remember, mastery comes from consistent practice and understanding fundamentals. If you struggle with any concept, review the reading section and try again.`,
           quiz: [
             {
-              q: "What is the main focus of today's lesson?",
-              a: ["Advanced techniques", "Basic fundamentals", "Complex theories", "Quick shortcuts"],
+              q: `What is the primary goal of learning ${goal.topic} fundamentals?`,
+              a: ["To memorize facts quickly", "To build a strong foundation", "To skip basic concepts", "To finish lessons fast"],
               correct_index: 1
             },
             {
-              q: "How should you approach learning these concepts?",
-              a: ["Skip difficult parts", "Take your time", "Memorize everything", "Rush through quickly"],
+              q: "How should you approach practicing these concepts?",
+              a: ["Rush through exercises", "Practice methodically", "Skip difficult parts", "Memorize without understanding"],
               correct_index: 1
             }
           ],
-          exercise: `Practice the basic concepts covered today for 10 minutes. Focus on understanding rather than speed.`,
-          citations: ["Learning fundamentals"],
+          exercise: `Practice the fundamental ${goal.topic} concepts for 15 minutes. Focus on understanding and accuracy rather than speed.`,
+          citations: [`${goal.topic} learning fundamentals`],
           est_minutes: 15
         };
         
