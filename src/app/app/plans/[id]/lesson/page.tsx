@@ -192,32 +192,13 @@ export default function LessonPage() {
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
               <BookOpen className="h-6 w-6" />
             </div>
-            Reading
+            Lesson Content
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
           <div className="prose prose-lg max-w-none">
             <p className="text-foreground leading-relaxed text-lg font-medium">
               {lesson.reading}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Walkthrough Section */}
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300">
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-3 text-2xl font-bold text-green-700 dark:text-green-300">
-            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-              <Target className="h-6 w-6" />
-            </div>
-            Walkthrough
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="prose prose-lg max-w-none">
-            <p className="text-foreground leading-relaxed text-lg font-medium">
-              {lesson.walkthrough}
             </p>
           </div>
         </CardContent>

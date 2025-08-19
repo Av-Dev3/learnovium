@@ -133,10 +133,25 @@ export default async function DashboardPage() {
             lessonSnippet = snippet(day.objective || day.practice || day.assessment || "");
             estMinutes = day.est_minutes;
             console.log(`Dashboard: Using plan data for goal ${g.id}:`, { title: lessonTitle, snippet: lessonSnippet?.substring(0, 50) });
+          } else {
+            // No plan day found for today, show a message to generate lesson
+            lessonTitle = `Day ${dayIndex}`;
+            lessonSnippet = "Click to generate today's lesson";
+            estMinutes = undefined;
+            console.log(`Dashboard: No plan day found for goal ${g.id}, day ${dayIndex}`);
           }
         } catch (error) {
           console.log(`Dashboard: Error processing plan_json for goal ${g.id}:`, error);
+          lessonTitle = `Day ${dayIndex}`;
+          lessonSnippet = "Click to generate today's lesson";
+          estMinutes = undefined;
         }
+      } else {
+        // No plan data at all
+        lessonTitle = `Day ${dayIndex}`;
+        lessonSnippet = "Click to generate today's lesson";
+        estMinutes = undefined;
+        console.log(`Dashboard: No plan data for goal ${g.id}`);
       }
 
       items.push({

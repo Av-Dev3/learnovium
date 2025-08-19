@@ -83,13 +83,13 @@ CRITICAL REQUIREMENTS:
 
 LESSON STRUCTURE (EXACT SCHEMA REQUIREMENTS):
 - topic: String between 10-100 characters (specific skill being learned, e.g., "Playing the G Major Chord")
-- reading: String between 150-300 characters (comprehensive explanation with examples, terminology, and why this skill matters)
-- walkthrough: String between 200-400 characters (detailed step-by-step instructions with common mistakes to avoid)
+- reading: String between 800-1500 characters (comprehensive lesson content with examples, terminology, step-by-step instructions, and why this skill matters)
+- walkthrough: String between 400-800 characters (additional practice tips and common mistakes to avoid)
 - quiz: Array of exactly 2 questions, each with:
   * q: String between 20-200 characters (thoughtful application question, not memorization)
   * a: Array of exactly 4 answer options, each 10-100 characters (realistic, educational choices)
   * correct_index: Number 0-3 (index of correct answer)
-- exercise: String between 50-200 characters (specific, actionable practice session with clear instructions)
+- exercise: String between 100-300 characters (specific, actionable practice session with clear instructions)
 - citations: Array of 1-3 citation strings (each at least 10 characters, reference the context sources)
 - est_minutes: Number between 5-20 (realistic completion time)
 
@@ -120,10 +120,10 @@ IMPORTANT: Return ONLY valid JSON that matches the LessonJSON schema EXACTLY. No
 
 SCHEMA REQUIREMENTS:
 - topic: 10-100 characters (specific skill name)
-- reading: 150-300 characters (comprehensive explanation with examples)
-- walkthrough: 200-400 characters (detailed step-by-step instructions)
+- reading: 800-1500 characters (main lesson content with examples and step-by-step instructions)
+- walkthrough: 400-800 characters (additional practice tips)
 - quiz: Exactly 2 questions with 4 answer options each
-- exercise: 50-200 characters (specific practice instructions)
+- exercise: 100-300 characters (specific practice instructions)
 - citations: 1-3 citation strings
 - est_minutes: 5-20 minutes` },
   ];
@@ -153,7 +153,7 @@ export async function buildPlannerPromptWithRAG(query: string, topic?: string, k
   return [
     { role: "system" as const, content: "You build multi-week learning plans strictly from provided context. Output must validate against the PlanJSON schema. IMPORTANT: Use the context as inspiration but create ORIGINAL plan content. Never copy text directly from sources." },
     { role: "user" as const, content:
-`Context (RAG top-${k}, use as knowledge base only):
+`Context (RAG top-${k}, use as inspiration only):
 ${context}
 
 Task:
@@ -179,4 +179,4 @@ Task:
 Return LessonJSON for today's focus: ${query}.
 Respond with ONLY valid JSON.` }
   ];
-} 
+}

@@ -26,14 +26,14 @@ export type TPlanJSON = z.infer<typeof PlanJSON>;
 
 export const LessonJSON = z.object({
   topic: z.string().min(10).max(100), // More specific topic requirements
-  reading: z.string().min(150).max(300), // Clear word count requirements
-  walkthrough: z.string().min(200).max(400), // Clear word count requirements
+  reading: z.string().min(800).max(1500), // Substantial reading content
+  walkthrough: z.string().min(400).max(800), // Detailed walkthrough content
   quiz: z.array(z.object({ 
     q: z.string().min(20).max(200), 
     a: z.array(z.string().min(10).max(100)).length(4), // Always 4 options
     correct_index: z.number().int().min(0).max(3) 
   })).length(2), // Exactly 2 questions
-  exercise: z.string().min(50).max(200), // More specific exercise requirements
+  exercise: z.string().min(100).max(300), // More substantial exercise requirements
   citations: z.array(z.string().min(10)).min(1).max(3), // Better citation requirements
   est_minutes: z.number().int().min(5).max(20), // More realistic time range
 });
