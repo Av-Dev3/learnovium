@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { 
   DollarSign, Users, Activity, Settings, Save, RefreshCw, Download, 
-  AlertTriangle, CheckCircle, Database, Target
+  AlertTriangle, CheckCircle, Database, Target, Brain
 } from "lucide-react";
 
 interface SummaryData {
@@ -199,6 +199,15 @@ export default function MetricsClient() {
         <div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Admin Dashboard</h1>
           <p className="text-slate-600 dark:text-slate-400 mt-1">Monitor AI usage, budgets, and system performance</p>
+          <div className="mt-2">
+            <a 
+              href="/admin/ai-metrics" 
+              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+            >
+              <Brain className="h-4 w-4" />
+              View Detailed AI Metrics →
+            </a>
+          </div>
         </div>
         <div className="flex gap-3">
           <select 
