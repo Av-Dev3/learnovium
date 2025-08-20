@@ -48,10 +48,18 @@ export const MODEL_PRICING: Record<string, ModelPricing> = {
     output_per_1k: 0,
   },
   
-  // Legacy/Budget models - map common variations
-  "gpt-5-mini": { // Maps to gpt-4o-mini
-    input_per_1k: 0.00015,
-    output_per_1k: 0.0006,
+  // GPT-5 family (new pricing - per million tokens)
+  "gpt-5": {
+    input_per_1k: 0.00125,  // $1.25 per million = $0.00125 per 1k
+    output_per_1k: 0.01,    // $10.00 per million = $0.01 per 1k
+  },
+  "gpt-5-mini": {
+    input_per_1k: 0.00025,  // $0.25 per million = $0.00025 per 1k
+    output_per_1k: 0.002,   // $2.00 per million = $0.002 per 1k
+  },
+  "gpt-5-nano": {
+    input_per_1k: 0.00005,  // $0.05 per million = $0.00005 per 1k
+    output_per_1k: 0.0004,  // $0.40 per million = $0.0004 per 1k
   },
 };
 

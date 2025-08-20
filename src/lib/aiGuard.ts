@@ -85,7 +85,7 @@ export async function checkCapsOrThrow(
 export async function logCall(entry: {
   user_id?: string;
   goal_id?: string;
-  endpoint: "planner" | "lesson" | "validator";
+  endpoint: "planner" | "lesson" | "validator" | "embeddings";
   model: string;
   prompt_tokens: number;
   completion_tokens: number;
@@ -94,26 +94,32 @@ export async function logCall(entry: {
   error_text?: string;
   cost_usd: number;
 }) {
-  await sb.from("ai_call_log").insert({
-    user_id: entry.user_id || null,
-    goal_id: entry.goal_id || null,
-    endpoint: entry.endpoint,
-    model: entry.model,
-    prompt_tokens: entry.prompt_tokens,
-    completion_tokens: entry.completion_tokens,
-    total_tokens: entry.prompt_tokens + entry.completion_tokens,
-    cost_usd: entry.cost_usd,
-    success: entry.success,
-    latency_ms: entry.latency_ms,
-    error_text: entry.error_text || null,
-  });
+  try {
+    await sb.from("ai_call_log").insert({
+      user_id: entry.user_id || null,
+      goal_id: entry.goal_id || null,
+      endpoint: entry.endpoint,
+      model: entry.model,
+      prompt_tokens: entry.prompt_tokens,
+      completion_tokens: entry.completion_tokens,
+      total_tokens: entry.prompt_tokens + entry.completion_tokens,
+      cost_usd: entry.cost_usd,
+      success: entry.success,
+      latency_ms: entry.latency_ms,
+      error_text: entry.error_text || null,
+    });
 
-  const day = DateTime.now().toISODate();
-  if (entry.success) {
-    await Promise.all([
-      sb.rpc("inc_user_spend", { p_user_id: entry.user_id, p_day: day, p_cost_usd: entry.cost_usd }),
-      sb.rpc("inc_global_spend", { p_day: day, p_cost_usd: entry.cost_usd }),
-    ]);
+    // Only track user/global spend for successful calls that have a user_id
+    if (entry.success && entry.user_id) {
+      const day = DateTime.now().toISODate();
+      await Promise.all([
+        sb.rpc("inc_user_spend", { p_user_id: entry.user_id, p_day: day, p_cost_usd: entry.cost_usd }),
+        sb.rpc("inc_global_spend", { p_day: day, p_cost_usd: entry.cost_usd }),
+      ]);
+    }
+  } catch (error) {
+    console.error("Failed to log AI call:", error);
+    // Don't throw - logging failure shouldn't break the main operation
   }
 }
 

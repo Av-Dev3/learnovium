@@ -49,8 +49,39 @@ interface AIMetrics {
     recent_24h_calls: number;
     recent_24h_cost: number;
   };
-  endpoint_stats: Record<string, { calls: number; cost: number; errors: number; tokens: number }>;
-  model_stats: Record<string, { calls: number; cost: number; tokens: number; prompt_tokens: number; completion_tokens: number }>;
+  detailed_breakdown?: {
+    embeddings: {
+      calls: number;
+      cost_usd: number;
+      tokens: number;
+      avg_cost_per_call: number;
+    };
+    chat_completions: {
+      calls: number;
+      cost_usd: number;
+      prompt_tokens: number;
+      completion_tokens: number;
+      total_tokens: number;
+      avg_cost_per_call: number;
+    };
+  };
+  endpoint_stats: Record<string, { 
+    calls: number; 
+    cost: number; 
+    errors: number; 
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  }>;
+  model_stats: Record<string, { 
+    calls: number; 
+    cost: number; 
+    tokens: number; 
+    prompt_tokens: number; 
+    completion_tokens: number;
+    total_tokens: number;
+    success_rate: number;
+  }>;
   filters: {
     endpoint?: string;
     success?: string;
@@ -58,6 +89,7 @@ interface AIMetrics {
     end_date?: string;
   };
   timestamp: string;
+  notes?: string[];
 }
 
 export default function AIMetricsClient() {
@@ -350,6 +382,36 @@ export default function AIMetricsClient() {
         </CardContent>
       </Card>
 
+      {/* Detailed Breakdown */}
+      {metrics.detailed_breakdown && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Detailed Breakdown</CardTitle>
+            <CardDescription>
+              Breakdown of embeddings and chat completions
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 border rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Embeddings</h3>
+                <p>Total Calls: {metrics.detailed_breakdown.embeddings.calls}</p>
+                <p>Total Cost: ${metrics.detailed_breakdown.embeddings.cost_usd.toFixed(4)}</p>
+                <p>Total Tokens: {metrics.detailed_breakdown.embeddings.tokens.toLocaleString()}</p>
+                <p>Average Cost per Call: ${metrics.detailed_breakdown.embeddings.avg_cost_per_call.toFixed(6)}</p>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Chat Completions</h3>
+                <p>Total Calls: {metrics.detailed_breakdown.chat_completions.calls}</p>
+                <p>Total Cost: ${metrics.detailed_breakdown.chat_completions.cost_usd.toFixed(4)}</p>
+                <p>Total Tokens: {metrics.detailed_breakdown.chat_completions.total_tokens.toLocaleString()}</p>
+                <p>Average Cost per Call: ${metrics.detailed_breakdown.chat_completions.avg_cost_per_call.toFixed(6)}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Endpoint Stats */}
       <Card>
         <CardHeader>
@@ -371,7 +433,7 @@ export default function AIMetricsClient() {
                 <div className="text-right">
                   <div className="font-medium">${stats.cost.toFixed(4)}</div>
                   <div className="text-sm text-muted-foreground">
-                    {stats.tokens.toLocaleString()} tokens
+                    {stats.total_tokens.toLocaleString()} tokens
                   </div>
                   {stats.errors > 0 && (
                     <div className="text-sm text-red-600">{stats.errors} errors</div>
@@ -533,6 +595,25 @@ export default function AIMetricsClient() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Notes Section */}
+      {metrics.notes && metrics.notes.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm">Important Notes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              {metrics.notes.map((note, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-blue-500 mt-1">•</span>
+                  {note}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="text-xs text-muted-foreground text-center">
         Last updated: {new Date(metrics.timestamp).toLocaleString()}

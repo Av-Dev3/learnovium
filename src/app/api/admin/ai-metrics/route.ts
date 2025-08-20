@@ -109,7 +109,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Calculate summary statistics
+    // Calculate detailed summary statistics
     const totalCost = summaryData?.reduce((sum, call) => sum + (call.cost_usd || 0), 0) || 0;
     const totalCalls = summaryData?.length || 0;
     const successCalls = summaryData?.filter(call => call.success).length || 0;
@@ -118,32 +118,80 @@ export async function GET(request: NextRequest) {
     const totalPromptTokens = summaryData?.reduce((sum, call) => sum + (call.prompt_tokens || 0), 0) || 0;
     const totalCompletionTokens = summaryData?.reduce((sum, call) => sum + (call.completion_tokens || 0), 0) || 0;
     
-    // Group by endpoint
+    // Separate embeddings from chat completions
+    const embeddingsData = summaryData?.filter(call => call.endpoint === 'embeddings') || [];
+    const chatData = summaryData?.filter(call => call.endpoint !== 'embeddings') || [];
+    
+    const embeddingsCost = embeddingsData.reduce((sum, call) => sum + (call.cost_usd || 0), 0);
+    const embeddingsTokens = embeddingsData.reduce((sum, call) => sum + (call.prompt_tokens || 0), 0);
+    const embeddingsCalls = embeddingsData.length;
+    
+    const chatCost = chatData.reduce((sum, call) => sum + (call.cost_usd || 0), 0);
+    const chatPromptTokens = chatData.reduce((sum, call) => sum + (call.prompt_tokens || 0), 0);
+    const chatCompletionTokens = chatData.reduce((sum, call) => sum + (call.completion_tokens || 0), 0);
+    const chatCalls = chatData.length;
+    
+    // Group by endpoint with detailed breakdown
     const endpointStats = summaryData?.reduce((acc, call) => {
       const endpoint = call.endpoint || 'unknown';
       if (!acc[endpoint]) {
-        acc[endpoint] = { calls: 0, cost: 0, errors: 0, tokens: 0 };
+        acc[endpoint] = { 
+          calls: 0, 
+          cost: 0, 
+          errors: 0, 
+          prompt_tokens: 0,
+          completion_tokens: 0,
+          total_tokens: 0
+        };
       }
       acc[endpoint].calls++;
       acc[endpoint].cost += call.cost_usd || 0;
-      acc[endpoint].tokens += (call.prompt_tokens || 0) + (call.completion_tokens || 0);
+      acc[endpoint].prompt_tokens += call.prompt_tokens || 0;
+      acc[endpoint].completion_tokens += call.completion_tokens || 0;
+      acc[endpoint].total_tokens += (call.prompt_tokens || 0) + (call.completion_tokens || 0);
       if (!call.success) acc[endpoint].errors++;
       return acc;
-    }, {} as Record<string, { calls: number; cost: number; errors: number; tokens: number }>) || {};
+    }, {} as Record<string, { 
+      calls: number; 
+      cost: number; 
+      errors: number; 
+      prompt_tokens: number;
+      completion_tokens: number;
+      total_tokens: number;
+    }>) || {};
 
-    // Group by model
+    // Group by model with detailed breakdown
     const modelStats = summaryData?.reduce((acc, call) => {
       const model = call.model || 'unknown';
       if (!acc[model]) {
-        acc[model] = { calls: 0, cost: 0, tokens: 0, prompt_tokens: 0, completion_tokens: 0 };
+        acc[model] = { 
+          calls: 0, 
+          cost: 0, 
+          prompt_tokens: 0, 
+          completion_tokens: 0,
+          total_tokens: 0,
+          success_rate: 0
+        };
       }
       acc[model].calls++;
       acc[model].cost += call.cost_usd || 0;
-      acc[model].tokens += (call.prompt_tokens || 0) + (call.completion_tokens || 0);
       acc[model].prompt_tokens += call.prompt_tokens || 0;
       acc[model].completion_tokens += call.completion_tokens || 0;
+      acc[model].total_tokens += (call.prompt_tokens || 0) + (call.completion_tokens || 0);
+      
+      // Calculate success rate
+      const successfulCalls = summaryData?.filter(c => c.model === model && c.success).length || 0;
+      acc[model].success_rate = Math.round((successfulCalls / acc[model].calls) * 100);
+      
       return acc;
-    }, {} as Record<string, { calls: number; cost: number; tokens: number; prompt_tokens: number; completion_tokens: number }>) || {};
+    }, {} as Record<string, { 
+      calls: number; 
+      cost: number; 
+      prompt_tokens: number; 
+      completion_tokens: number;
+      total_tokens: number;
+      success_rate: number;
+    }>) || {};
 
     // Recent activity (last 24 hours)
     const yesterday = new Date();
@@ -175,6 +223,22 @@ export async function GET(request: NextRequest) {
         recent_24h_calls: recentCalls.length,
         recent_24h_cost: recentCalls.reduce((sum, call) => sum + (call.cost_usd || 0), 0)
       },
+      detailed_breakdown: {
+        embeddings: {
+          calls: embeddingsCalls,
+          cost_usd: embeddingsCost,
+          tokens: embeddingsTokens,
+          avg_cost_per_call: embeddingsCalls > 0 ? embeddingsCost / embeddingsCalls : 0
+        },
+        chat_completions: {
+          calls: chatCalls,
+          cost_usd: chatCost,
+          prompt_tokens: chatPromptTokens,
+          completion_tokens: chatCompletionTokens,
+          total_tokens: chatPromptTokens + chatCompletionTokens,
+          avg_cost_per_call: chatCalls > 0 ? chatCost / chatCalls : 0
+        }
+      },
       endpoint_stats: endpointStats,
       model_stats: modelStats,
       filters: {
@@ -183,7 +247,13 @@ export async function GET(request: NextRequest) {
         start_date: startDate,
         end_date: endDate
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      notes: [
+        "Embeddings are tracked separately from chat completions",
+        "Costs include both input and output tokens where applicable",
+        "Some system-level calls may not have user_id associated",
+        "Compare with OpenAI dashboard for complete usage tracking"
+      ]
     };
 
     return NextResponse.json(response);
