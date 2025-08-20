@@ -1,27 +1,12 @@
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 
-export const dynamic = "force-dynamic";
-
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { get: (n) => cookieStore.get(n)?.value, set() {}, remove() {} } }
-  );
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth");
-  const { data: prof } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-  if (!prof?.is_admin) redirect("/app");
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,7 +31,6 @@ export default async function AdminLayout({
               </nav>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">Logged in as: {user.email}</span>
               <Link href="/app">
                 <Button variant="outline" size="sm">Back to App</Button>
               </Link>
