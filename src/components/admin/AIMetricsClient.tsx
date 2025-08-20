@@ -267,9 +267,9 @@ export default function AIMetricsClient() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${metrics.summary.total_cost_usd.toFixed(4)}</div>
+            <div className="text-2xl font-bold">${(metrics.summary?.total_cost_usd || 0).toFixed(4)}</div>
             <p className="text-xs text-muted-foreground">
-              Last 24h: ${metrics.summary.recent_24h_cost.toFixed(4)}
+              Last 24h: ${(metrics.summary?.recent_24h_cost || 0).toFixed(4)}
             </p>
           </CardContent>
         </Card>
@@ -280,9 +280,9 @@ export default function AIMetricsClient() {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.summary.total_calls.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{(metrics.summary?.total_calls || 0).toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Last 24h: {metrics.summary.recent_24h_calls}
+              Last 24h: {metrics.summary?.recent_24h_calls || 0}
             </p>
           </CardContent>
         </Card>
@@ -293,9 +293,9 @@ export default function AIMetricsClient() {
             <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.summary.success_rate}%</div>
+            <div className="text-2xl font-bold">{metrics.summary?.success_rate || 0}%</div>
             <p className="text-xs text-muted-foreground">
-              {metrics.summary.success_calls} / {metrics.summary.total_calls}
+              {metrics.summary?.success_calls || 0} / {metrics.summary?.total_calls || 0}
             </p>
           </CardContent>
         </Card>
@@ -395,17 +395,17 @@ export default function AIMetricsClient() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 border rounded-lg">
                 <h3 className="text-lg font-semibold mb-2">Embeddings</h3>
-                <p>Total Calls: {metrics.detailed_breakdown.embeddings.calls}</p>
-                <p>Total Cost: ${metrics.detailed_breakdown.embeddings.cost_usd.toFixed(4)}</p>
-                <p>Total Tokens: {metrics.detailed_breakdown.embeddings.tokens.toLocaleString()}</p>
-                <p>Average Cost per Call: ${metrics.detailed_breakdown.embeddings.avg_cost_per_call.toFixed(6)}</p>
+                <p>Total Calls: {metrics.detailed_breakdown.embeddings?.calls || 0}</p>
+                <p>Total Cost: ${(metrics.detailed_breakdown.embeddings?.cost_usd || 0).toFixed(4)}</p>
+                <p>Total Tokens: {(metrics.detailed_breakdown.embeddings?.tokens || 0).toLocaleString()}</p>
+                <p>Average Cost per Call: ${(metrics.detailed_breakdown.embeddings?.avg_cost_per_call || 0).toFixed(6)}</p>
               </div>
               <div className="p-4 border rounded-lg">
                 <h3 className="text-lg font-semibold mb-2">Chat Completions</h3>
-                <p>Total Calls: {metrics.detailed_breakdown.chat_completions.calls}</p>
-                <p>Total Cost: ${metrics.detailed_breakdown.chat_completions.cost_usd.toFixed(4)}</p>
-                <p>Total Tokens: {metrics.detailed_breakdown.chat_completions.total_tokens.toLocaleString()}</p>
-                <p>Average Cost per Call: ${metrics.detailed_breakdown.chat_completions.avg_cost_per_call.toFixed(6)}</p>
+                <p>Total Calls: {metrics.detailed_breakdown.chat_completions?.calls || 0}</p>
+                <p>Total Cost: ${(metrics.detailed_breakdown.chat_completions?.cost_usd || 0).toFixed(4)}</p>
+                <p>Total Tokens: {(metrics.detailed_breakdown.chat_completions?.total_tokens || 0).toLocaleString()}</p>
+                <p>Average Cost per Call: ${(metrics.detailed_breakdown.chat_completions?.avg_cost_per_call || 0).toFixed(6)}</p>
               </div>
             </div>
           </CardContent>
@@ -419,29 +419,36 @@ export default function AIMetricsClient() {
           <CardDescription>AI calls grouped by endpoint</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {Object.entries(metrics.endpoint_stats).map(([endpoint, stats]) => (
-              <div key={endpoint} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-4">
-                  <Badge variant={stats.errors > 0 ? "destructive" : "default"}>
-                    {endpoint}
-                  </Badge>
-                  <span className="text-sm text-muted-foreground">
-                    {stats.calls} calls
-                  </span>
-                </div>
-                <div className="text-right">
-                  <div className="font-medium">${stats.cost.toFixed(4)}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {stats.total_tokens.toLocaleString()} tokens
+          {Object.keys(metrics.endpoint_stats || {}).length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No endpoint data available yet</p>
+              <p className="text-sm">Create a goal to generate some AI calls</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {Object.entries(metrics.endpoint_stats || {}).map(([endpoint, stats]) => (
+                <div key={endpoint} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center gap-4">
+                    <Badge variant={stats.errors > 0 ? "destructive" : "default"}>
+                      {endpoint}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      {stats.calls} calls
+                    </span>
                   </div>
-                  {stats.errors > 0 && (
-                    <div className="text-sm text-red-600">{stats.errors} errors</div>
-                  )}
+                  <div className="text-right">
+                    <div className="font-medium">${(stats.cost || 0).toFixed(4)}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {(stats.total_tokens || 0).toLocaleString()} tokens
+                    </div>
+                    {stats.errors > 0 && (
+                      <div className="text-sm text-red-600">{stats.errors} errors</div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -452,8 +459,14 @@ export default function AIMetricsClient() {
           <CardDescription>AI calls grouped by model</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {Object.entries(metrics.model_stats).map(([model, stats]) => (
+          {Object.keys(metrics.model_stats || {}).length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No model data available yet</p>
+              <p className="text-sm">Create a goal to generate some AI calls</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {Object.entries(metrics.model_stats || {}).map(([model, stats]) => (
               <div key={model} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-4">
                   <Badge variant="outline">{model}</Badge>
@@ -464,15 +477,16 @@ export default function AIMetricsClient() {
                 <div className="text-right">
                   <div className="font-medium">${stats.cost.toFixed(4)}</div>
                   <div className="text-sm text-muted-foreground">
-                    {stats.tokens.toLocaleString()} total tokens
+                    {(stats.total_tokens || 0).toLocaleString()} total tokens
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {stats.prompt_tokens.toLocaleString()} input + {stats.completion_tokens.toLocaleString()} output
+                    {(stats.prompt_tokens || 0).toLocaleString()} input + {(stats.completion_tokens || 0).toLocaleString()} output
                   </div>
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -488,7 +502,7 @@ export default function AIMetricsClient() {
           {/* Pagination Controls */}
           <div className="flex items-center justify-between mb-4">
             <div className="text-sm text-muted-foreground">
-              Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, metrics.pagination.total)} of {metrics.pagination.total} calls
+              Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, metrics.pagination?.total || 0)} of {metrics.pagination?.total || 0} calls
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -516,8 +530,14 @@ export default function AIMetricsClient() {
           </div>
 
           {/* Calls Table */}
-          <div className="space-y-3 max-h-[600px] overflow-y-auto">
-            {metrics.calls.map((call) => (
+          {(!metrics.calls || metrics.calls.length === 0) ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No AI calls logged yet</p>
+              <p className="text-sm">Create a goal to generate some AI calls</p>
+            </div>
+          ) : (
+            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              {metrics.calls.map((call) => (
               <div key={call.id} className="p-4 border rounded-lg space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -567,10 +587,12 @@ export default function AIMetricsClient() {
                 )}
               </div>
             ))}
-          </div>
+            </div>
+          )}
 
           {/* Bottom Pagination */}
-          <div className="flex items-center justify-center gap-2 mt-4">
+          {metrics.pagination && metrics.pagination.total > 0 && (
+            <div className="flex items-center justify-center gap-2 mt-4">
             <Button
               variant="outline"
               size="sm"
@@ -592,7 +614,8 @@ export default function AIMetricsClient() {
               Next
               <ChevronRight className="h-4 w-4" />
             </Button>
-          </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -616,7 +639,7 @@ export default function AIMetricsClient() {
       )}
 
       <div className="text-xs text-muted-foreground text-center">
-        Last updated: {new Date(metrics.timestamp).toLocaleString()}
+        Last updated: {metrics.timestamp ? new Date(metrics.timestamp).toLocaleString() : 'Never'}
       </div>
     </div>
   );
