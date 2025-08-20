@@ -40,9 +40,6 @@ export default async function AdminLayout({
                 <Link href="/app/admin/metrics">
                   <Button variant="ghost" size="sm">Metrics</Button>
                 </Link>
-                <Link href="/app/admin/ai-metrics">
-                  <Button variant="ghost" size="sm">AI Metrics</Button>
-                </Link>
               </nav>
             </div>
             <div className="flex items-center space-x-2">
