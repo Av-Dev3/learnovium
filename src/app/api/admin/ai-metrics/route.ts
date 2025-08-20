@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
+interface AICallSummary {
+  cost_usd: number;
+  success: boolean;
+  endpoint: string;
+  model: string;
+  prompt_tokens: number;
+  completion_tokens: number;
+  created_at: string;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = await supabaseServer();
@@ -30,46 +40,73 @@ export async function GET(request: NextRequest) {
     const startDate = url.searchParams.get('start_date');
     const endDate = url.searchParams.get('end_date');
 
-    // Build query for AI call logs
-    let query = supabase
-      .from("ai_call_log")
-      .select(`
-        *,
-        profiles!inner(email)
-      `)
-      .order("created_at", { ascending: false });
-
-    // Apply filters
-    if (endpoint) {
-      query = query.eq("endpoint", endpoint);
-    }
-    if (success !== null && success !== undefined) {
-      query = query.eq("success", success === 'true');
-    }
-    if (startDate) {
-      query = query.gte("created_at", startDate);
-    }
-    if (endDate) {
-      query = query.lte("created_at", endDate);
+    // Check if ai_call_log table exists first
+    let tableExists = true;
+    let aiCalls: unknown[] = [];
+    
+    try {
+      // Test if table exists by doing a simple count
+      const { error: countError } = await supabase
+        .from("ai_call_log")
+        .select("*", { count: "exact", head: true });
+      
+      if (countError) {
+        console.log("ai_call_log table check failed:", countError);
+        tableExists = false;
+      }
+    } catch (error) {
+      console.log("ai_call_log table doesn't exist:", error);
+      tableExists = false;
     }
 
-    // Apply pagination
-    query = query.range(offset, offset + limit - 1);
+    if (tableExists) {
+      // Build query for AI call logs
+      let query = supabase
+        .from("ai_call_log")
+        .select(`
+          *,
+          profiles!inner(email)
+        `)
+        .order("created_at", { ascending: false });
 
-    const { data: aiCalls, error: aiCallsError } = await query;
+      // Apply filters
+      if (endpoint) {
+        query = query.eq("endpoint", endpoint);
+      }
+      if (success !== null && success !== undefined) {
+        query = query.eq("success", success === 'true');
+      }
+      if (startDate) {
+        query = query.gte("created_at", startDate);
+      }
+      if (endDate) {
+        query = query.lte("created_at", endDate);
+      }
 
-    if (aiCallsError) {
-      console.error("Error fetching AI calls:", aiCallsError);
-      return NextResponse.json({ error: "Failed to fetch AI calls" }, { status: 500 });
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1);
+
+      const { data: calls, error: aiCallsError } = await query;
+      
+      if (aiCallsError) {
+        console.error("Error fetching AI calls:", aiCallsError);
+      } else {
+        aiCalls = calls || [];
+      }
     }
 
-    // Get summary statistics
-    const { data: summaryData, error: summaryError } = await supabase
-      .from("ai_call_log")
-      .select("cost_usd, success, endpoint, model, prompt_tokens, completion_tokens, created_at");
+    // Get summary statistics (only if table exists)
+    let summaryData: AICallSummary[] = [];
+    if (tableExists) {
+      const { data: summary, error: summaryError } = await supabase
+        .from("ai_call_log")
+        .select("cost_usd, success, endpoint, model, prompt_tokens, completion_tokens, created_at");
 
-    if (summaryError) {
-      console.error("Error fetching summary data:", summaryError);
+      if (summaryError) {
+        console.error("Error fetching summary data:", summaryError);
+      } else {
+        summaryData = summary || [];
+      }
     }
 
     // Calculate summary statistics
@@ -117,6 +154,8 @@ export async function GET(request: NextRequest) {
 
     const response = {
       calls: aiCalls || [],
+      table_exists: tableExists,
+      message: tableExists ? undefined : "AI call logging table not found. No AI metrics data available yet.",
       pagination: {
         limit,
         offset,
