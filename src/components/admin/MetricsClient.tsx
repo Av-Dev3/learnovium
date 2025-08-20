@@ -201,7 +201,7 @@ export default function MetricsClient() {
           <p className="text-slate-600 dark:text-slate-400 mt-1">Monitor AI usage, budgets, and system performance</p>
           <div className="mt-2">
             <a 
-              href="/admin/ai-metrics" 
+              href="/app/admin/ai-metrics" 
               className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
             >
               <Brain className="h-4 w-4" />
