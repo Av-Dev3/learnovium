@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
         .from("ai_call_log")
         .select(`
           *,
-          profiles!inner(email)
+          profiles(email)
         `)
         .order("created_at", { ascending: false });
 
