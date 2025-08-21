@@ -2,6 +2,24 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Container } from "@/components/layout/container";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { 
+  BookOpen, 
+  Target, 
+  TrendingUp, 
+  Calendar, 
+  Clock, 
+  Zap, 
+  Plus, 
+  ArrowRight, 
+  Sparkles,
+  Brain,
+  Trophy,
+  Flame,
+  CheckCircle,
+  Play,
+  BarChart3,
+  Lightbulb
+} from "lucide-react";
 
 interface LessonData {
   topic?: string;
@@ -35,7 +53,7 @@ function computeDayIndex(startISO: string) {
   return Math.max(1, Math.floor(ms / 86400000) + 1);
 }
 
-function snippet(text: string, max = 160) {
+function snippet(text: string, max = 120) {
   if (!text) return "";
   const s = text.trim();
   return s.length > max ? s.slice(0, max - 1) + "…" : s;
@@ -45,30 +63,75 @@ export default async function DashboardPage() {
   const supabase = await supabaseServer();
   const { data: { user } } = await supabase.auth.getUser();
 
-  // If not logged in, keep the original empty state
+  // If not logged in, show modern empty state
   if (!user) {
     return (
-      <Container>
-        <div className="space-y-8">
-          <div>
-            <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">Dashboard</h1>
-            <p className="text-[var(--muted)]">Welcome back! Here&apos;s your learning overview.</p>
-          </div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Today&apos;s Lesson</CardTitle>
-              <CardDescription>Your personalized learning content for today</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12">
-                <h3 className="text-lg font-semibold mb-2">No lesson scheduled</h3>
-                <p className="text-[var(--muted)] mb-4">Create your first learning plan to get started with daily lessons.</p>
-                <a href="/app/create" className="inline-flex items-center px-4 py-2 bg-[var(--brand)] text-white rounded-md hover:opacity-90 transition-opacity">Create Plan</a>
+      <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
+        <Container>
+          <div className="space-y-8 pt-8">
+            {/* Hero Section */}
+            <div className="text-center space-y-6 py-12">
+              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 border border-[var(--border)]/40 bg-[var(--bg)]/80 backdrop-blur-md shadow-lg">
+                <Sparkles className="w-5 h-5 text-brand" />
+                <span className="text-sm font-semibold text-[var(--fg)]/90">AI-Powered Learning</span>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </Container>
+              
+              <h1 className="font-heading text-4xl md:text-6xl font-bold leading-tight tracking-tight">
+                <span className="text-[var(--fg)]">Welcome to</span>
+                <br />
+                <span className="bg-gradient-to-r from-brand via-purple-500 to-brand bg-clip-text text-transparent">Learnovium</span>
+              </h1>
+              
+              <p className="text-xl text-[var(--fg)]/70 max-w-2xl mx-auto leading-relaxed">
+                Master any skill with personalized AI-powered learning paths. Create your first goal to get started.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Link 
+                  href="/auth"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-brand to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg"
+                >
+                  Get Started
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link 
+                  href="/about"
+                  className="inline-flex items-center gap-2 px-8 py-4 border-2 border-[var(--border)] text-[var(--fg)] font-semibold rounded-2xl hover:border-brand/50 hover:bg-muted transition-all duration-300"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </div>
+
+            {/* Features Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="text-center space-y-4 p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center">
+                  <Brain className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-[var(--fg)]">AI-Powered</h3>
+                <p className="text-sm text-[var(--fg)]/70">Personalized lessons that adapt to your learning style</p>
+              </div>
+              
+              <div className="text-center space-y-4 p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+                  <Target className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-[var(--fg)]">Goal-Oriented</h3>
+                <p className="text-sm text-[var(--fg)]/70">Clear objectives and progress tracking</p>
+              </div>
+              
+              <div className="text-center space-y-4 p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                  <TrendingUp className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-[var(--fg)]">Daily Progress</h3>
+                <p className="text-sm text-[var(--fg)]/70">Build lasting habits with daily consistency</p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </div>
     );
   }
 
@@ -101,7 +164,7 @@ export default async function DashboardPage() {
   }> = [];
 
   if (goals && goals.length) {
-    // For each goal, try to read today&apos;s cached lesson from lesson_log only (no generation)
+    // For each goal, try to read today's cached lesson from lesson_log only (no generation)
     for (const g of goals) {
       const dayIndex = computeDayIndex(g.created_at as string);
       console.log(`Dashboard: Processing goal ${g.id}, day ${dayIndex}`);
@@ -135,7 +198,7 @@ export default async function DashboardPage() {
           walkthrough_length: l.walkthrough?.length || 0
         });
       } else if (g.plan_json) {
-        // Fall back to showing today&apos;s plan day title if no lesson cached yet
+        // Fall back to showing today's plan day title if no lesson cached yet
         try {
           const plan = g.plan_json as PlanData;
           console.log(`Dashboard: Plan data for goal ${g.id}:`, {
@@ -208,47 +271,266 @@ export default async function DashboardPage() {
 
   console.log("Dashboard: Final items to display:", items.length);
 
-  return (
-    <Container>
-      <div className="space-y-8">
-        <div>
-          <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">Dashboard</h1>
-          <p className="text-[var(--muted)]">Welcome back! Here&apos;s your learning overview.</p>
-        </div>
+  // Calculate some stats
+  const totalGoals = goals?.length || 0;
+  const activeLessons = items.filter(i => i.hasLesson).length;
+  const totalEstimatedTime = items.reduce((sum, i) => sum + (i.estMinutes || 0), 0);
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Today&apos;s Lessons</CardTitle>
-            <CardDescription>Quick access to your current lessons. No extra AI calls.</CardDescription>
-          </CardHeader>
-          <CardContent>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
+      <Container>
+        <div className="space-y-8 pt-8">
+          {/* Header Section */}
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="space-y-2">
+                <h1 className="font-heading text-4xl md:text-5xl font-bold tracking-tight text-[var(--fg)]">
+                  Welcome back! 👋
+                </h1>
+                <p className="text-xl text-[var(--fg)]/70">Here's your learning overview for today</p>
+              </div>
+              
+              <Link 
+                href="/app/create"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-brand to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg"
+              >
+                <Plus className="w-5 h-5" />
+                New Goal
+              </Link>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center">
+                    <Target className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-[var(--fg)]">{totalGoals}</p>
+                    <p className="text-sm text-[var(--fg)]/70">Active Goals</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+                    <BookOpen className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-[var(--fg)]">{activeLessons}</p>
+                    <p className="text-sm text-[var(--fg)]/70">Today's Lessons</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-[var(--fg)]">{totalEstimatedTime}</p>
+                    <p className="text-sm text-[var(--fg)]/70">Minutes Today</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center">
+                    <Flame className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-[var(--fg)]">7</p>
+                    <p className="text-sm text-[var(--fg)]/70">Day Streak</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <Zap className="w-6 h-6 text-brand" />
+              <h2 className="text-2xl font-bold text-[var(--fg)]">Quick Actions</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Link 
+                href="/app/create"
+                className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-brand/40"
+              >
+                <div className="space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Plus className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-brand transition-colors">Create New Goal</h3>
+                    <p className="text-sm text-[var(--fg)]/70">Start learning a new skill with AI guidance</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link 
+                href="/app/plans"
+                className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-green-500/40"
+              >
+                <div className="space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <BarChart3 className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-green-600 transition-colors">View All Plans</h3>
+                    <p className="text-sm text-[var(--fg)]/70">See your learning progress and plans</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link 
+                href="/app/history"
+                className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-purple-500/40"
+              >
+                <div className="space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Trophy className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-purple-600 transition-colors">Learning History</h3>
+                    <p className="text-sm text-[var(--fg)]/70">Track your achievements and progress</p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Today's Lessons */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <BookOpen className="w-6 h-6 text-brand" />
+              <h2 className="text-2xl font-bold text-[var(--fg)]">Today's Lessons</h2>
+            </div>
+
             {(!items.length || items.every(i => !i.lessonTitle)) ? (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-semibold mb-2">No lessons yet</h3>
-                <p className="text-[var(--muted)] mb-4">Create a plan or open a plan page to generate today&apos;s lesson.</p>
-                <a href="/app/create" className="inline-flex items-center px-4 py-2 bg-[var(--brand)] text-white rounded-md hover:opacity-90 transition-opacity">Create Plan</a>
+              <div className="text-center py-16 px-6">
+                <div className="w-24 h-24 bg-gradient-to-br from-[var(--border)] to-[var(--border)]/60 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Lightbulb className="h-12 w-12 text-[var(--fg)]/40" />
+                </div>
+                <h3 className="text-xl font-semibold text-[var(--fg)] mb-3">No lessons scheduled yet</h3>
+                <p className="text-[var(--fg)]/70 mb-6 max-w-md mx-auto">
+                  Create your first learning plan to get started with personalized daily lessons powered by AI.
+                </p>
+                <Link 
+                  href="/app/create"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-brand to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg"
+                >
+                  <Plus className="w-5 h-5" />
+                  Create Your First Goal
+                </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {items.map((it) => (
                   <Link key={it.goalId} href={`/app/plans/${it.goalId}/lesson`} className="block group">
-                    <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
-                      <div className="text-sm text-[var(--muted)] mb-1">{it.goalTopic} • Day {it.dayIndex}{it.estMinutes ? ` • ${it.estMinutes} min` : ""}</div>
-                      <div className="font-semibold mb-1">{it.lessonTitle || `Lesson for Day ${it.dayIndex}`}</div>
-                      {it.lessonSnippet && (
-                        <div className="text-sm text-foreground/80 line-clamp-3">{it.lessonSnippet}</div>
-                      )}
-                      {!it.hasLesson && (
-                        <div className="text-xs mt-2 text-[var(--muted)]">Lesson not generated yet. Open to generate.</div>
-                      )}
+                    <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-brand/40">
+                      <div className="space-y-4">
+                        {/* Header */}
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60">
+                              <Target className="w-4 h-4" />
+                              <span>{it.goalTopic}</span>
+                              <span>•</span>
+                              <span>Day {it.dayIndex}</span>
+                              {it.estMinutes && (
+                                <>
+                                  <span>•</span>
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-4 h-4" />
+                                    {it.estMinutes} min
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                            <h3 className="text-xl font-semibold text-[var(--fg)] group-hover:text-brand transition-colors">
+                              {it.lessonTitle || `Lesson for Day ${it.dayIndex}`}
+                            </h3>
+                          </div>
+                          
+                          <div className="w-12 h-12 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <Play className="h-6 w-6 text-white" />
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        {it.lessonSnippet && (
+                          <p className="text-[var(--fg)]/80 leading-relaxed line-clamp-3">
+                            {it.lessonSnippet}
+                          </p>
+                        )}
+
+                        {/* Status */}
+                        <div className="flex items-center justify-between">
+                          {!it.hasLesson ? (
+                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60">
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                              <span>Lesson not generated yet</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 text-sm text-green-600">
+                              <CheckCircle className="w-4 h-4" />
+                              <span>Ready to start</span>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60 group-hover:text-brand transition-colors">
+                            <span>Start learning</span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </Link>
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
-      </div>
-    </Container>
+          </div>
+
+          {/* Motivation Section */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand via-purple-600 to-brand p-8 text-center text-white shadow-2xl">
+            {/* Background effects */}
+            <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
+            <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+            
+            <div className="relative z-10 space-y-4">
+              <h2 className="text-2xl md:text-3xl font-bold">
+                Ready to crush today's goals? 🚀
+              </h2>
+              <p className="text-lg text-blue-100 max-w-2xl mx-auto">
+                Every lesson brings you closer to mastery. Keep up the great work and maintain your learning streak!
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+                <Link 
+                  href="/app/plans"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-brand font-semibold rounded-2xl hover:bg-blue-50 hover:scale-105 transition-all duration-300 shadow-lg"
+                >
+                  View All Plans
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link 
+                  href="/app/create"
+                  className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300"
+                >
+                  Add New Goal
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </div>
   );
 }
