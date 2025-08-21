@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LoadingState } from "@/components/ui/loading-state";
 import { ErrorState } from "@/components/ui/error-state";
-import { ArrowLeft, BookOpen, Target, Clock, CheckCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, BookOpen, Target, Clock, CheckCircle, Brain, Zap, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { MarkCompleteButton } from "@/app/components/MarkCompleteButton";
 
@@ -32,7 +31,6 @@ interface LessonResponse {
 
 export default function LessonPage() {
   const params = useParams();
-  const router = useRouter();
   const goalId = params.id as string;
   
   const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -86,36 +84,40 @@ export default function LessonPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href={`/app/plans/${goalId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Plan
-            </Link>
-          </Button>
+      <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
+        <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" asChild className="hover:bg-[var(--bg)]/50">
+              <Link href={`/app/plans/${goalId}`}>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Plan
+              </Link>
+            </Button>
+          </div>
+          <LoadingState type="lesson" />
         </div>
-        <LoadingState type="lesson" />
       </div>
     );
   }
 
   if (isError || !lesson) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href={`/app/plans/${goalId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Plan
-            </Link>
-          </Button>
+      <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
+        <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" asChild className="hover:bg-[var(--bg)]/50">
+              <Link href={`/app/plans/${goalId}`}>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Plan
+              </Link>
+            </Button>
+          </div>
+          <ErrorState
+            title="Lesson Error"
+            message={error || "Failed to load lesson"}
+            onRetry={() => window.location.reload()}
+          />
         </div>
-        <ErrorState
-          title="Lesson Error"
-          message={error || "Failed to load lesson"}
-          onRetry={() => window.location.reload()}
-        />
       </div>
     );
   }
@@ -135,233 +137,260 @@ export default function LessonPage() {
   const totalQuestions = lesson.quiz.length;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" asChild className="hover:bg-muted/50">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
+      <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            asChild 
+            className="hover:bg-[var(--bg)]/50 w-fit"
+          >
             <Link href={`/app/plans/${goalId}`}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Plan
             </Link>
           </Button>
-        </div>
-        <div className="flex items-center gap-3">
-          {isReused && (
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">
-              <BookOpen className="h-3 w-3 mr-1" />
-              Cached
-            </Badge>
-          )}
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-full text-sm text-muted-foreground">
-            <Clock className="h-4 w-4" />
-            <span className="font-medium">{lesson.est_minutes} min</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Lesson Header */}
-      <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
-        <CardHeader className="text-center pb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-700 dark:text-blue-300 text-sm font-medium mb-4">
-            <Target className="h-4 w-4" />
-            Today&apos;s Learning Focus
-          </div>
-          <CardTitle className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-            {lesson.topic}
-          </CardTitle>
-          <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              <span className="font-medium">{lesson.est_minutes} minutes estimated</span>
-            </div>
+          
+          <div className="flex flex-wrap items-center gap-3">
             {isReused && (
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200 px-3 py-1.5">
                 <BookOpen className="h-3 w-3 mr-1" />
-                Cached Lesson
+                Cached
               </Badge>
             )}
-          </div>
-        </CardHeader>
-      </Card>
-
-      {/* Reading Section */}
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300">
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-3 text-2xl font-bold text-blue-700 dark:text-blue-300">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-              <BookOpen className="h-6 w-6" />
+            <div className="flex items-center gap-2 px-4 py-2 bg-[var(--bg)]/50 border border-[var(--border)]/40 rounded-2xl text-sm text-[var(--fg)]/80 backdrop-blur-sm">
+              <Clock className="h-4 w-4" />
+              <span className="font-medium">{lesson.est_minutes} min</span>
             </div>
-            Lesson Content
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="prose prose-lg max-w-none">
-            <p className="text-foreground leading-relaxed text-lg font-medium">
-              {lesson.reading}
-            </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Quiz Section */}
-      {lesson.quiz && lesson.quiz.length > 0 && (
-        <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-3 text-2xl font-bold text-purple-700 dark:text-purple-300">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                <BookOpen className="h-6 w-6" />
-              </div>
-              Knowledge Check ({totalQuestions} questions)
-            </CardTitle>
-            <CardDescription className="text-lg text-muted-foreground">
-              Test your understanding of today&apos;s material
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-0 space-y-6">
-            {lesson.quiz.map((question, questionIndex) => (
-              <div key={questionIndex} className="space-y-4 p-6 border-2 border-muted/50 rounded-xl bg-muted/20">
-                <h4 className="font-bold text-xl text-foreground leading-tight">
-                  {questionIndex + 1}. {question.q}
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {question.a.map((answer, answerIndex) => (
-                    <div
-                      key={answerIndex}
-                      className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] ${
-                        selectedAnswers[questionIndex] === answerIndex
-                          ? "border-primary bg-primary/10 shadow-lg ring-2 ring-primary/20"
-                          : "border-muted/50 hover:border-primary/50 hover:bg-muted/30 hover:shadow-md"
-                      } ${
-                        quizSubmitted && answerIndex === question.correct_index
-                          ? "border-green-500 bg-green-50 dark:bg-green-950 shadow-lg ring-2 ring-green-200"
-                          : ""
-                      } ${
-                        quizSubmitted && 
-                        selectedAnswers[questionIndex] === answerIndex && 
-                        answerIndex !== question.correct_index
-                          ? "border-red-500 bg-red-50 dark:bg-red-950 shadow-lg ring-2 ring-red-200"
-                          : ""
-                      }`}
-                      onClick={() => !quizSubmitted && handleAnswerSelect(questionIndex, answerIndex)}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold ${
-                          selectedAnswers[questionIndex] === answerIndex
-                            ? "border-primary bg-primary text-primary-foreground shadow-md"
-                            : "border-muted/50 bg-muted/50 text-muted-foreground"
-                        }`}>
-                          {String.fromCharCode(65 + answerIndex)}
-                        </div>
-                        <span className="text-base font-medium leading-relaxed">
-                          {answer}
-                        </span>
-                      </div>
-                      {quizSubmitted && answerIndex === question.correct_index && (
-                        <CheckCircle className="h-6 w-6 text-green-600 ml-auto mt-2" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+        {/* Lesson Header */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand via-purple-600 to-brand p-8 text-center text-white shadow-2xl">
+          {/* Background effects */}
+          <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
+          <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+          
+          <div className="relative z-10 space-y-6">
+            <div className="inline-flex items-center gap-2 px-6 py-3 border border-white/20 bg-white/10 backdrop-blur-md rounded-full text-sm font-medium">
+              <Target className="h-4 w-4" />
+              Today&apos;s Learning Focus
+            </div>
             
-            {!quizSubmitted ? (
-              <Button 
-                onClick={handleQuizSubmit}
-                className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300"
-                disabled={selectedAnswers.length !== totalQuestions}
-              >
-                Submit Quiz
-              </Button>
-            ) : (
-              <div className="text-center p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-2xl border-2 border-green-200 dark:border-green-800">
-                <div className="text-3xl font-bold mb-3 text-green-700 dark:text-green-300">
-                  Quiz Results: {correctAnswers}/{totalQuestions} correct
-                </div>
-                <div className="text-xl mb-4 text-green-600 dark:text-green-400">
-                  {correctAnswers === totalQuestions 
-                    ? "🎉 Excellent! You've mastered this material!" 
-                    : correctAnswers >= totalQuestions / 2
-                    ? "👍 Good effort! You're on the right track."
-                    : "📚 Keep studying! Review the material and try again."}
-                </div>
-                <p className="text-green-700 dark:text-green-400 font-medium">
-                  {correctAnswers === totalQuestions 
-                    ? "You're ready to move forward!" 
-                    : "Take your time to understand the concepts before continuing."}
-                </p>
+            <h1 className="text-3xl md:text-5xl font-bold leading-tight tracking-tight">
+              {lesson.topic}
+            </h1>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span className="font-medium">{lesson.est_minutes} minutes estimated</span>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Exercise Section */}
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300">
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-3 text-2xl font-bold text-orange-700 dark:text-orange-300">
-            <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-              <Target className="h-6 w-6" />
+              {isReused && (
+                <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                  <BookOpen className="h-3 w-3 mr-1" />
+                  Cached Lesson
+                </Badge>
+              )}
             </div>
-            Practice Exercise
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="prose prose-lg max-w-none">
-            <p className="text-foreground leading-relaxed text-lg font-medium">
-              {lesson.exercise}
-            </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Citations */}
-      {lesson.citations && lesson.citations.length > 0 && (
-        <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-3 text-2xl font-bold text-slate-700 dark:text-slate-300">
-              <div className="p-2 bg-slate-100 dark:bg-slate-900/30 rounded-lg">
-                <BookOpen className="h-6 w-6" />
+        {/* Reading Section */}
+        <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center">
+              <BookOpen className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Lesson Content</h2>
+              <p className="text-[var(--fg)]/70">Read and understand the core concepts</p>
+            </div>
+          </div>
+          
+          <div className="prose prose-lg max-w-none">
+            <div className="text-[var(--fg)] leading-relaxed text-lg md:text-xl font-normal space-y-6">
+              {lesson.reading.split('\n').map((paragraph, index) => (
+                <p key={index} className="leading-8">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Quiz Section */}
+        {lesson.quiz && lesson.quiz.length > 0 && (
+          <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                <Brain className="h-8 w-8 text-white" />
               </div>
-              Sources & References
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-3">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Knowledge Check</h2>
+                <p className="text-[var(--fg)]/70">{totalQuestions} questions to test your understanding</p>
+              </div>
+            </div>
+            
+            <div className="space-y-8">
+              {lesson.quiz.map((question, questionIndex) => (
+                <div key={questionIndex} className="p-6 border-2 border-[var(--border)]/40 rounded-2xl bg-[var(--bg)]/30 backdrop-blur-sm">
+                  <h3 className="font-bold text-xl md:text-2xl text-[var(--fg)] leading-tight mb-6">
+                    {questionIndex + 1}. {question.q}
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 gap-4">
+                    {question.a.map((answer, answerIndex) => (
+                      <div
+                        key={answerIndex}
+                        className={`p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] ${
+                          selectedAnswers[questionIndex] === answerIndex
+                            ? "border-brand bg-brand/10 shadow-lg ring-2 ring-brand/20"
+                            : "border-[var(--border)]/50 hover:border-brand/50 hover:bg-[var(--bg)]/30 hover:shadow-md"
+                        } ${
+                          quizSubmitted && answerIndex === question.correct_index
+                            ? "border-green-500 bg-green-50 dark:bg-green-950 shadow-lg ring-2 ring-green-200"
+                            : ""
+                        } ${
+                          quizSubmitted && 
+                          selectedAnswers[questionIndex] === answerIndex && 
+                          answerIndex !== question.correct_index
+                            ? "border-red-500 bg-red-50 dark:bg-red-950 shadow-lg ring-2 ring-red-200"
+                            : ""
+                        }`}
+                        onClick={() => !quizSubmitted && handleAnswerSelect(questionIndex, answerIndex)}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold ${
+                            selectedAnswers[questionIndex] === answerIndex
+                              ? "border-brand bg-brand text-white shadow-md"
+                              : "border-[var(--border)]/50 bg-[var(--bg)]/50 text-[var(--fg)]/60"
+                          }`}>
+                            {String.fromCharCode(65 + answerIndex)}
+                          </div>
+                          <span className="text-lg font-medium leading-relaxed text-[var(--fg)]">
+                            {answer}
+                          </span>
+                        </div>
+                        {quizSubmitted && answerIndex === question.correct_index && (
+                          <CheckCircle className="h-6 w-6 text-green-600 ml-auto mt-2" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              
+              {!quizSubmitted ? (
+                <Button 
+                  onClick={handleQuizSubmit}
+                  className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl"
+                  disabled={selectedAnswers.length !== totalQuestions}
+                >
+                  Submit Quiz
+                </Button>
+              ) : (
+                <div className="text-center p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-3xl border-2 border-green-200 dark:border-green-800">
+                  <div className="text-3xl md:text-4xl font-bold mb-4 text-green-700 dark:text-green-300">
+                    Quiz Results: {correctAnswers}/{totalQuestions} correct
+                  </div>
+                  <div className="text-xl mb-6 text-green-600 dark:text-green-400">
+                    {correctAnswers === totalQuestions 
+                      ? "🎉 Excellent! You&apos;ve mastered this material!" 
+                      : correctAnswers >= totalQuestions / 2
+                      ? "👍 Good effort! You&apos;re on the right track."
+                      : "📚 Keep studying! Review the material and try again."}
+                  </div>
+                  <p className="text-green-700 dark:text-green-400 font-medium text-lg">
+                    {correctAnswers === totalQuestions 
+                      ? "You&apos;re ready to move forward!" 
+                      : "Take your time to understand the concepts before continuing."}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Exercise Section */}
+        <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center">
+              <Zap className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Practice Exercise</h2>
+              <p className="text-[var(--fg)]/70">Apply what you&apos;ve learned</p>
+            </div>
+          </div>
+          
+          <div className="prose prose-lg max-w-none">
+            <div className="text-[var(--fg)] leading-relaxed text-lg md:text-xl font-normal space-y-6">
+              {lesson.exercise.split('\n').map((paragraph, index) => (
+                <p key={index} className="leading-8">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Citations */}
+        {lesson.citations && lesson.citations.length > 0 && (
+          <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-slate-500 to-slate-600 rounded-2xl flex items-center justify-center">
+                <ExternalLink className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Sources & References</h2>
+                <p className="text-[var(--fg)]/70">Learn more from these resources</p>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
               {lesson.citations.map((citation, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
-                  <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                <div key={index} className="flex items-start gap-4 p-4 bg-[var(--bg)]/30 rounded-2xl border border-[var(--border)]/30">
+                  <div className="w-3 h-3 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-lg text-[var(--fg)]/80 leading-relaxed">
                     {citation}
                   </p>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Completion Section */}
-      <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
-        <CardContent className="p-8 text-center">
-          <div className="w-16 h-16 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
-            <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
-          <h3 className="text-2xl font-bold mb-3 text-green-800 dark:text-green-200">
-            Great job completing today&apos;s lesson!
-          </h3>
-          <p className="text-green-700 dark:text-green-300 text-lg mb-6">
-            Mark this lesson as complete to track your progress and unlock the next one
-          </p>
-          <MarkCompleteButton 
-            goalId={goalId}
-            variant="default"
-            size="lg"
-            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300"
-          />
-        </CardContent>
-      </Card>
+        )}
+
+        {/* Completion Section */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 p-8 text-center text-white shadow-2xl">
+          {/* Background effects */}
+          <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
+          <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+          
+          <div className="relative z-10 space-y-6">
+            <div className="w-20 h-20 mx-auto bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
+              <CheckCircle className="h-10 w-10 text-white" />
+            </div>
+            
+            <h3 className="text-2xl md:text-3xl font-bold">
+              Great job completing today&apos;s lesson!
+            </h3>
+            
+            <p className="text-lg text-green-100 max-w-2xl mx-auto">
+              Mark this lesson as complete to track your progress and unlock the next one
+            </p>
+            
+            <MarkCompleteButton 
+              goalId={goalId}
+              variant="default"
+              size="lg"
+              className="bg-white text-green-600 hover:bg-green-50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl px-8 py-4 text-lg font-semibold"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
