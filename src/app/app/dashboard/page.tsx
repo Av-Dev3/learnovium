@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Container } from "@/components/layout/container";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { 
   BookOpen, 
   Target, 
   TrendingUp, 
-  Calendar, 
   Clock, 
   Zap, 
   Plus, 
@@ -287,7 +286,7 @@ export default async function DashboardPage() {
                 <h1 className="font-heading text-4xl md:text-5xl font-bold tracking-tight text-[var(--fg)]">
                   Welcome back! 👋
                 </h1>
-                <p className="text-xl text-[var(--fg)]/70">Here's your learning overview for today</p>
+                <p className="text-xl text-[var(--fg)]/70">Here&apos;s your learning overview for today</p>
               </div>
               
               <Link 
@@ -320,7 +319,7 @@ export default async function DashboardPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-[var(--fg)]">{activeLessons}</p>
-                    <p className="text-sm text-[var(--fg)]/70">Today's Lessons</p>
+                    <p className="text-sm text-[var(--fg)]/70">Today&apos;s Lessons</p>
                   </div>
                 </div>
               </div>
@@ -410,7 +409,7 @@ export default async function DashboardPage() {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <BookOpen className="w-6 h-6 text-brand" />
-              <h2 className="text-2xl font-bold text-[var(--fg)]">Today's Lessons</h2>
+              <h2 className="text-2xl font-bold text-[var(--fg)]">Today&apos;s Lessons</h2>
             </div>
 
             {(!items.length || items.every(i => !i.lessonTitle)) ? (
@@ -505,9 +504,9 @@ export default async function DashboardPage() {
             <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
             
             <div className="relative z-10 space-y-4">
-              <h2 className="text-2xl md:text-3xl font-bold">
-                Ready to crush today's goals? 🚀
-              </h2>
+                              <h2 className="text-2xl md:text-3xl font-bold">
+                  Ready to crush today&apos;s goals? 🚀
+                </h2>
               <p className="text-lg text-blue-100 max-w-2xl mx-auto">
                 Every lesson brings you closer to mastery. Keep up the great work and maintain your learning streak!
               </p>
