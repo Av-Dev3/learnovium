@@ -221,7 +221,7 @@ export default function Dashboard() {
             </Link>
 
             <Link 
-              href="/app/history"
+              href="/app/flashcards"
               className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-purple-500/40"
             >
               <div className="space-y-4">
@@ -229,7 +229,22 @@ export default function Dashboard() {
                   <Brain className="h-8 w-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-purple-600 transition-colors">Learning History</h3>
+                  <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-purple-600 transition-colors">Flashcards</h3>
+                  <p className="text-sm text-[var(--fg)]/70">Master concepts with spaced repetition</p>
+                </div>
+              </div>
+            </Link>
+
+            <Link 
+              href="/app/history"
+              className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-orange-500/40"
+            >
+              <div className="space-y-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <TrendingUp className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-orange-600 transition-colors">Learning History</h3>
                   <p className="text-sm text-[var(--fg)]/70">Track your achievements and progress</p>
                 </div>
               </div>
@@ -330,21 +345,28 @@ export default function Dashboard() {
               Every lesson brings you closer to mastery. Keep up the great work and maintain your learning streak!
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-              <Link 
-                href="/app/plans"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-brand font-semibold rounded-2xl hover:bg-blue-50 hover:scale-105 transition-all duration-300 shadow-lg"
-              >
-                View All Plans
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link 
-                href="/app/create"
-                className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300"
-              >
-                Add New Goal
-              </Link>
-            </div>
+                          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+                <Link 
+                  href="/app/plans"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-brand font-semibold rounded-2xl hover:bg-blue-50 hover:scale-105 transition-all duration-300 shadow-lg"
+                >
+                  View All Plans
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link 
+                  href="/app/flashcards"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-brand font-semibold rounded-2xl hover:bg-blue-50 hover:scale-105 transition-all duration-300 shadow-lg"
+                >
+                  Study Flashcards
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link 
+                  href="/app/create"
+                  className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300"
+                >
+                  Add New Goal
+                </Link>
+              </div>
           </div>
         </div>
       </div>
