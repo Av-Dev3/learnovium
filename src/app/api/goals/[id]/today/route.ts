@@ -126,7 +126,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       
       // Log the AI call
       const latency_ms = Date.now() - t0;
-      const cost_usd = _usage ? (_usage.prompt_tokens * 0.00015/1000 + _usage.completion_tokens * 0.0006/1000) : 0;
+      
+      // Use the proper cost calculation from costs.ts
+      let cost_usd = 0;
+      if (_usage) {
+        const { estimateCostUSD } = await import("@/lib/costs");
+        cost_usd = estimateCostUSD(
+          process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          _usage.prompt_tokens || 0,
+          _usage.completion_tokens || 0
+        );
+      }
       
       // Log the AI call for tracking
       try {
@@ -205,6 +215,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         focus: goal.focus,
         level: goal.level
       });
+      
+      // Log the failed AI call for tracking
+      const latency_ms = Date.now() - t0;
+      try {
+        await logCall({
+          user_id: user.id,
+          goal_id: goalId,
+          endpoint: "lesson",
+          model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          prompt_tokens: 0, // We don't have usage data for failed calls
+          completion_tokens: 0,
+          success: false,
+          latency_ms,
+          cost_usd: 0,
+          error_text: error instanceof Error ? error.message : "Unknown error",
+        });
+        console.log("Failed AI call logged successfully");
+      } catch (logError) {
+        console.error("Failed to log failed AI call:", logError);
+      }
       
       // Try to generate a fallback lesson
       try {

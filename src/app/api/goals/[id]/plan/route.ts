@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/api/utils";
 import { retrieveContext } from "@/rag/retriever";
 import { generatePlan } from "@/lib/aiCall";
 import { buildPlannerPrompt } from "@/lib/prompts";
+import { logCall } from "@/lib/aiGuard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,10 +14,15 @@ export const dynamic = "force-dynamic";
  * - Else generate a plan (with RAG context), save plan_json + bump plan_version, and return it.
  */
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  let user: { id: string; email?: string } | null = null;
+  let goalId: string | null = null;
   try {
-    const { user, supabase, res } = await requireUser(req);
-    if (!user) return res!;
-    const { id: goalId } = await params;
+    const userResult = await requireUser(req);
+    user = userResult.user;
+    const { supabase, res } = userResult;
+    if (!user || !supabase) return res!;
+    const paramsResult = await params;
+    goalId = paramsResult.id;
     const url = new URL(req.url);
     const force = url.searchParams.get("force") === "true";
 
@@ -40,7 +46,37 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const msgs = buildPlannerPrompt(`Topic: ${goal.topic}\nFocus: ${goal.focus || "general"}\nUse this context:\n${context}`);
 
     // 4) Generate plan
-    const { data: plan } = await generatePlan(msgs, user.id, goalId);
+    const t0 = Date.now();
+    const { data: plan, usage } = await generatePlan(msgs, user.id, goalId);
+    
+    // Log the AI call for tracking
+    const latency_ms = Date.now() - t0;
+    let cost_usd = 0;
+    if (usage) {
+      const { estimateCostUSD } = await import("@/lib/costs");
+      cost_usd = estimateCostUSD(
+        "gpt-5-mini",
+        usage.prompt_tokens || 0,
+        usage.completion_tokens || 0
+      );
+    }
+    
+    try {
+      await logCall({
+        user_id: user.id,
+        goal_id: goalId,
+        endpoint: "planner",
+        model: "gpt-5-mini",
+        prompt_tokens: usage?.prompt_tokens || 0,
+        completion_tokens: usage?.completion_tokens || 0,
+        success: true,
+        latency_ms,
+        cost_usd,
+      });
+      console.log("AI call logged successfully");
+    } catch (logError) {
+      console.error("Failed to log AI call:", logError);
+    }
 
     // 5) Save plan_json + bump version
     const { error: uErr } = await supabase
@@ -53,6 +89,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json(plan);
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : "Unknown error in GET /plan";
+    
+          // Log the failed AI call for tracking
+      try {
+        await logCall({
+          user_id: user?.id,
+          goal_id: goalId || undefined,
+          endpoint: "planner",
+          model: "gpt-5-mini",
+          prompt_tokens: 0,
+          completion_tokens: 0,
+          success: false,
+          latency_ms: 0,
+          cost_usd: 0,
+          error_text: errorMessage,
+        });
+        console.log("Failed AI call logged successfully");
+      } catch (logError) {
+        console.error("Failed to log failed AI call:", logError);
+      }
+    
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 } 

@@ -4,7 +4,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { buildPlannerPromptWithRAG } from "@/lib/prompts";
 import { generatePlan } from "@/lib/aiCall";
 // import { canonicalizeSignature } from "@/lib/goalSignature"; // Temporarily disabled
-// import { checkCapsOrThrow, logCall } from "@/lib/aiGuard"; // Temporarily disabled
+import { logCall } from "@/lib/aiGuard"; // Re-enabled for AI call tracking
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -162,23 +162,37 @@ export async function POST(req: NextRequest) {
       
       // Log the AI call
       const latency_ms = Date.now() - t0;
-      const cost_usd = usage ? (usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000) : 0;
+      
+      // Use the proper cost calculation from costs.ts
+      let cost_usd = 0;
+      if (usage) {
+        const { estimateCostUSD } = await import("@/lib/costs");
+        cost_usd = estimateCostUSD(
+          "gpt-5-mini", // or get from usage
+          usage.prompt_tokens || 0,
+          usage.completion_tokens || 0
+        );
+      }
       
       console.log("POST /api/goals - AI generation successful:", { latency_ms, cost_usd });
       
-      // Temporarily disabled while setting up database migrations
-      /*
-      await logCall({
-        user_id: user.id,
-        endpoint: "planner",
-        model: "gpt-5-mini", // or get from usage
-        prompt_tokens: usage?.prompt_tokens || 0,
-        completion_tokens: usage?.completion_tokens || 0,
-        success: true,
-        latency_ms,
-        cost_usd,
-      });
-      */
+      // Log the AI call for tracking
+      try {
+        await logCall({
+          user_id: user.id,
+          goal_id: undefined, // No goal_id yet since we're creating it
+          endpoint: "planner",
+          model: "gpt-5-mini",
+          prompt_tokens: usage?.prompt_tokens || 0,
+          completion_tokens: usage?.completion_tokens || 0,
+          success: true,
+          latency_ms,
+          cost_usd,
+        });
+        console.log("AI call logged successfully");
+      } catch (logError) {
+        console.error("Failed to log AI call:", logError);
+      }
     } catch (error) {
       console.error("POST /api/goals - AI plan generation failed:", error);
       
@@ -208,22 +222,25 @@ export async function POST(req: NextRequest) {
       
       console.log("POST /api/goals - Using fallback plan:", plan_json);
       
-      // Log the fallback
-      // const latency_ms = Date.now() - t0; // Temporarily disabled
-      // Temporarily disabled while setting up database migrations
-      /*
-      await logCall({
-        user_id: user.id,
-        endpoint: "planner",
-        model: "fallback",
-        prompt_tokens: 0,
-        completion_tokens: 0,
-        success: false,
-        latency_ms,
-        cost_usd: 0,
-        error_text: error instanceof Error ? error.message : "Unknown error"
-      });
-      */
+      // Log the failed AI call for tracking
+      const latency_ms = Date.now() - t0;
+      try {
+        await logCall({
+          user_id: user.id,
+          goal_id: undefined,
+          endpoint: "planner",
+          model: "fallback",
+          prompt_tokens: 0,
+          completion_tokens: 0,
+          success: false,
+          latency_ms,
+          cost_usd: 0,
+          error_text: error instanceof Error ? error.message : "Unknown error",
+        });
+        console.log("Failed AI call logged successfully");
+      } catch (logError) {
+        console.error("Failed to log failed AI call:", logError);
+      }
     }
 
     // Save template for future reuse
