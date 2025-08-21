@@ -15,7 +15,8 @@ import {
   User,
   HelpCircle,
   ChevronRight,
-  Shield
+  Shield,
+  Brain
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -144,6 +145,7 @@ function AppNav() {
   const navigation = [
     { name: "Dashboard", href: "/app", icon: Home },
     { name: "Plans", href: "/app/plans", icon: Target },
+    { name: "Flashcards", href: "/app/flashcards", icon: Brain },
     { name: "History", href: "/app/history", icon: History },
     { name: "Create", href: "/app/create", icon: Plus },
     { name: "Settings", href: "/app/settings", icon: Settings },
@@ -198,6 +200,7 @@ function MobileAppNav() {
   const navigation = [
     { name: "Dashboard", href: "/app", icon: Home, description: "Overview and progress" },
     { name: "Plans", href: "/app/plans", icon: Target, description: "Your learning plans" },
+    { name: "Flashcards", href: "/app/flashcards", icon: Brain, description: "Study with flashcards" },
     { name: "History", href: "/app/history", icon: History, description: "Past activities" },
     { name: "Create", href: "/app/create", icon: Plus, description: "Start something new" },
     { name: "Settings", href: "/app/settings", icon: Settings, description: "Preferences & account" },
