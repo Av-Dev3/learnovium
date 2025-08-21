@@ -131,53 +131,89 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Enhanced Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center">
-                <Target className="h-6 w-6 text-white" />
+        {/* Modern Stats Grid with New Design */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Active Goals Card */}
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-100 dark:from-blue-950/30 dark:via-blue-900/20 dark:to-indigo-900/30 border border-blue-200/50 dark:border-blue-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+            {/* Animated background elements */}
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700" />
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-indigo-400/20 to-purple-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+            
+            <div className="relative p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <Target className="h-7 w-7 text-white" />
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">{safeGoals.length}</div>
+                  <div className="text-xs font-medium text-blue-600 dark:text-blue-300 uppercase tracking-wider">Goals</div>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-[var(--fg)]">{safeGoals.length}</p>
-                <p className="text-sm text-[var(--fg)]/70">Active Goals</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
-                <BookOpen className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-[var(--fg)]">{completedToday}</p>
-                <p className="text-sm text-[var(--fg)]/70">Today&apos;s Lessons</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                <Clock className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-[var(--fg)]">{totalEstimatedTime}</p>
-                <p className="text-sm text-[var(--fg)]/70">Minutes Today</p>
-              </div>
+              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">Active Goals</h3>
+              <p className="text-sm text-blue-700 dark:text-blue-200 leading-relaxed">Your current learning objectives and progress</p>
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center">
-                <Flame className="h-6 w-6 text-white" />
+          {/* Today's Lessons Card */}
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-100 to-teal-100 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-teal-900/30 border border-emerald-200/50 dark:border-emerald-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+            {/* Animated background elements */}
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-emerald-400/20 to-teal-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700" />
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-teal-400/20 to-cyan-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+            
+            <div className="relative p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <BookOpen className="h-7 w-7 text-white" />
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">{completedToday}</div>
+                  <div className="text-xs font-medium text-emerald-600 dark:text-emerald-300 uppercase tracking-wider">Lessons</div>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-[var(--fg)]">{totalStreak}</p>
-                <p className="text-sm text-[var(--fg)]/70">Day Streak</p>
+              <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-2">Today&apos;s Lessons</h3>
+              <p className="text-sm text-emerald-700 dark:text-emerald-200 leading-relaxed">AI-powered content ready for you</p>
+            </div>
+          </div>
+
+          {/* Time Estimate Card */}
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50 via-purple-100 to-violet-100 dark:from-purple-950/30 dark:via-purple-900/20 dark:to-violet-900/30 border border-purple-200/50 dark:border-purple-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+            {/* Animated background elements */}
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-violet-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700" />
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-violet-400/20 to-fuchsia-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+            
+            <div className="relative p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <Clock className="h-7 w-7 text-white" />
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">{totalEstimatedTime}</div>
+                  <div className="text-xs font-medium text-purple-600 dark:text-purple-300 uppercase tracking-wider">Minutes</div>
+                </div>
               </div>
+              <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2">Time Today</h3>
+              <p className="text-sm text-purple-700 dark:text-purple-200 leading-relaxed">Estimated learning time for today</p>
+            </div>
+          </div>
+
+          {/* Streak Card */}
+          <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-50 via-orange-100 to-amber-100 dark:from-orange-950/30 dark:via-orange-900/20 dark:to-amber-900/30 border border-orange-200/50 dark:border-orange-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+            {/* Animated background elements */}
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-orange-400/20 to-amber-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700" />
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-amber-400/20 to-yellow-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+            
+            <div className="relative p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <Flame className="h-7 w-7 text-white" />
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">{totalStreak}</div>
+                  <div className="text-xs font-medium text-orange-600 dark:text-orange-300 uppercase tracking-wider">Days</div>
+                </div>
+              </div>
+              <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2">Learning Streak</h3>
+              <p className="text-sm text-orange-700 dark:text-orange-200 leading-relaxed">Keep the momentum going strong</p>
             </div>
           </div>
         </div>
@@ -189,64 +225,76 @@ export default function Dashboard() {
             <h2 className="text-2xl font-bold text-[var(--fg)]">Quick Actions</h2>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Create New Goal Card */}
             <Link 
               href="/app/create"
-              className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-brand/40"
+              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-50 via-indigo-100 to-purple-100 dark:from-indigo-950/30 dark:via-indigo-900/20 dark:to-purple-900/30 border border-indigo-200/50 dark:border-indigo-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-indigo-400/60"
             >
-              <div className="space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              {/* Animated background elements */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-indigo-400/20 to-purple-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              
+              <div className="relative p-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
                   <Plus className="h-8 w-8 text-white" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-brand transition-colors">Create New Goal</h3>
-                  <p className="text-sm text-[var(--fg)]/70">Start learning a new skill with AI guidance</p>
-                </div>
+                <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-200 transition-colors">Create New Goal</h3>
+                <p className="text-sm text-indigo-700 dark:text-indigo-200 leading-relaxed">Start learning a new skill with AI guidance</p>
               </div>
             </Link>
 
+            {/* View All Plans Card */}
             <Link 
               href="/app/plans"
-              className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-green-500/40"
+              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-100 to-teal-100 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-teal-900/30 border border-emerald-200/50 dark:border-emerald-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-emerald-400/60"
             >
-              <div className="space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              {/* Animated background elements */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-emerald-400/20 to-teal-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-teal-400/20 to-cyan-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              
+              <div className="relative p-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
                   <Trophy className="h-8 w-8 text-white" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-green-600 transition-colors">View All Plans</h3>
-                  <p className="text-sm text-[var(--fg)]/70">See your learning progress and plans</p>
-                </div>
+                <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-2 group-hover:text-emerald-700 dark:group-hover:text-emerald-200 transition-colors">View All Plans</h3>
+                <p className="text-sm text-emerald-700 dark:text-emerald-200 leading-relaxed">See your learning progress and plans</p>
               </div>
             </Link>
 
+            {/* Flashcards Card */}
             <Link 
               href="/app/flashcards"
-              className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-purple-500/40"
+              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50 via-purple-100 to-violet-100 dark:from-purple-950/30 dark:via-purple-900/20 dark:to-violet-900/30 border border-purple-200/50 dark:border-purple-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-purple-400/60"
             >
-              <div className="space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              {/* Animated background elements */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-purple-400/20 to-violet-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-violet-400/20 to-fuchsia-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              
+              <div className="relative p-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
                   <Brain className="h-8 w-8 text-white" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-purple-600 transition-colors">Flashcards</h3>
-                  <p className="text-sm text-[var(--fg)]/70">Master concepts with spaced repetition</p>
-                </div>
+                <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2 group-hover:text-purple-700 dark:group-hover:text-purple-200 transition-colors">Flashcards</h3>
+                <p className="text-sm text-purple-700 dark:text-purple-200 leading-relaxed">Master concepts with spaced repetition</p>
               </div>
             </Link>
 
+            {/* Learning History Card */}
             <Link 
               href="/app/history"
-              className="group p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-orange-500/40"
+              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-50 via-orange-100 to-amber-100 dark:from-orange-950/30 dark:via-orange-900/20 dark:to-amber-900/30 border border-orange-200/50 dark:border-orange-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-orange-400/60"
             >
-              <div className="space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              {/* Animated background elements */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-orange-400/20 to-amber-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-amber-400/20 to-yellow-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              
+              <div className="relative p-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
                   <TrendingUp className="h-8 w-8 text-white" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-[var(--fg)] group-hover:text-orange-600 transition-colors">Learning History</h3>
-                  <p className="text-sm text-[var(--fg)]/70">Track your achievements and progress</p>
-                </div>
+                <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2 group-hover:text-orange-700 dark:group-hover:text-orange-200 transition-colors">Learning History</h3>
+                <p className="text-sm text-orange-700 dark:text-orange-200 leading-relaxed">Track your achievements and progress</p>
               </div>
             </Link>
           </div>
@@ -307,18 +355,21 @@ export default function Dashboard() {
               }).filter(Boolean)}
             </div>
           ) : (
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[var(--bg)]/50 to-[color-mix(in_oklab,var(--bg)_90%,blue_5%)] border border-[var(--border)]/40 p-12 text-center backdrop-blur-sm">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(59,130,246,0.1),transparent_50%)]" />
-              <div className="relative z-10">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-brand to-purple-600 flex items-center justify-center shadow-xl">
+            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-100 dark:from-blue-950/30 dark:via-blue-900/20 dark:to-indigo-900/30 border border-blue-200/50 dark:border-blue-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+              {/* Animated background elements */}
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-indigo-400/20 to-purple-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              
+              <div className="relative p-12 text-center">
+                <div className="w-24 h-24 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl group-hover:shadow-2xl group-hover:scale-110 transition-all duration-300">
                   <Target className="h-12 w-12 text-white" aria-hidden="true" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-[var(--fg)]">Ready to start learning?</h3>
-                <p className="text-[var(--fg)]/70 mb-6 max-w-md mx-auto">
+                <h3 className="text-2xl font-bold mb-3 text-blue-900 dark:text-blue-100">Ready to start learning?</h3>
+                <p className="text-blue-700 dark:text-blue-200 mb-6 max-w-md mx-auto leading-relaxed">
                   Create your first learning goal and begin your journey to mastering new skills
                 </p>
                 <Button 
-                  className="bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl px-6 py-3" 
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl px-6 py-3" 
                   asChild
                 >
                   <Link href="/app/create">
