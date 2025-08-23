@@ -194,12 +194,12 @@ export default function MetricsClient() {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-6 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-3 sm:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Admin Dashboard</h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-1">Monitor AI usage, budgets, and system performance</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">Admin Dashboard</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-1 text-sm sm:text-base">Monitor AI usage, budgets, and system performance</p>
           <div className="mt-2">
             <a 
               href="/app/admin/ai-metrics" 
@@ -210,9 +210,9 @@ export default function MetricsClient() {
             </a>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-3">
           <Select value={endpointFilter} onValueChange={setEndpointFilter}>
-            <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <SelectTrigger className="w-full sm:w-auto border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
               <SelectValue placeholder="All endpoints" />
             </SelectTrigger>
             <SelectContent>
@@ -226,7 +226,7 @@ export default function MetricsClient() {
             variant="outline" 
             onClick={loadAll} 
             disabled={isLoading}
-            className="border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700"
+            className="w-full sm:w-auto border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
@@ -235,7 +235,7 @@ export default function MetricsClient() {
       </div>
 
       {/* Key Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center">

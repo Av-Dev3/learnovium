@@ -237,23 +237,23 @@ export default function AIMetricsClient() {
   }
 
   return (
-    <div className="p-8 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Brain className="h-8 w-8 text-blue-600" />
+    <div className="p-3 sm:p-8 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3">
+            <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
             AI Metrics Dashboard
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm sm:text-base">
             Comprehensive tracking of all AI API calls, costs, and performance
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={() => loadMetrics(currentPage)} variant="outline" disabled={isLoading}>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button onClick={() => loadMetrics(currentPage)} variant="outline" disabled={isLoading} className="w-full sm:w-auto">
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button onClick={downloadCSV} variant="outline">
+          <Button onClick={downloadCSV} variant="outline" className="w-full sm:w-auto">
             <Download className="h-4 w-4 mr-2" />
             Export CSV
           </Button>
@@ -261,7 +261,7 @@ export default function AIMetricsClient() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Cost</CardTitle>
@@ -324,9 +324,9 @@ export default function AIMetricsClient() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <Label htmlFor="endpoint">Endpoint</Label>
+              <Label htmlFor="endpoint" className="text-sm font-medium">Endpoint</Label>
               <Select value={filters.endpoint} onValueChange={(value) => handleFilterChange('endpoint', value)}>
                 <SelectTrigger className="w-full mt-1">
                   <SelectValue placeholder="All Endpoints" />
@@ -340,7 +340,7 @@ export default function AIMetricsClient() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="success">Status</Label>
+              <Label htmlFor="success" className="text-sm font-medium">Status</Label>
               <Select value={filters.success} onValueChange={(value) => handleFilterChange('success', value)}>
                 <SelectTrigger className="w-full mt-1">
                   <SelectValue placeholder="All Status" />
@@ -353,30 +353,32 @@ export default function AIMetricsClient() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="start_date">Start Date</Label>
+              <Label htmlFor="start_date" className="text-sm font-medium">Start Date</Label>
               <Input
                 id="start_date"
                 type="datetime-local"
+                className="mt-1"
                 value={filters.start_date}
                 onChange={(e) => handleFilterChange('start_date', e.target.value)}
               />
             </div>
             <div>
-              <Label htmlFor="end_date">End Date</Label>
+              <Label htmlFor="end_date" className="text-sm font-medium">End Date</Label>
               <Input
                 id="end_date"
                 type="datetime-local"
+                className="mt-1"
                 value={filters.end_date}
                 onChange={(e) => handleFilterChange('end_date', e.target.value)}
               />
             </div>
           </div>
-          <div className="flex gap-2 mt-4">
-            <Button onClick={applyFilters} size="sm">
+          <div className="flex flex-col sm:flex-row gap-2 mt-4">
+            <Button onClick={applyFilters} size="sm" className="w-full sm:w-auto">
               <Search className="h-4 w-4 mr-2" />
               Apply Filters
             </Button>
-            <Button onClick={clearFilters} variant="outline" size="sm">
+            <Button onClick={clearFilters} variant="outline" size="sm" className="w-full sm:w-auto">
               Clear Filters
             </Button>
           </div>
@@ -593,17 +595,18 @@ export default function AIMetricsClient() {
 
           {/* Bottom Pagination */}
           {metrics.pagination && metrics.pagination.total > 0 && (
-            <div className="flex items-center justify-center gap-2 mt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mt-4">
             <Button
               variant="outline"
               size="sm"
               onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage <= 1 || isLoading}
+              className="w-full sm:w-auto"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4 mr-1" />
               Previous
             </Button>
-            <span className="text-sm">
+            <span className="text-sm font-medium px-3 py-1">
               Page {currentPage} of {totalPages}
             </span>
             <Button
@@ -611,9 +614,10 @@ export default function AIMetricsClient() {
               size="sm"
               onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage >= totalPages || isLoading}
+              className="w-full sm:w-auto"
             >
               Next
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
             </div>
           )}
