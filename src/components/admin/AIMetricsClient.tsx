@@ -100,8 +100,8 @@ export default function AIMetricsClient() {
   
   // Filters and pagination
   const [filters, setFilters] = useState({
-    endpoint: '',
-    success: '',
+    endpoint: 'all',
+    success: 'all',
     start_date: '',
     end_date: ''
   });
@@ -117,8 +117,8 @@ export default function AIMetricsClient() {
       params.set('limit', pageSize.toString());
       params.set('offset', ((page - 1) * pageSize).toString());
       
-      if (filtersToApply.endpoint) params.set('endpoint', filtersToApply.endpoint);
-      if (filtersToApply.success) params.set('success', filtersToApply.success);
+      if (filtersToApply.endpoint && filtersToApply.endpoint !== 'all') params.set('endpoint', filtersToApply.endpoint);
+      if (filtersToApply.success && filtersToApply.success !== 'all') params.set('success', filtersToApply.success);
       if (filtersToApply.start_date) params.set('start_date', filtersToApply.start_date);
       if (filtersToApply.end_date) params.set('end_date', filtersToApply.end_date);
 
@@ -152,7 +152,7 @@ export default function AIMetricsClient() {
   };
 
   const clearFilters = () => {
-    const clearedFilters = { endpoint: '', success: '', start_date: '', end_date: '' };
+    const clearedFilters = { endpoint: 'all', success: 'all', start_date: '', end_date: '' };
     setFilters(clearedFilters);
     setCurrentPage(1);
     loadMetrics(1, clearedFilters);
@@ -332,7 +332,7 @@ export default function AIMetricsClient() {
                   <SelectValue placeholder="All Endpoints" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Endpoints</SelectItem>
+                  <SelectItem value="all">All Endpoints</SelectItem>
                   <SelectItem value="planner">Planner</SelectItem>
                   <SelectItem value="lesson">Lesson</SelectItem>
                   <SelectItem value="validator">Validator</SelectItem>
@@ -346,7 +346,7 @@ export default function AIMetricsClient() {
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="true">Success</SelectItem>
                   <SelectItem value="false">Error</SelectItem>
                 </SelectContent>

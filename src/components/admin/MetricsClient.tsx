@@ -70,7 +70,7 @@ export default function MetricsClient() {
   const [top, setTop] = useState<TopUserData[]>([]);
   const [logs, setLogs] = useState<LogData[]>([]);
   const [planMetrics, setPlanMetrics] = useState<PlanMetrics | null>(null);
-  const [endpointFilter, setEndpointFilter] = useState<string>("");
+  const [endpointFilter, setEndpointFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -124,7 +124,7 @@ export default function MetricsClient() {
         .select("created_at,endpoint,model,prompt_tokens,completion_tokens,total_tokens,cost_usd,success,latency_ms,error_text")
         .order("created_at", { ascending: false })
         .limit(300);
-      if (endpointFilter) q = q.eq("endpoint", endpointFilter);
+      if (endpointFilter && endpointFilter !== 'all') q = q.eq("endpoint", endpointFilter);
       const { data: lg } = await q;
       setLogs(lg || []);
 
@@ -216,7 +216,7 @@ export default function MetricsClient() {
               <SelectValue placeholder="All endpoints" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All endpoints</SelectItem>
+              <SelectItem value="all">All endpoints</SelectItem>
               <SelectItem value="planner">planner</SelectItem>
               <SelectItem value="lesson">lesson</SelectItem>
               <SelectItem value="validator">validator</SelectItem>
