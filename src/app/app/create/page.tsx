@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Target, Brain, Clock, Globe, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
@@ -434,17 +434,16 @@ export default function CreateGoal() {
             </div>
             
             <div className="max-w-md mx-auto">
-              <select
-                id="level"
-                value={form.level}
-                onChange={(e) => setForm(prev => ({ ...prev, level: e.target.value as "beginner" | "intermediate" | "advanced" }))}
-                className="w-full px-6 py-4 text-lg border-2 border-muted/50 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 rounded-xl transition-all duration-300 bg-background"
-                aria-describedby="level-help"
-              >
-                <option value="beginner">Beginner - New to the topic</option>
-                <option value="intermediate">Intermediate - Some experience</option>
-                <option value="advanced">Advanced - Looking to master</option>
-              </select>
+              <Select value={form.level} onValueChange={(value) => setForm(prev => ({ ...prev, level: value as "beginner" | "intermediate" | "advanced" }))}>
+                <SelectTrigger className="w-full px-6 py-4 text-lg border-2 border-muted/50 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 rounded-xl transition-all duration-300 bg-background">
+                  <SelectValue placeholder="Select your experience level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="beginner">Beginner - New to the topic</SelectItem>
+                  <SelectItem value="intermediate">Intermediate - Some experience</SelectItem>
+                  <SelectItem value="advanced">Advanced - Looking to master</SelectItem>
+                </SelectContent>
+              </Select>
               <p id="level-help" className="text-sm text-muted-foreground text-center mt-3">
                 Choose the level that best describes your current knowledge
               </p>

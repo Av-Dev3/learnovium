@@ -17,6 +17,7 @@ import {
   Mail,
   Smartphone
 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useReminders } from "@/app/lib/hooks";
 import { success as showSuccess, error as showError } from "@/app/lib/toast";
 
@@ -173,17 +174,16 @@ export default function Settings() {
             
             <div className="space-y-2">
               <Label htmlFor="level">Experience Level</Label>
-              <select
-                id="level"
-                value={profile.level}
-                onChange={(e) => setProfile(prev => ({ ...prev, level: e.target.value as "beginner" | "intermediate" | "advanced" }))}
-                className="w-full px-3 py-2 border rounded-md bg-background"
-                aria-describedby="level-help"
-              >
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-              </select>
+              <Select value={profile.level} onValueChange={(value) => setProfile(prev => ({ ...prev, level: value as "beginner" | "intermediate" | "advanced" }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select experience level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                </SelectContent>
+              </Select>
               <p id="level-help" className="text-xs sm:text-sm text-muted-foreground">
                 Helps personalize your learning experience
               </p>
@@ -191,19 +191,18 @@ export default function Settings() {
             
             <div className="space-y-2">
               <Label htmlFor="timezone">Timezone</Label>
-              <select
-                id="timezone"
-                value={profile.timezone}
-                onChange={(e) => setProfile(prev => ({ ...prev, timezone: e.target.value }))}
-                className="w-full px-3 py-2 border rounded-md bg-background"
-                aria-describedby="timezone-help"
-              >
-                <option value="UTC-8">Pacific Time (UTC-8)</option>
-                <option value="UTC-5">Eastern Time (UTC-5)</option>
-                <option value="UTC+0">UTC</option>
-                <option value="UTC+1">Central European Time (UTC+1)</option>
-                <option value="UTC+8">China Standard Time (UTC+8)</option>
-              </select>
+              <Select value={profile.timezone} onValueChange={(value) => setProfile(prev => ({ ...prev, timezone: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select timezone" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="UTC-8">Pacific Time (UTC-8)</SelectItem>
+                  <SelectItem value="UTC-5">Eastern Time (UTC-5)</SelectItem>
+                  <SelectItem value="UTC+0">UTC</SelectItem>
+                  <SelectItem value="UTC+1">Central European Time (UTC+1)</SelectItem>
+                  <SelectItem value="UTC+8">China Standard Time (UTC+8)</SelectItem>
+                </SelectContent>
+              </Select>
               <p id="timezone-help" className="text-xs sm:text-sm text-muted-foreground">
                 Used for scheduling reminders and lessons
               </p>

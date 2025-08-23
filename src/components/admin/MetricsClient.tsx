@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend,
   PieChart, Pie, Cell
@@ -210,16 +211,17 @@ export default function MetricsClient() {
           </div>
         </div>
         <div className="flex gap-3">
-          <select 
-            className="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-            value={endpointFilter} 
-            onChange={e => setEndpointFilter(e.target.value)}
-          >
-            <option value="">All endpoints</option>
-            <option value="planner">planner</option>
-            <option value="lesson">lesson</option>
-            <option value="validator">validator</option>
-          </select>
+          <Select value={endpointFilter} onValueChange={setEndpointFilter}>
+            <SelectTrigger className="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <SelectValue placeholder="All endpoints" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All endpoints</SelectItem>
+              <SelectItem value="planner">planner</SelectItem>
+              <SelectItem value="lesson">lesson</SelectItem>
+              <SelectItem value="validator">validator</SelectItem>
+            </SelectContent>
+          </Select>
           <Button 
             variant="outline" 
             onClick={loadAll} 

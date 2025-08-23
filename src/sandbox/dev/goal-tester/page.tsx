@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Goal = { id: string; topic: string; focus: string | null; plan_version?: number; created_at?: string };
 
@@ -124,12 +125,17 @@ export default function GoalTester() {
         <h2 className="font-semibold">Your Goals</h2>
         <div className="flex items-center gap-2">
           <button onClick={refreshGoals} className="bg-gray-200 px-3 py-2 rounded">Refresh</button>
-          <select className="border px-2 py-1 rounded" value={goalId} onChange={(e) => setGoalId(e.target.value)}>
-            <option value="">Select a goal…</option>
-            {goals.map(g => (
-              <option key={g.id} value={g.id}>{g.topic} {g.focus ? `— ${g.focus}` : ""}</option>
-            ))}
-          </select>
+          <Select value={goalId} onValueChange={setGoalId}>
+            <SelectTrigger className="border px-2 py-1 rounded">
+              <SelectValue placeholder="Select a goal…" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Select a goal…</SelectItem>
+              {goals.map(g => (
+                <SelectItem key={g.id} value={g.id}>{g.topic} {g.focus ? `— ${g.focus}` : ""}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex gap-2">
           <button onClick={() => genPlan(false)} className="bg-purple-500 text-white px-3 py-2 rounded disabled:opacity-50" disabled={!goalId || !token || loading}>Get Plan</button>

@@ -6,6 +6,7 @@ import { LoadingState } from "@/components/ui/loading-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Target, Search, Plus } from "lucide-react";
 import Link from "next/link";
 import { useGoals } from "@/app/lib/hooks";
@@ -136,14 +137,14 @@ export default function Plans() {
                 aria-label="Search learning goals"
               />
             </div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as "recent")}
-              className="px-3 py-2 border rounded-md bg-background"
-              aria-label="Sort goals by"
-            >
-              <option value="recent">Most Recent</option>
-            </select>
+            <Select value={sortBy} onValueChange={(value) => setSortBy(value as "recent")}>
+              <SelectTrigger className="w-32">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recent">Most Recent</SelectItem>
+              </SelectContent>
+            </Select>
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
               <Link href="/app/create">
                 <Plus className="h-4 w-4 mr-2" aria-hidden="true" />

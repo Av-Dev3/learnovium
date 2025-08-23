@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   DollarSign, Activity, AlertTriangle, CheckCircle, 
   RefreshCw, Download, Filter,
@@ -326,30 +327,30 @@ export default function AIMetricsClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Label htmlFor="endpoint">Endpoint</Label>
-              <select 
-                id="endpoint"
-                className="w-full mt-1 p-2 border rounded-md"
-                value={filters.endpoint}
-                onChange={(e) => handleFilterChange('endpoint', e.target.value)}
-              >
-                <option value="">All Endpoints</option>
-                <option value="planner">Planner</option>
-                <option value="lesson">Lesson</option>
-                <option value="validator">Validator</option>
-              </select>
+              <Select value={filters.endpoint} onValueChange={(value) => handleFilterChange('endpoint', value)}>
+                <SelectTrigger className="w-full mt-1">
+                  <SelectValue placeholder="All Endpoints" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Endpoints</SelectItem>
+                  <SelectItem value="planner">Planner</SelectItem>
+                  <SelectItem value="lesson">Lesson</SelectItem>
+                  <SelectItem value="validator">Validator</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label htmlFor="success">Status</Label>
-              <select 
-                id="success"
-                className="w-full mt-1 p-2 border rounded-md"
-                value={filters.success}
-                onChange={(e) => handleFilterChange('success', e.target.value)}
-              >
-                <option value="">All Status</option>
-                <option value="true">Success</option>
-                <option value="false">Error</option>
-              </select>
+              <Select value={filters.success} onValueChange={(value) => handleFilterChange('success', value)}>
+                <SelectTrigger className="w-full mt-1">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="true">Success</SelectItem>
+                  <SelectItem value="false">Error</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label htmlFor="start_date">Start Date</Label>
