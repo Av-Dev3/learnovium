@@ -9,6 +9,78 @@ import { logCall } from "@/lib/aiGuard"; // Re-enabled for AI call tracking
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Add timeout configuration
+const PLAN_GENERATION_TIMEOUT_MS = 60000; // 60 seconds for plan generation
+const RAG_TIMEOUT_MS = 30000; // 30 seconds for RAG operations
+const API_RESPONSE_TIMEOUT_MS = 90000; // 90 seconds total API response time
+
+// Helper function to generate fallback plans
+function generateFallbackPlan(topic: string, focus: string | undefined, level: string, duration: number, minutesPerDay: number) {
+  const modules = [];
+  const daysPerModule = Math.min(7, Math.ceil(duration / 2)); // Split into logical modules
+  
+  for (let moduleIndex = 0; moduleIndex < Math.ceil(duration / daysPerModule); moduleIndex++) {
+    const moduleStartDay = moduleIndex * daysPerModule + 1;
+    const moduleEndDay = Math.min((moduleIndex + 1) * daysPerModule, duration);
+    const moduleTitle = getModuleTitle(topic, level, moduleIndex, moduleStartDay, moduleEndDay);
+    
+    const days = [];
+    for (let day = moduleStartDay; day <= moduleEndDay; day++) {
+      const dayTopic = getDayTopic(topic, level, day, duration, focus);
+      days.push({
+        day_index: day,
+        topic: dayTopic,
+        objective: `Learn ${dayTopic.toLowerCase()}`,
+        practice: `Practice and apply ${dayTopic.toLowerCase()}`,
+        assessment: `Assess understanding of ${dayTopic.toLowerCase()}`,
+        est_minutes: Math.min(minutesPerDay || 30, 60)
+      });
+    }
+    
+    modules.push({
+      title: moduleTitle,
+      days
+    });
+  }
+  
+  return {
+    version: "1",
+    topic: topic,
+    total_days: duration,
+    modules,
+    citations: [`${topic} learning resources`]
+  };
+}
+
+function getModuleTitle(topic: string, level: string, moduleIndex: number, startDay: number, endDay: number): string {
+  const levelText = level.charAt(0).toUpperCase() + level.slice(1);
+  const moduleNames = [
+    `${levelText} Fundamentals`,
+    `${levelText} Core Concepts`,
+    `${levelText} Advanced Topics`,
+    `${levelText} Specialized Skills`,
+    `${levelText} Mastery & Application`
+  ];
+  
+  return moduleNames[moduleIndex] || `${levelText} Module ${moduleIndex + 1}`;
+}
+
+function getDayTopic(topic: string, level: string, day: number, totalDays: number, focus: string | undefined): string {
+  const focusText = focus ? ` - ${focus}` : '';
+  
+  if (day === 1) {
+    return `${level.charAt(0).toUpperCase() + level.slice(1)} Introduction to ${topic}${focusText}`;
+  } else if (day <= totalDays * 0.3) {
+    return `Basic ${topic} Concepts${focusText}`;
+  } else if (day <= totalDays * 0.6) {
+    return `Intermediate ${topic} Skills${focusText}`;
+  } else if (day <= totalDays * 0.8) {
+    return `Advanced ${topic} Techniques${focusText}`;
+  } else {
+    return `${topic} Mastery & Application${focusText}`;
+  }
+}
+
 // GET /api/goals — list current user's goals
 export async function GET(req: NextRequest) {
   try {
@@ -54,6 +126,27 @@ export async function GET(req: NextRequest) {
 
 // POST /api/goals — create a new goal with template caching
 export async function POST(req: NextRequest) {
+  // Add overall timeout wrapper
+  const apiTimeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('API response timeout')), API_RESPONSE_TIMEOUT_MS)
+  );
+  
+  const apiPromise = createGoalInternal(req);
+  
+  try {
+    return await Promise.race([apiPromise, apiTimeoutPromise]) as any;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('API response timeout')) {
+      console.error("POST /api/goals - API timeout, returning error response");
+      return NextResponse.json({ 
+        error: "Request timed out. Please try again with a shorter duration or contact support." 
+      }, { status: 408 });
+    }
+    throw error;
+  }
+}
+
+async function createGoalInternal(req: NextRequest) {
   try {
     console.log("POST /api/goals - incoming request");
     const { user, supabase, res } = await requireUser(req);
@@ -147,15 +240,40 @@ export async function POST(req: NextRequest) {
       console.log("POST /api/goals - Starting AI plan generation...");
       const duration = (duration_days as number) || 7;
       const userLevel = level || 'beginner';
+      
+      // Add timeout handling for long-duration plans
+      if (duration > 14) {
+        console.log(`POST /api/goals - Long duration (${duration} days), using optimized generation`);
+      }
+      
       console.log("POST /api/goals - Building RAG prompt...");
-      const msgs = await buildPlannerPromptWithRAG(
-        `Create a ${duration}-day ${userLevel} level learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}. The plan must strictly have total_days=${duration} and be appropriate for ${userLevel} level students.`,
+      
+      // Optimize RAG context size based on duration
+      const ragContextSize = duration <= 7 ? 6 : duration <= 14 ? 8 : 10;
+      
+      // Add timeout for RAG operations
+      const ragPromise = buildPlannerPromptWithRAG(
+        `Create a ${duration}-day ${userLevel} level learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}. The plan must strictly have total_days=${duration} and be appropriate for ${userLevel} level students. For longer plans, focus on progressive skill building with clear milestones.`,
         topic,
-        8
+        ragContextSize
       );
       
+      const ragTimeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('RAG operation timeout')), RAG_TIMEOUT_MS)
+      );
+      
+      const msgs = await Promise.race([ragPromise, ragTimeoutPromise]) as any;
+      
       console.log("POST /api/goals - Calling OpenAI...");
-      const { data: planResult, usage } = await generatePlan(msgs, user.id);
+      
+      // Add timeout wrapper for plan generation
+      const planGenerationPromise = generatePlan(msgs, user.id);
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Plan generation timeout')), PLAN_GENERATION_TIMEOUT_MS)
+      );
+      
+      const { data: planResult, usage } = await Promise.race([planGenerationPromise, timeoutPromise]) as any;
+      
       console.log("POST /api/goals - OpenAI response received:", { planResult, usage });
       // Force total_days to requested duration if model deviates
       plan_json = { ...planResult, total_days: duration };
@@ -196,29 +314,25 @@ export async function POST(req: NextRequest) {
     } catch (error) {
       console.error("POST /api/goals - AI plan generation failed:", error);
       
+      // Check if it's a timeout error
+      const isTimeout = error instanceof Error && (
+        error.message.includes('timeout') || 
+        error.message.includes('timeout') ||
+        error.message.includes('Plan generation timeout') ||
+        error.message.includes('RAG operation timeout')
+      );
+      
+      if (isTimeout) {
+        console.log("POST /api/goals - Timeout detected, using fallback plan");
+      }
+      
       // Create a fallback plan structure
       const userLevel = level || 'beginner';
-      plan_json = {
-        version: "1",
-        topic: topic,
-        total_days: 7,
-        modules: [
-          {
-            title: `${topic} ${userLevel.charAt(0).toUpperCase() + userLevel.slice(1)} Fundamentals`,
-            days: [
-              {
-                day_index: 1,
-                topic: `${userLevel.charAt(0).toUpperCase() + userLevel.slice(1)} Introduction to ${topic}`,
-                objective: `Understand the ${userLevel} level basics of ${topic}`,
-                practice: `Review fundamental ${userLevel} level concepts`,
-                assessment: `${userLevel} level self-assessment quiz`,
-                est_minutes: Math.min(minutes_per_day || 30, 60)
-              }
-            ]
-          }
-        ],
-        citations: [`${topic} learning resources`]
-      };
+      const duration = (duration_days as number) || 7;
+      
+      // Generate a structured fallback plan based on duration
+      const fallbackPlan = generateFallbackPlan(topic, focus, userLevel, duration, minutes_per_day);
+      plan_json = fallbackPlan;
       
       console.log("POST /api/goals - Using fallback plan:", plan_json);
       
@@ -229,7 +343,7 @@ export async function POST(req: NextRequest) {
           user_id: user.id,
           goal_id: undefined,
           endpoint: "planner",
-          model: "fallback",
+          model: isTimeout ? "timeout_fallback" : "fallback",
           prompt_tokens: 0,
           completion_tokens: 0,
           success: false,
