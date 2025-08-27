@@ -196,10 +196,14 @@ export default async function DashboardPage() {
               reading_length: l.reading?.length || 0,
               walkthrough_length: l.walkthrough?.length || 0
             });
+          } else {
+            console.log(`Dashboard: No lesson template found for goal ${g.id}, day ${dayIndex}`);
           }
         } catch (error) {
           console.log(`Dashboard: Template lesson lookup failed for goal ${g.id}:`, error);
         }
+      } else {
+        console.log(`Dashboard: Goal ${g.id} has no plan_template_id`);
       }
 
       // If no template lesson, try cached user lesson (fallback)
@@ -225,9 +229,12 @@ export default async function DashboardPage() {
               reading_length: l.reading?.length || 0,
               walkthrough_length: l.walkthrough?.length || 0
             });
+          } else {
+            console.log(`Dashboard: No lesson log found for goal ${g.id}, day ${dayIndex}`);
           }
         } catch (error) {
-          console.log(`Dashboard: Lesson log lookup failed for goal ${g.id}:`, error);
+          // Table might not exist yet, that's okay
+          console.log(`Dashboard: Lesson log lookup failed for goal ${g.id} (table may not exist):`, error);
         }
       }
 
@@ -274,11 +281,19 @@ export default async function DashboardPage() {
           estMinutes = undefined;
         }
       } else if (!hasLesson) {
-        // No plan data at all
+        // No plan data at all - show a basic placeholder
         lessonTitle = `Day ${dayIndex}`;
-        lessonSnippet = "Click to generate today's lesson";
+        lessonSnippet = "Click to start learning and generate your first lesson";
         estMinutes = undefined;
         console.log(`Dashboard: No plan data for goal ${g.id}`);
+      }
+
+      // Ensure we always have a title and snippet
+      if (!lessonTitle) {
+        lessonTitle = `Day ${dayIndex}`;
+      }
+      if (!lessonSnippet) {
+        lessonSnippet = "Click to start learning";
       }
 
       console.log(`Dashboard: Final item for goal ${g.id}:`, {
@@ -304,6 +319,13 @@ export default async function DashboardPage() {
   }
 
   console.log("Dashboard: Final items to display:", items.length);
+  console.log("Dashboard: Items details:", items.map(item => ({
+    goalId: item.goalId,
+    goalTopic: item.goalTopic,
+    dayIndex: item.dayIndex,
+    lessonTitle: item.lessonTitle,
+    hasLesson: item.hasLesson
+  })));
 
   // Calculate some stats
   const totalGoals = goals?.length || 0;
@@ -447,6 +469,8 @@ export default async function DashboardPage() {
               <h2 className="text-2xl font-bold text-[var(--fg)]">Today&apos;s Lessons</h2>
             </div>
 
+            {(() => { console.log("Dashboard render: items.length =", items.length, "items =", items); return null; })()}
+
             {(!items.length || items.every(i => !i.lessonTitle)) ? (
               <div className="text-center py-16 px-6">
                 <div className="w-24 h-24 bg-gradient-to-br from-[var(--border)] to-[var(--border)]/60 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -460,9 +484,14 @@ export default async function DashboardPage() {
                   }
                 </p>
                 {items.length > 0 ? (
-                  <p className="text-sm text-[var(--fg)]/60 mb-6">
-                    Your learning plan is designed to build knowledge progressively. Each lesson follows the planned curriculum.
-                  </p>
+                  <div className="space-y-4">
+                    <p className="text-sm text-[var(--fg)]/60">
+                      Your learning plan is designed to build knowledge progressively. Each lesson follows the planned curriculum.
+                    </p>
+                    <div className="text-xs text-[var(--fg)]/40 bg-[var(--bg)]/30 p-3 rounded-lg">
+                      Debug: Found {items.length} goals but no lesson titles. Check console for details.
+                    </div>
+                  </div>
                 ) : (
                   <Link 
                     href="/app/create"
