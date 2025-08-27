@@ -125,7 +125,7 @@ export async function generatePlan(messages: Msg[], userId?: string, goalId?: st
 
 export async function generateLesson(messages: Msg[], userId?: string, goalId?: string) {
   const { LessonJSON } = await import("@/types/ai");
-  return chatJSON({ task: "lesson", messages, schema: LessonJSON, temperature: 0.3, userId, goalId });
+  return chatJSON({ task: "lesson", messages, schema: LessonJSON, temperature: 0.4, userId, goalId });
 }
 
 export async function validateLesson(messages: Msg[], userId?: string, goalId?: string) {

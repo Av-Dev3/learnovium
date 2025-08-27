@@ -6,6 +6,24 @@ import { generateLesson } from "@/lib/aiCall";
 import { buildAdvancedLessonPrompt } from "@/lib/prompts";
 import { logCall } from "@/lib/aiGuard"; // Re-enabled for AI call tracking
 
+// Define the types inline since they're not exported from a central location
+interface PlanDay {
+  day_index: number;
+  topic?: string;
+  objective?: string;
+  practice?: string;
+  assessment?: string;
+  est_minutes?: number;
+}
+
+interface PlanModule {
+  days?: PlanDay[];
+}
+
+interface PlanData {
+  modules?: PlanModule[];
+}
+
 const LIMIT_WINDOW_MS = 5_000; // Reduced from 60 seconds to 5 seconds for better UX
 declare global {
   var __todayRate: Map<string, number> | undefined;
@@ -46,7 +64,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     // Load goal & its plan_template link
     const { data: goal, error: gErr } = await supabase
       .from("learning_goals")
-      .select("id, topic, focus, level, created_at, plan_template_id")
+      .select("id, topic, focus, level, created_at, plan_template_id, plan_json")
       .eq("id", goalId)
       .eq("user_id", user.id)
       .single();
@@ -98,16 +116,35 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     
     // Create a more focused query for better context retrieval
     const userLevel = goal.level || 'beginner';
-    const focusQuery = goal.focus ? 
-      `${goal.topic} — focus: ${goal.focus} (level: ${userLevel}, day ${dayIndex})` :
-      `${goal.topic} fundamentals (level: ${userLevel}, day ${dayIndex})`;
+    
+    // Get the planned topic for today from the plan_json
+    let plannedTopic = `Day ${dayIndex} lesson`;
+    let plannedFocus = goal.focus || `basic ${goal.topic} concepts`;
+    
+    if (goal.plan_json) {
+      try {
+        const plan = goal.plan_json as PlanData;
+        const flatDays = (plan.modules || []).flatMap((m: PlanModule) => m.days || []);
+        const plannedDay = flatDays.find((d: PlanDay) => d.day_index === dayIndex);
+        
+        if (plannedDay) {
+          plannedTopic = plannedDay.topic || `Day ${dayIndex} lesson`;
+          plannedFocus = plannedDay.objective || plannedDay.practice || plannedDay.assessment || plannedFocus;
+          console.log(`Using planned topic for day ${dayIndex}: ${plannedTopic}`);
+        }
+      } catch (error) {
+        console.log(`Error reading planned topic: ${error}`);
+      }
+    }
+    
+    // Focus query should be about the planned topic, not random variations
+    const focusQuery = `${goal.topic} — ${plannedTopic} (level: ${userLevel}, day ${dayIndex})`;
 
-    // Retrieve a small, high-signal RAG context to minimize tokens
+    // Retrieve context relevant to the planned topic
     const { context } = await retrieveContext(focusQuery, 3, goal.topic);
     
-    // Build a more specific lesson prompt with level information
-    const lessonFocus = goal.focus || `basic ${goal.topic} concepts`;
-    const msgs = buildAdvancedLessonPrompt(context, goal.topic, lessonFocus, dayIndex, userLevel);
+    // Build lesson prompt focused on the planned topic
+    const msgs = buildAdvancedLessonPrompt(context, goal.topic, plannedFocus, dayIndex, userLevel);
     
     try {
       const { data: lesson, usage: _usage } = await generateLesson(msgs, user.id, goalId);

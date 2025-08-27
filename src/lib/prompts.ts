@@ -5,7 +5,7 @@ const JSON_RULES =
 
 export function buildPlannerPrompt(context: string) {
   return [
-    { role: "system" as const, content: "You build multi-week learning plans strictly from provided context. Output must validate against the PlanJSON schema. IMPORTANT: Use the context as inspiration but create ORIGINAL plan content. Never copy text directly from sources." },
+    { role: "system" as const, content: "You build multi-week learning plans strictly from provided context. Output must validate against the PlanJSON schema. IMPORTANT: Use the context as inspiration but create ORIGINAL plan content. Never copy text directly from sources. Each day must have a distinct, progressive topic that builds on previous days." },
     { role: "user" as const, content:
 `Context (use as knowledge base only):
 ${context}
@@ -24,9 +24,22 @@ Create an ORIGINAL learning plan in this shape:
   "citations": ["<source1>", "<source2>"]
 }
 
-CRITICAL: Use the context to understand the topic, but create completely original plan content. 
-Never copy phrases, sentences, or exact explanations from the sources.
-Synthesize the information and express everything in your own words.
+CRITICAL REQUIREMENTS:
+1. Use the context to understand the topic, but create completely original plan content
+2. Never copy phrases, sentences, or exact explanations from the sources
+3. Each day must have a UNIQUE, DISTINCT topic that builds progressively
+4. Day 1: Start with absolute fundamentals
+5. Day 2+: Each day should introduce new concepts, skills, or deeper understanding
+6. Avoid repetitive topics or similar-sounding objectives
+7. Create a logical progression from basic to advanced concepts
+8. Each topic should be specific and actionable
+
+Example of good progression:
+- Day 1: "Basic Concepts and Terminology"
+- Day 2: "Core Principles and Fundamentals" 
+- Day 3: "Practical Applications and Examples"
+- Day 4: "Common Techniques and Methods"
+- Day 5: "Advanced Strategies and Optimization"
 
 ${JSON_RULES}`
     },
@@ -74,6 +87,8 @@ Constraints:
 - focus: ${focus}
 - originality: use context only as background, write in your own words
 - quality: substantial, practical, copyright-safe
+- topic_alignment: strictly follow the planned topic for day ${dayIndex}
+- progression: build on previous days naturally
 Schema fields & lengths:
 - topic: 10-100 chars
 - reading: 800-1500 chars (this is the main lesson content)
@@ -87,7 +102,11 @@ Output: ONLY JSON strictly matching the schema.` },
 `Context (condensed, use only for grounding; do not copy):
 ${context}
 
-Task: Create LessonJSON for topic "${topic}" teaching ONE concrete skill aligned with "${focus}" for a ${level} learner on day ${dayIndex}. Emphasize clarity and actionability.
+Task: Create LessonJSON for topic "${topic}" teaching ONE concrete skill aligned with "${focus}" for a ${level} learner on day ${dayIndex}. 
+
+IMPORTANT: This lesson should follow the pre-planned topic for day ${dayIndex}. Focus on teaching the specific topic that was planned, not random variations. Build naturally on previous days while staying true to the planned curriculum.
+
+Emphasize clarity, actionability, and topic-specific learning.
 Return ONLY the JSON object.` },
   ];
 }
@@ -114,7 +133,7 @@ ${JSON_RULES}`
 export async function buildPlannerPromptWithRAG(query: string, topic?: string, k = 6) {
   const { context } = await retrieveContext(query, k, topic);
   return [
-    { role: "system" as const, content: "You build multi-week learning plans strictly from provided context. Output must validate against the PlanJSON schema. IMPORTANT: Use the context as inspiration but create ORIGINAL plan content. Never copy text directly from sources." },
+    { role: "system" as const, content: "You build multi-week learning plans strictly from provided context. Output must validate against the PlanJSON schema. IMPORTANT: Use the context as inspiration but create ORIGINAL plan content. Never copy text directly from sources. Each day must have a distinct, progressive topic that builds on previous days." },
     { role: "user" as const, content:
 `Context (RAG top-${k}, use as inspiration only):
 ${context}
@@ -122,9 +141,15 @@ ${context}
 Task:
 Create an ORIGINAL PlanJSON for the topic: ${topic ?? "General"}.
 
-CRITICAL: Use the context to understand the topic, but create completely original plan content. 
-Never copy phrases, sentences, or exact explanations from the sources.
-Synthesize the information and express everything in your own words.
+CRITICAL REQUIREMENTS:
+1. Use the context to understand the topic, but create completely original plan content
+2. Never copy phrases, sentences, or exact explanations from the sources
+3. Each day must have a UNIQUE, DISTINCT topic that builds progressively
+4. Day 1: Start with absolute fundamentals
+5. Day 2+: Each day should introduce new concepts, skills, or deeper understanding
+6. Avoid repetitive topics or similar-sounding objectives
+7. Create a logical progression from basic to advanced concepts
+8. Each topic should be specific and actionable
 
 Respond with ONLY valid JSON.` }
   ];

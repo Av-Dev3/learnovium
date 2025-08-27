@@ -137,7 +137,7 @@ export default async function DashboardPage() {
   // Load user goals
   const { data: goals } = await supabase
     .from("learning_goals")
-    .select("id, topic, created_at, plan_json")
+    .select("id, topic, created_at, plan_json, plan_template_id")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(6);
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
   }> = [];
 
   if (goals && goals.length) {
-    // For each goal, try to read today's cached lesson from lesson_log only (no generation)
+    // For each goal, try to read today's cached lesson from lesson_template first, then lesson_log
     for (const g of goals) {
       const dayIndex = computeDayIndex(g.created_at as string);
       console.log(`Dashboard: Processing goal ${g.id}, day ${dayIndex}`);
@@ -173,31 +173,66 @@ export default async function DashboardPage() {
       let estMinutes: number | undefined;
       let hasLesson = false;
 
-      // Try cached user lesson first
-      const { data: existing } = await supabase
-        .from("lesson_log")
-        .select("lesson_json")
-        .eq("user_id", user.id)
-        .eq("goal_id", g.id)
-        .eq("day_index", dayIndex)
-        .maybeSingle();
+      // Try cached lesson template first (new system)
+      if (g.plan_template_id) {
+        try {
+          const { data: templateLesson } = await supabase
+            .from("lesson_template")
+            .select("lesson_json")
+            .eq("plan_template_id", g.plan_template_id)
+            .eq("day_index", dayIndex)
+            .eq("version", 1)
+            .maybeSingle();
 
-      console.log(`Dashboard: Lesson log lookup for goal ${g.id}, day ${dayIndex}:`, existing ? "found" : "not found");
+          if (templateLesson?.lesson_json) {
+            const l = templateLesson.lesson_json as LessonData;
+            lessonTitle = l.topic;
+            lessonSnippet = snippet(l.reading || l.walkthrough || "");
+            estMinutes = l.est_minutes;
+            hasLesson = true;
+            console.log(`Dashboard: Using lesson template for goal ${g.id}:`, { 
+              title: lessonTitle, 
+              snippet: lessonSnippet?.substring(0, 50),
+              reading_length: l.reading?.length || 0,
+              walkthrough_length: l.walkthrough?.length || 0
+            });
+          }
+        } catch (error) {
+          console.log(`Dashboard: Template lesson lookup failed for goal ${g.id}:`, error);
+        }
+      }
 
-      if (existing?.lesson_json) {
-        const l = existing.lesson_json as LessonData;
-        lessonTitle = l.topic;
-        lessonSnippet = snippet(l.reading || l.walkthrough || "");
-        estMinutes = l.est_minutes;
-        hasLesson = true;
-        console.log(`Dashboard: Using cached lesson for goal ${g.id}:`, { 
-          title: lessonTitle, 
-          snippet: lessonSnippet?.substring(0, 50),
-          reading_length: l.reading?.length || 0,
-          walkthrough_length: l.walkthrough?.length || 0
-        });
-      } else if (g.plan_json) {
-        // Fall back to showing today's plan day title if no lesson cached yet
+      // If no template lesson, try cached user lesson (fallback)
+      if (!hasLesson) {
+        try {
+          const { data: existing } = await supabase
+            .from("lesson_log")
+            .select("lesson_json")
+            .eq("user_id", user.id)
+            .eq("goal_id", g.id)
+            .eq("day_index", dayIndex)
+            .maybeSingle();
+
+          if (existing?.lesson_json) {
+            const l = existing.lesson_json as LessonData;
+            lessonTitle = l.topic;
+            lessonSnippet = snippet(l.reading || l.walkthrough || "");
+            estMinutes = l.est_minutes;
+            hasLesson = true;
+            console.log(`Dashboard: Using cached lesson log for goal ${g.id}:`, { 
+              title: lessonTitle, 
+              snippet: lessonSnippet?.substring(0, 50),
+              reading_length: l.reading?.length || 0,
+              walkthrough_length: l.walkthrough?.length || 0
+            });
+          }
+        } catch (error) {
+          console.log(`Dashboard: Lesson log lookup failed for goal ${g.id}:`, error);
+        }
+      }
+
+      // If still no lesson, fall back to showing today's plan day title
+      if (!hasLesson && g.plan_json) {
         try {
           const plan = g.plan_json as PlanData;
           console.log(`Dashboard: Plan data for goal ${g.id}:`, {
@@ -238,7 +273,7 @@ export default async function DashboardPage() {
           lessonSnippet = "Click to generate today's lesson";
           estMinutes = undefined;
         }
-      } else {
+      } else if (!hasLesson) {
         // No plan data at all
         lessonTitle = `Day ${dayIndex}`;
         lessonSnippet = "Click to generate today's lesson";
@@ -417,17 +452,26 @@ export default async function DashboardPage() {
                 <div className="w-24 h-24 bg-gradient-to-br from-[var(--border)] to-[var(--border)]/60 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Lightbulb className="h-12 w-12 text-[var(--fg)]/40" />
                 </div>
-                <h3 className="text-xl font-semibold text-[var(--fg)] mb-3">No lessons scheduled yet</h3>
+                <h3 className="text-xl font-semibold text-[var(--fg)] mb-3">Ready to start learning?</h3>
                 <p className="text-[var(--fg)]/70 mb-6 max-w-md mx-auto">
-                  Create your first learning plan to get started with personalized daily lessons powered by AI.
+                  {items.length > 0 
+                    ? "Click on any of your goals below to start today's planned lesson. Each lesson follows a carefully designed learning path."
+                    : "Create your first learning goal to get started with a structured, progressive learning plan powered by AI."
+                  }
                 </p>
-                <Link 
-                  href="/app/create"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-brand to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg"
-                >
-                  <Plus className="w-5 h-5" />
-                  Create Your First Goal
-                </Link>
+                {items.length > 0 ? (
+                  <p className="text-sm text-[var(--fg)]/60 mb-6">
+                    Your learning plan is designed to build knowledge progressively. Each lesson follows the planned curriculum.
+                  </p>
+                ) : (
+                  <Link 
+                    href="/app/create"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-brand to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg"
+                  >
+                    <Plus className="w-5 h-5" />
+                    Create Your First Goal
+                  </Link>
+                )}
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -489,6 +533,14 @@ export default async function DashboardPage() {
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                           </div>
                         </div>
+                        
+                        {/* Lesson variety note */}
+                        {it.hasLesson && (
+                          <div className="flex items-center gap-2 text-xs text-[var(--fg)]/50">
+                            <Target className="w-3 h-3" />
+                            <span>Planned curriculum • Progressive learning</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </Link>
@@ -504,11 +556,11 @@ export default async function DashboardPage() {
             <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
             
             <div className="relative z-10 space-y-4">
-                              <h2 className="text-2xl md:text-3xl font-bold">
-                  Ready to crush today&apos;s goals? 🚀
-                </h2>
+              <h2 className="text-2xl md:text-3xl font-bold">
+                Ready to follow your learning path? 🚀
+              </h2>
               <p className="text-lg text-blue-100 max-w-2xl mx-auto">
-                Every lesson brings you closer to mastery. Keep up the great work and maintain your learning streak!
+                Each lesson is carefully planned to build your knowledge step by step. Follow the curriculum and watch your skills grow!
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
