@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/api/utils";
-import { supabaseServer } from "@/lib/supabaseServer";
 import { buildPlannerPromptWithRAG } from "@/lib/prompts";
 import { generatePlan } from "@/lib/aiCall";
 // import { canonicalizeSignature } from "@/lib/goalSignature"; // Temporarily disabled
@@ -22,7 +21,7 @@ function generateFallbackPlan(topic: string, focus: string | undefined, level: s
   for (let moduleIndex = 0; moduleIndex < Math.ceil(duration / daysPerModule); moduleIndex++) {
     const moduleStartDay = moduleIndex * daysPerModule + 1;
     const moduleEndDay = Math.min((moduleIndex + 1) * daysPerModule, duration);
-    const moduleTitle = getModuleTitle(topic, level, moduleIndex, moduleStartDay, moduleEndDay);
+    const moduleTitle = getModuleTitle(topic, level, moduleIndex);
     
     const days = [];
     for (let day = moduleStartDay; day <= moduleEndDay; day++) {
@@ -52,7 +51,7 @@ function generateFallbackPlan(topic: string, focus: string | undefined, level: s
   };
 }
 
-function getModuleTitle(topic: string, level: string, moduleIndex: number, startDay: number, endDay: number): string {
+function getModuleTitle(topic: string, level: string, moduleIndex: number): string {
   const levelText = level.charAt(0).toUpperCase() + level.slice(1);
   const moduleNames = [
     `${levelText} Fundamentals`,
@@ -134,7 +133,7 @@ export async function POST(req: NextRequest) {
   const apiPromise = createGoalInternal(req);
   
   try {
-    return await Promise.race([apiPromise, apiTimeoutPromise]) as any;
+    return await Promise.race([apiPromise, apiTimeoutPromise]) as Awaited<ReturnType<typeof createGoalInternal>>;
   } catch (error) {
     if (error instanceof Error && error.message.includes('API response timeout')) {
       console.error("POST /api/goals - API timeout, returning error response");
@@ -258,21 +257,21 @@ async function createGoalInternal(req: NextRequest) {
         ragContextSize
       );
       
-      const ragTimeoutPromise = new Promise((_, reject) => 
+      const ragTimeoutPromise = new Promise<never>((_, reject) => 
         setTimeout(() => reject(new Error('RAG operation timeout')), RAG_TIMEOUT_MS)
       );
       
-      const msgs = await Promise.race([ragPromise, ragTimeoutPromise]) as any;
+      const msgs = await Promise.race([ragPromise, ragTimeoutPromise]);
       
       console.log("POST /api/goals - Calling OpenAI...");
       
       // Add timeout wrapper for plan generation
       const planGenerationPromise = generatePlan(msgs, user.id);
-      const timeoutPromise = new Promise((_, reject) => 
+      const timeoutPromise = new Promise<never>((_, reject) => 
         setTimeout(() => reject(new Error('Plan generation timeout')), PLAN_GENERATION_TIMEOUT_MS)
       );
       
-      const { data: planResult, usage } = await Promise.race([planGenerationPromise, timeoutPromise]) as any;
+      const { data: planResult, usage } = await Promise.race([planGenerationPromise, timeoutPromise]);
       
       console.log("POST /api/goals - OpenAI response received:", { planResult, usage });
       // Force total_days to requested duration if model deviates
