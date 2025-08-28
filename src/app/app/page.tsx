@@ -422,11 +422,25 @@ export default function Dashboard() {
         {/* Today's Lessons */}
         {dashboardItems.length > 0 ? (
           <section aria-labelledby="lessons-heading" className="relative space-y-6">
-            <div className="flex items-center gap-3">
-              <BookOpen className="w-6 h-6 text-brand" />
-              <h2 id="lessons-heading" className="text-2xl font-bold text-[var(--fg)]">
-                Today&apos;s Lessons ✨
-              </h2>
+            {/* Enhanced Header with Glassmorphic Design */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand/10 via-purple-600/10 to-brand/10 p-6 border border-[var(--border)]/40 backdrop-blur-sm">
+              {/* Animated background elements */}
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-xl animate-pulse" />
+              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 rounded-full blur-lg animate-pulse" style={{animationDelay: '1s'}} />
+              
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <BookOpen className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h2 id="lessons-heading" className="text-3xl font-bold text-[var(--fg)] mb-2">
+                    Today&apos;s Lessons ✨
+                  </h2>
+                  <p className="text-[var(--fg)]/70 text-lg">
+                    Your personalized learning path for today
+                  </p>
+                </div>
+              </div>
             </div>
             
             {itemsLoading ? (
@@ -439,58 +453,64 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {dashboardItems.map((item) => (
                   <Link key={item.goalId} href={`/app/plans/${item.goalId}/lesson`} className="block group">
-                    <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-brand/40">
-                      <div className="space-y-4">
+                    <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--bg)]/80 via-[var(--bg)]/60 to-[var(--bg)]/80 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-brand/40">
+                      {/* Animated background elements */}
+                      <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+                      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+                      
+                      <div className="relative p-6 space-y-4">
                         {/* Header */}
                         <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60">
-                              <Target className="w-4 h-4" />
-                              <span>{item.goalTopic}</span>
-                              <span>•</span>
-                              <span>Day {item.dayIndex}</span>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/70 bg-[var(--bg)]/50 px-3 py-1 rounded-full border border-[var(--border)]/30">
+                              <Target className="w-4 h-4 text-brand" />
+                              <span className="font-medium">{item.goalTopic}</span>
+                              <span className="text-[var(--fg)]/50">•</span>
+                              <span className="font-semibold text-brand">Day {item.dayIndex}</span>
                               {item.estMinutes && (
                                 <>
-                                  <span>•</span>
-                                  <span className="flex items-center gap-1">
+                                  <span className="text-[var(--fg)]/50">•</span>
+                                  <span className="flex items-center gap-1 text-[var(--fg)]/60">
                                     <Clock className="w-4 h-4" />
                                     {item.estMinutes} min
                                   </span>
                                 </>
                               )}
                             </div>
-                            <h3 className="text-xl font-semibold text-[var(--fg)] group-hover:text-brand transition-colors">
+                            <h3 className="text-xl font-semibold text-[var(--fg)] group-hover:text-brand transition-colors leading-tight">
                               {item.lessonTitle}
                             </h3>
                           </div>
                           
-                          <div className="w-12 h-12 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <Play className="h-6 w-6 text-white" />
+                          <div className="w-14 h-14 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
+                            <Play className="h-7 w-7 text-white" />
                           </div>
                         </div>
 
                         {/* Content */}
                         {item.lessonSnippet && (
-                          <p className="text-[var(--fg)]/80 leading-relaxed line-clamp-3">
-                            {item.lessonSnippet}
-                          </p>
+                          <div className="bg-[var(--bg)]/30 rounded-2xl p-4 border border-[var(--border)]/20">
+                            <p className="text-[var(--fg)]/80 leading-relaxed line-clamp-3 text-sm">
+                              {item.lessonSnippet}
+                            </p>
+                          </div>
                         )}
 
                         {/* Status */}
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between pt-2">
                           {!item.hasLesson ? (
-                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60">
+                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60 bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20">
                               <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
                               <span>Lesson not generated yet</span>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2 text-sm text-green-600">
+                            <div className="flex items-center gap-2 text-sm text-green-600 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
                               <CheckCircle className="w-4 h-4" />
                               <span>Ready to start</span>
                             </div>
                           )}
                           
-                          <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60 group-hover:text-brand transition-colors">
+                          <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60 group-hover:text-brand transition-colors font-medium">
                             <span>Start learning</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                           </div>
@@ -498,8 +518,8 @@ export default function Dashboard() {
                         
                         {/* Lesson variety note */}
                         {item.hasLesson && (
-                          <div className="flex items-center gap-2 text-xs text-[var(--fg)]/50">
-                            <Target className="w-3 h-3" />
+                          <div className="flex items-center gap-2 text-xs text-[var(--fg)]/50 bg-[var(--bg)]/40 px-3 py-2 rounded-xl border border-[var(--border)]/20">
+                            <Target className="w-3 h-3 text-brand" />
                             <span>Planned curriculum • Progressive learning</span>
                           </div>
                         )}
@@ -513,23 +533,43 @@ export default function Dashboard() {
         ) : safeGoals.length > 0 ? (
           // Goals exist but no lesson data
           <section aria-labelledby="lessons-heading" className="relative space-y-6">
-            <div className="flex items-center gap-3">
-              <BookOpen className="w-6 h-6 text-brand" />
-              <h2 id="lessons-heading" className="text-2xl font-bold text-[var(--fg)]">
-                Today&apos;s Lessons ✨
-              </h2>
+            {/* Enhanced Header with Glassmorphic Design */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand/10 via-purple-600/10 to-brand/10 p-6 border border-[var(--border)]/40 backdrop-blur-sm">
+              {/* Animated background elements */}
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-xl animate-pulse" />
+              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 rounded-full blur-lg animate-pulse" style={{animationDelay: '1s'}} />
+              
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <BookOpen className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h2 id="lessons-heading" className="text-3xl font-bold text-[var(--fg)] mb-2">
+                    Today&apos;s Lessons ✨
+                  </h2>
+                  <p className="text-[var(--fg)]/70 text-lg">
+                    Your personalized learning path for today
+                  </p>
+                </div>
+              </div>
             </div>
             
-            <div className="text-center py-16 px-6">
-              <div className="w-24 h-24 bg-gradient-to-br from-[var(--border)] to-[var(--border)]/60 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Target className="h-12 w-12 text-[var(--fg)]/40" />
-              </div>
-              <h3 className="text-xl font-semibold text-[var(--fg)] mb-3">Goals found but no learning plans yet</h3>
-              <p className="text-[var(--fg)]/70 mb-6 max-w-md mx-auto">
-                You have {safeGoals.length} learning goal{safeGoals.length === 1 ? '' : 's'}, but they don&apos;t have learning plans yet. Click on any goal below to generate your first lesson.
-              </p>
-              <div className="text-xs text-[var(--fg)]/40 bg-[var(--bg)]/30 p-3 rounded-lg max-w-md mx-auto">
-                Debug: Found {safeGoals.length} goals but no lesson titles. This usually means the goals don&apos;t have plan_json data or the day calculation is off.
+            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--bg)]/80 via-[var(--bg)]/60 to-[var(--bg)]/80 border border-[var(--border)]/40 backdrop-blur-sm">
+              {/* Animated background elements */}
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              
+              <div className="relative text-center py-16 px-6">
+                <div className="w-24 h-24 bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                  <Target className="h-12 w-12 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-[var(--fg)] mb-3">Goals found but no learning plans yet</h3>
+                <p className="text-[var(--fg)]/70 mb-6 max-w-md mx-auto">
+                  You have {safeGoals.length} learning goal{safeGoals.length === 1 ? '' : 's'}, but they don&apos;t have learning plans yet. Click on any goal below to generate your first lesson.
+                </p>
+                <div className="text-xs text-[var(--fg)]/40 bg-[var(--bg)]/50 p-3 rounded-xl border border-[var(--border)]/30 max-w-md mx-auto">
+                  Debug: Found {safeGoals.length} goals but no lesson titles. This usually means the goals don&apos;t have plan_json data or the day calculation is off.
+                </div>
               </div>
             </div>
           </section>
