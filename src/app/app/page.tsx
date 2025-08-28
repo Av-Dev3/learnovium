@@ -422,21 +422,22 @@ export default function Dashboard() {
         {/* Today's Lessons */}
         {dashboardItems.length > 0 ? (
           <section aria-labelledby="lessons-heading" className="relative space-y-6">
-            {/* Enhanced Header with Glassmorphic Design */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand/10 via-purple-600/10 to-brand/10 p-6 border border-[var(--border)]/40 backdrop-blur-sm">
-              {/* Animated background elements */}
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-xl animate-pulse" />
-              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 rounded-full blur-lg animate-pulse" style={{animationDelay: '1s'}} />
+            {/* Enhanced Header with Modern Glassmorphic Design */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 p-8 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-white/10">
+              {/* Enhanced animated background elements */}
+              <div className="absolute -top-12 -right-12 w-40 h-40 bg-gradient-to-br from-brand/30 via-purple-500/30 to-indigo-500/30 rounded-full blur-3xl animate-pulse" />
+              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-gradient-to-br from-purple-400/30 via-indigo-400/30 to-blue-500/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
               
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <BookOpen className="h-8 w-8 text-white" />
+              <div className="relative z-10 flex items-center gap-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-brand via-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-brand/25">
+                  <BookOpen className="h-10 w-10 text-white" />
                 </div>
                 <div>
-                  <h2 id="lessons-heading" className="text-3xl font-bold text-[var(--fg)] mb-2">
+                  <h2 id="lessons-heading" className="text-4xl font-bold bg-gradient-to-r from-[var(--fg)] via-brand to-purple-600 bg-clip-text text-transparent mb-3">
                     Today&apos;s Lessons ✨
                   </h2>
-                  <p className="text-[var(--fg)]/70 text-lg">
+                  <p className="text-[var(--fg)]/80 text-xl font-medium">
                     Your personalized learning path for today
                   </p>
                 </div>
@@ -453,16 +454,17 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {dashboardItems.map((item) => (
                   <Link key={item.goalId} href={`/app/plans/${item.goalId}/lesson`} className="block group">
-                    <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--bg)]/80 via-[var(--bg)]/60 to-[var(--bg)]/80 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-brand/40">
-                      {/* Animated background elements */}
-                      <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-                      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+                    <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 border border-white/20 dark:border-white/10 hover:border-brand/40">
+                      {/* Enhanced animated background elements */}
+                      <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-brand/25 via-purple-500/25 to-indigo-500/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                      <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-purple-400/25 via-indigo-400/25 to-blue-500/25 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-brand/15 to-purple-500/15 rounded-full blur-xl group-hover:scale-200 transition-transform duration-700" style={{animationDelay: '0.5s'}} />
                       
                       <div className="relative p-6 space-y-4">
                         {/* Header */}
                         <div className="flex items-start justify-between">
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/70 bg-[var(--bg)]/50 px-3 py-1 rounded-full border border-[var(--border)]/30">
+                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/70 bg-white/15 dark:bg-white/10 px-3 py-1 rounded-full border border-white/20 dark:border-white/10 backdrop-blur-sm">
                               <Target className="w-4 h-4 text-brand" />
                               <span className="font-medium">{item.goalTopic}</span>
                               <span className="text-[var(--fg)]/50">•</span>
@@ -489,7 +491,7 @@ export default function Dashboard() {
 
                         {/* Content */}
                         {item.lessonSnippet && (
-                          <div className="bg-[var(--bg)]/30 rounded-2xl p-4 border border-[var(--border)]/20">
+                          <div className="bg-white/10 dark:bg-white/5 rounded-2xl p-4 backdrop-blur-sm border border-white/20 dark:border-white/10">
                             <p className="text-[var(--fg)]/80 leading-relaxed line-clamp-3 text-sm">
                               {item.lessonSnippet}
                             </p>
@@ -518,7 +520,7 @@ export default function Dashboard() {
                         
                         {/* Lesson variety note */}
                         {item.hasLesson && (
-                          <div className="flex items-center gap-2 text-xs text-[var(--fg)]/50 bg-[var(--bg)]/40 px-3 py-2 rounded-xl border border-[var(--border)]/20">
+                          <div className="flex items-center gap-2 text-xs text-[var(--fg)]/50 bg-white/10 dark:bg-white/5 px-3 py-2 rounded-xl border border-white/20 dark:border-white/10 backdrop-blur-sm">
                             <Target className="w-3 h-3 text-brand" />
                             <span>Planned curriculum • Progressive learning</span>
                           </div>
@@ -533,41 +535,43 @@ export default function Dashboard() {
         ) : safeGoals.length > 0 ? (
           // Goals exist but no lesson data
           <section aria-labelledby="lessons-heading" className="relative space-y-6">
-            {/* Enhanced Header with Glassmorphic Design */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand/10 via-purple-600/10 to-brand/10 p-6 border border-[var(--border)]/40 backdrop-blur-sm">
-              {/* Animated background elements */}
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-xl animate-pulse" />
-              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 rounded-full blur-lg animate-pulse" style={{animationDelay: '1s'}} />
+            {/* Enhanced Header with Modern Glassmorphic Design */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 p-8 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-white/10">
+              {/* Enhanced animated background elements */}
+              <div className="absolute -top-12 -right-12 w-40 h-40 bg-gradient-to-br from-brand/30 via-purple-500/30 to-indigo-500/30 rounded-full blur-3xl animate-pulse" />
+              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-gradient-to-br from-purple-400/30 via-indigo-400/30 to-blue-500/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
               
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <BookOpen className="h-8 w-8 text-white" />
+              <div className="relative z-10 flex items-center gap-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-brand via-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-brand/25">
+                  <BookOpen className="h-10 w-10 text-white" />
                 </div>
                 <div>
-                  <h2 id="lessons-heading" className="text-3xl font-bold text-[var(--fg)] mb-2">
+                  <h2 id="lessons-heading" className="text-4xl font-bold bg-gradient-to-r from-[var(--fg)] via-brand to-purple-600 bg-clip-text text-transparent mb-3">
                     Today&apos;s Lessons ✨
                   </h2>
-                  <p className="text-[var(--fg)]/70 text-lg">
+                  <p className="text-[var(--fg)]/80 text-xl font-medium">
                     Your personalized learning path for today
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--bg)]/80 via-[var(--bg)]/60 to-[var(--bg)]/80 border border-[var(--border)]/40 backdrop-blur-sm">
-              {/* Animated background elements */}
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 backdrop-blur-xl shadow-xl border border-white/20 dark:border-white/10">
+              {/* Enhanced animated background elements */}
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-brand/25 via-purple-500/25 to-indigo-500/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-purple-400/25 via-indigo-400/25 to-blue-500/25 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-gradient-to-br from-brand/15 to-purple-500/15 rounded-full blur-xl group-hover:scale-200 transition-transform duration-700" style={{animationDelay: '0.5s'}} />
               
               <div className="relative text-center py-16 px-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <div className="w-24 h-24 bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-brand/25">
                   <Target className="h-12 w-12 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold text-[var(--fg)] mb-3">Goals found but no learning plans yet</h3>
                 <p className="text-[var(--fg)]/70 mb-6 max-w-md mx-auto">
                   You have {safeGoals.length} learning goal{safeGoals.length === 1 ? '' : 's'}, but they don&apos;t have learning plans yet. Click on any goal below to generate your first lesson.
                 </p>
-                <div className="text-xs text-[var(--fg)]/40 bg-[var(--bg)]/50 p-3 rounded-xl border border-[var(--border)]/30 max-w-md mx-auto">
+                <div className="text-xs text-[var(--fg)]/40 bg-white/10 dark:bg-white/5 p-3 rounded-xl border border-white/20 dark:border-white/10 backdrop-blur-sm max-w-md mx-auto">
                   Debug: Found {safeGoals.length} goals but no lesson titles. This usually means the goals don&apos;t have plan_json data or the day calculation is off.
                 </div>
               </div>
