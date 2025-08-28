@@ -524,10 +524,10 @@ export default async function DashboardPage() {
                   </div>
                   <h3 className="text-lg font-semibold text-[var(--fg)] mb-3">Goals found but no learning plans yet</h3>
                   <p className="text-[var(--fg)]/70 mb-4 max-w-md mx-auto">
-                    You have {items.length} learning goal{items.length === 1 ? '' : 's'}, but they don't have learning plans yet. Click on any goal below to generate your first lesson.
+                    You have {items.length} learning goal{items.length === 1 ? '' : 's'}, but they don&apos;t have learning plans yet. Click on any goal below to generate your first lesson.
                   </p>
                   <div className="text-xs text-[var(--fg)]/40 bg-[var(--bg)]/30 p-3 rounded-lg max-w-md mx-auto">
-                    Debug: Found {items.length} goals but no lesson titles. This usually means the goals don't have plan_json data or the day calculation is off.
+                    Debug: Found {items.length} goals but no lesson titles. This usually means the goals don&apos;t have plan_json data or the day calculation is off.
                   </div>
                 </div>
                 
