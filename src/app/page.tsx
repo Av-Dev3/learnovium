@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AppHeader } from "@/components/app-header";
 import { Footer } from "@/components/layout/footer";
 
-import { ArrowRight, Target, Brain, Calendar, Sparkles, Zap, Shield, Users, TrendingUp, Check, Crown, Star } from "lucide-react";
+import { ArrowRight, Target, Brain, Calendar, Sparkles, Zap, Shield, Users, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 
@@ -236,193 +236,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-24 bg-gradient-to-b from-transparent to-muted/30">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-[var(--fg)] mb-6">
-              Choose Your <span className="text-brand">Learning Journey</span>
-            </h2>
-            <p className="text-xl text-[var(--fg)]/70 max-w-3xl mx-auto leading-relaxed">
-              Start for free and upgrade as you grow. All plans include our AI-powered learning engine and personalized content.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Free Plan */}
-            <Card className="relative border border-[var(--border)] bg-[var(--bg)] hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-sm">
-              <CardHeader className="text-center pb-6">
-                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                  <Target className="h-8 w-8 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-bold text-[var(--fg)] mb-2">
-                  Free
-                </CardTitle>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--fg)]">$0</span>
-                  <span className="text-[var(--fg)]/60 ml-2">/month</span>
-                </div>
-                <CardDescription className="text-[var(--fg)]/70">
-                  Perfect for getting started with AI-powered learning
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pb-8">
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">3 learning goals</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Daily AI lessons</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Basic progress tracking</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">50 flashcards</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Community support</span>
-                  </li>
-                </ul>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  className="w-full py-3 text-lg font-semibold border-2 border-[var(--border)] hover:border-brand/50 hover:bg-muted transition-all duration-300 rounded-2xl"
-                >
-                  <Link href="/auth">Get Started Free</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Pro Plan */}
-            <Card className="relative border-2 border-brand bg-[var(--bg)] hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-sm">
-              {/* Popular Badge */}
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-brand to-purple-600 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
-                  Most Popular
-                </div>
-              </div>
-              
-              <CardHeader className="text-center pb-6 pt-8">
-                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                  <Star className="h-8 w-8 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-bold text-[var(--fg)] mb-2">
-                  Pro
-                </CardTitle>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--fg)]">$4.99</span>
-                  <span className="text-[var(--fg)]/60 ml-2">/month</span>
-                </div>
-                <CardDescription className="text-[var(--fg)]/70">
-                  Ideal for serious learners and professionals
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pb-8">
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Everything in Free</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Unlimited learning goals</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Advanced AI personalization</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Unlimited flashcards</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Detailed analytics</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Priority support</span>
-                  </li>
-                </ul>
-                <Button 
-                  asChild 
-                  className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 text-white shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 rounded-2xl"
-                >
-                  <Link href="/auth">Start Pro Trial</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Premium Plan */}
-            <Card className="relative border border-[var(--border)] bg-[var(--bg)] hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-sm">
-              <CardHeader className="text-center pb-6">
-                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                  <Crown className="h-8 w-8 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-bold text-[var(--fg)] mb-2">
-                  Premium
-                </CardTitle>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--fg)]">$11.99</span>
-                  <span className="text-[var(--fg)]/60 ml-2">/month</span>
-                </div>
-                <CardDescription className="text-[var(--fg)]/70">
-                  For teams and advanced learners who want it all
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pb-8">
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Everything in Pro</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Team collaboration</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Custom learning paths</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">Advanced integrations</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">1-on-1 coaching sessions</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                    <span className="text-[var(--fg)]/80">White-label options</span>
-                  </li>
-                </ul>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  className="w-full py-3 text-lg font-semibold border-2 border-yellow-500/50 text-yellow-600 hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-950/20 transition-all duration-300 rounded-2xl"
-                >
-                  <Link href="/auth">Contact Sales</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Money Back Guarantee */}
-          <div className="text-center mt-16">
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-full">
-              <Shield className="w-5 h-5 text-green-600" />
-              <span className="text-green-700 dark:text-green-300 font-medium">30-day money-back guarantee on all paid plans</span>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-24">
@@ -454,17 +268,31 @@ export default async function Home() {
                     </Link>
                   </Button>
                 ) : (
-                  <Button 
-                    size="lg" 
-                    shape="pill"
-                    asChild 
-                    className="text-lg px-8 py-5 bg-white text-brand hover:bg-blue-50 border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
-                  >
-                    <Link href="/auth">
-                      Start Learning Free
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                  </Button>
+                  <>
+                    <Button 
+                      size="lg" 
+                      shape="pill"
+                      asChild 
+                      className="text-lg px-8 py-5 bg-white text-brand hover:bg-blue-50 border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                    >
+                      <Link href="/auth">
+                        Start Learning Free
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Link>
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      shape="pill"
+                      asChild 
+                      className="text-lg px-8 py-5 border-2 border-white text-white hover:bg-white hover:text-brand transition-all duration-300"
+                    >
+                      <Link href="/pricing">
+                        View Pricing
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Link>
+                    </Button>
+                  </>
                 )}
               </div>
 

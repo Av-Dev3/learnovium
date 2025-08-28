@@ -202,10 +202,10 @@ export default function AboutPage() {
                     Start Learning Today
                   </Link>
                   <Link 
-                    href="/app"
+                    href="/pricing"
                     className="inline-flex items-center gap-2 px-8 py-4 border-2 border-brand text-brand font-semibold rounded-2xl hover:bg-brand hover:text-white transition-all duration-300"
                   >
-                    Explore Dashboard
+                    View Pricing
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </div>
