@@ -380,7 +380,7 @@ function UserMenu() {
 
                 {/* Menu Items */}
                 <div className="p-3 space-y-1">
-                  <Link href="/app/dashboard" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                  <Link href="/app" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-3">
                       <Home className="h-5 w-5 text-blue-600" />
                     </div>

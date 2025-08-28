@@ -6,6 +6,7 @@ export interface Goal {
   created_at: string;
   user_id: string;
   plan_template_id?: string;
+  plan_json?: Record<string, unknown>; // Using Record for flexibility
   progress_pct?: number;
 }
 

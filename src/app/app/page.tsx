@@ -11,13 +11,152 @@ import { Plus, Target, TrendingUp, BookOpen, Clock, Zap, ArrowRight, Sparkles, B
 import Link from "next/link";
 import { useGoals } from "@/app/lib/hooks";
 import { MarkCompleteButton } from "@/app/components/MarkCompleteButton";
-import { useLesson } from "@/app/lib/hooks";
+import { useEffect, useState } from "react";
+
+// Types for the lesson data
+interface PlanDay {
+  day_index: number;
+  topic: string;
+  objective?: string;
+  practice?: string;
+  assessment?: string;
+  est_minutes?: number;
+}
+
+interface PlanModule {
+  title: string;
+  days: PlanDay[];
+}
+
+interface PlanData {
+  version: string;
+  total_days: number;
+  modules: PlanModule[];
+}
+
+interface DashboardItem {
+  goalId: string;
+  goalTopic: string;
+  dayIndex: number;
+  lessonTitle: string;
+  lessonSnippet: string;
+  estMinutes?: number;
+  hasLesson: boolean;
+}
 
 export default function Dashboard() {
   const { goals, isLoading, isError, error } = useGoals();
+  const [dashboardItems, setDashboardItems] = useState<DashboardItem[]>([]);
+  const [itemsLoading, setItemsLoading] = useState(true);
 
   // Ensure goals is always an array
   const safeGoals = Array.isArray(goals) ? goals : [];
+
+  // Function to compute day index
+  const computeDayIndex = (createdAt: string) => {
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+    const ms = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) -
+               Date.UTC(createdDate.getUTCFullYear(), createdDate.getUTCMonth(), createdDate.getUTCDate());
+    return Math.max(1, Math.floor(ms / 86400000) + 1);
+  };
+
+  // Function to create snippet from text
+  const snippet = (text: string) => {
+    if (!text) return "";
+    return text.length > 120 ? text.substring(0, 120) + "..." : text;
+  };
+
+  // Load dashboard items when goals change
+  useEffect(() => {
+    console.log("App page: Goals changed:", safeGoals.length);
+    console.log("App page: Goals data:", safeGoals);
+    
+    if (safeGoals.length > 0) {
+      setItemsLoading(true);
+      
+      // Process each goal to create dashboard items
+      const items: DashboardItem[] = [];
+      
+      safeGoals.forEach((goal) => {
+        if (goal && goal.id && goal.topic) {
+          const dayIndex = computeDayIndex(goal.created_at || new Date().toISOString());
+          let lessonTitle = `Day ${dayIndex}`;
+          let lessonSnippet = "Click to start learning";
+          let estMinutes: number | undefined;
+          let hasLesson = false;
+
+          console.log(`App page: Processing goal ${goal.id}:`, {
+            topic: goal.topic,
+            created_at: goal.created_at,
+            dayIndex,
+            has_plan_json: !!goal.plan_json
+          });
+
+          // Try to extract lesson data from plan_json if it exists
+          if (goal.plan_json) {
+            try {
+              const plan = goal.plan_json as unknown as PlanData;
+              console.log(`App page: Plan data for goal ${goal.id}:`, {
+                has_modules: !!plan.modules,
+                modules_count: plan.modules?.length || 0,
+                plan_type: typeof plan,
+                plan_keys: Object.keys(plan)
+              });
+              
+              const flatDays = (plan.modules || []).flatMap((m: PlanModule) => m.days || []);
+              console.log(`App page: Flat days for goal ${goal.id}:`, {
+                total_days: flatDays.length,
+                day_indices: flatDays.map((d: PlanDay) => d.day_index),
+                looking_for_day: dayIndex
+              });
+              
+              const day = flatDays.find((d: PlanDay) => d.day_index === dayIndex);
+              if (day) {
+                lessonTitle = day.topic || `Day ${dayIndex}`;
+                lessonSnippet = snippet(day.objective || day.practice || day.assessment || "");
+                estMinutes = day.est_minutes;
+                hasLesson = true;
+                
+                console.log(`App page: Using plan data for goal ${goal.id}:`, { 
+                  title: lessonTitle, 
+                  snippet: lessonSnippet?.substring(0, 50),
+                  day_index: day.day_index,
+                  has_objective: !!day.objective,
+                  has_practice: !!day.practice,
+                  has_assessment: !!day.assessment
+                });
+              } else {
+                console.log(`App page: No plan day found for goal ${goal.id}, day ${dayIndex}. Available days:`, flatDays.map(d => d.day_index));
+              }
+            } catch (error) {
+              console.log(`App page: Error processing plan_json for goal ${goal.id}:`, error);
+            }
+          } else {
+            console.log(`App page: No plan data for goal ${goal.id}. This goal needs a learning plan.`);
+          }
+
+          items.push({
+            goalId: goal.id,
+            goalTopic: goal.topic,
+            dayIndex,
+            lessonTitle,
+            lessonSnippet,
+            estMinutes,
+            hasLesson,
+          });
+        }
+      });
+
+      console.log("App page: Final dashboard items:", items);
+      setDashboardItems(items);
+      setItemsLoading(false);
+    } else {
+      console.log("App page: No goals found");
+      setDashboardItems([]);
+      setItemsLoading(false);
+    }
+  }, [safeGoals]);
 
   if (isLoading) {
     return (
@@ -281,7 +420,7 @@ export default function Dashboard() {
         </div>
 
         {/* Today's Lessons */}
-        {safeGoals.length > 0 && (
+        {dashboardItems.length > 0 ? (
           <section aria-labelledby="lessons-heading" className="relative space-y-6">
             <div className="flex items-center gap-3">
               <BookOpen className="w-6 h-6 text-brand" />
@@ -290,17 +429,111 @@ export default function Dashboard() {
               </h2>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {safeGoals.map((goal) => {
-                if (!goal || typeof goal !== 'object' || !goal.id) {
-                  console.warn("Invalid goal in dashboard:", goal);
-                  return null;
-                }
-                return <GoalLessonCard key={goal.id} goal={goal} />;
-              }).filter(Boolean)}
+            {itemsLoading ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <LoadingState key={i} type="lesson" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {dashboardItems.map((item) => (
+                  <Link key={item.goalId} href={`/app/plans/${item.goalId}/lesson`} className="block group">
+                    <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-brand/40">
+                      <div className="space-y-4">
+                        {/* Header */}
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60">
+                              <Target className="w-4 h-4" />
+                              <span>{item.goalTopic}</span>
+                              <span>•</span>
+                              <span>Day {item.dayIndex}</span>
+                              {item.estMinutes && (
+                                <>
+                                  <span>•</span>
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-4 h-4" />
+                                    {item.estMinutes} min
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                            <h3 className="text-xl font-semibold text-[var(--fg)] group-hover:text-brand transition-colors">
+                              {item.lessonTitle}
+                            </h3>
+                          </div>
+                          
+                          <div className="w-12 h-12 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <Play className="h-6 w-6 text-white" />
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        {item.lessonSnippet && (
+                          <p className="text-[var(--fg)]/80 leading-relaxed line-clamp-3">
+                            {item.lessonSnippet}
+                          </p>
+                        )}
+
+                        {/* Status */}
+                        <div className="flex items-center justify-between">
+                          {!item.hasLesson ? (
+                            <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60">
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                              <span>Lesson not generated yet</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 text-sm text-green-600">
+                              <CheckCircle className="w-4 h-4" />
+                              <span>Ready to start</span>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center gap-2 text-sm text-[var(--fg)]/60 group-hover:text-brand transition-colors">
+                            <span>Start learning</span>
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                        
+                        {/* Lesson variety note */}
+                        {item.hasLesson && (
+                          <div className="flex items-center gap-2 text-xs text-[var(--fg)]/50">
+                            <Target className="w-3 h-3" />
+                            <span>Planned curriculum • Progressive learning</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+        ) : safeGoals.length > 0 ? (
+          // Goals exist but no lesson data
+          <section aria-labelledby="lessons-heading" className="relative space-y-6">
+            <div className="flex items-center gap-3">
+              <BookOpen className="w-6 h-6 text-brand" />
+              <h2 id="lessons-heading" className="text-2xl font-bold text-[var(--fg)]">
+                Today&apos;s Lessons ✨
+              </h2>
+            </div>
+            
+            <div className="text-center py-16 px-6">
+              <div className="w-24 h-24 bg-gradient-to-br from-[var(--border)] to-[var(--border)]/60 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Target className="h-12 w-12 text-[var(--fg)]/40" />
+              </div>
+              <h3 className="text-xl font-semibold text-[var(--fg)] mb-3">Goals found but no learning plans yet</h3>
+              <p className="text-[var(--fg)]/70 mb-6 max-w-md mx-auto">
+                You have {safeGoals.length} learning goal{safeGoals.length === 1 ? '' : 's'}, but they don&apos;t have learning plans yet. Click on any goal below to generate your first lesson.
+              </p>
+              <div className="text-xs text-[var(--fg)]/40 bg-[var(--bg)]/30 p-3 rounded-lg max-w-md mx-auto">
+                Debug: Found {safeGoals.length} goals but no lesson titles. This usually means the goals don&apos;t have plan_json data or the day calculation is off.
+              </div>
             </div>
           </section>
-        )}
+        ) : null}
 
         {/* Active Goals */}
         <section aria-labelledby="goals-heading" className="relative space-y-6">
@@ -405,40 +638,4 @@ export default function Dashboard() {
   );
 }
 
-// Component to render a goal with its lesson
-function GoalLessonCard({ goal }: { goal: { id: string; topic: string } }) {
-  const { lesson, isLoading, isError } = useLesson(goal.id);
-
-  if (isLoading) {
-    return <LoadingState type="lesson" />;
-  }
-
-  if (isError || !lesson) {
-    return (
-      <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm text-center hover:shadow-lg transition-all duration-300">
-        <div className="w-16 h-16 bg-gradient-to-br from-[var(--border)] to-[var(--border)]/60 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Target className="h-8 w-8 text-[var(--fg)]/40" aria-hidden="true" />
-        </div>
-        <h3 className="text-lg font-semibold mb-2 text-[var(--fg)]">{goal.topic}</h3>
-        <p className="text-[var(--fg)]/70 mb-4">
-          No lesson available for today
-        </p>
-        <MarkCompleteButton 
-          goalId={goal.id} 
-          variant="outline" 
-          size="sm"
-        />
-      </div>
-    );
-  }
-
-  return (
-    <LessonCard
-      lesson={lesson}
-      onComplete={(lessonId) => {
-        // The MarkCompleteButton will handle completion
-        console.log('Lesson completed:', lessonId);
-      }}
-    />
-  );
-} 
+ 
