@@ -70,15 +70,24 @@ export default function Plans() {
         </div>
 
         {/* Summary Stats skeleton */}
-        <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-muted/50 rounded-lg">
-          <div className="h-5 w-20 sm:h-6 sm:w-24 bg-muted rounded animate-pulse mb-3 sm:mb-4" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i}>
-                <div className="h-6 w-12 sm:h-8 sm:w-16 bg-muted rounded animate-pulse mx-auto mb-1" />
-                <div className="h-3 w-16 sm:h-4 sm:w-20 bg-muted rounded animate-pulse mx-auto" />
-              </div>
-            ))}
+        <div className="mt-8 sm:mt-12 relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 p-8 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-white/10">
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <div className="h-8 w-32 bg-muted rounded-full animate-pulse mx-auto mb-4" />
+              <div className="h-8 w-48 bg-muted rounded animate-pulse mx-auto mb-2" />
+              <div className="h-5 w-64 bg-muted rounded animate-pulse mx-auto" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="group relative overflow-hidden rounded-2xl bg-white/10 dark:bg-white/5 p-6 backdrop-blur-sm border border-white/20 dark:border-white/10">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-muted rounded-2xl animate-pulse mx-auto mb-3" />
+                    <div className="h-8 w-16 bg-muted rounded animate-pulse mx-auto mb-2" />
+                    <div className="h-4 w-20 bg-muted rounded animate-pulse mx-auto" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -219,24 +228,74 @@ export default function Plans() {
             if (goals && goals.length > 0) {
               return (
                 <section aria-labelledby="stats-heading">
-                  <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-muted/50 rounded-lg">
-                    <h2 id="stats-heading" className="text-lg font-semibold mb-3 sm:mb-4 text-center">Progress Overview</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
-                      <div>
-                        <div className="text-xl sm:text-2xl font-bold text-blue-600">{totalGoals}</div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">Total Goals</div>
+                  <div className="mt-8 sm:mt-12 relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 p-8 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-white/10">
+                    {/* Enhanced animated background elements */}
+                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-brand/25 via-purple-500/25 to-indigo-500/25 rounded-full blur-2xl animate-pulse" />
+                    <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-purple-400/25 via-indigo-400/25 to-blue-500/25 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}} />
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-brand/15 to-purple-500/15 rounded-full blur-xl animate-pulse" style={{animationDelay: '2s'}} />
+                    
+                    <div className="relative z-10">
+                      <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20 mb-4">
+                          <Target className="w-5 h-5 text-brand" />
+                          <span className="text-brand font-medium">Progress Overview</span>
+                        </div>
+                        <h2 id="stats-heading" className="text-3xl font-bold text-[var(--fg)] mb-2">Your Learning Journey</h2>
+                        <p className="text-[var(--fg)]/70 text-lg">Track your progress and celebrate your achievements</p>
                       </div>
-                      <div>
-                        <div className="text-xl sm:text-2xl font-bold text-green-600">{activeGoals}</div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">Active</div>
-                      </div>
-                      <div>
-                        <div className="text-xl sm:text-2xl font-bold text-purple-600">{completedGoals}</div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">Completed</div>
-                      </div>
-                      <div>
-                        <div className="text-xl sm:text-2xl font-bold text-orange-600">{totalStreak}</div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">Total Streak</div>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {/* Total Goals */}
+                        <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/10 via-blue-400/10 to-blue-500/10 p-6 backdrop-blur-sm border border-blue-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300">
+                          <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-400/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+                          <div className="relative z-10 text-center">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-3">
+                              <Target className="h-6 w-6 text-white" />
+                            </div>
+                            <div className="text-3xl font-bold text-blue-600 mb-1">{totalGoals}</div>
+                            <div className="text-sm text-[var(--fg)]/70 font-medium">Total Goals</div>
+                          </div>
+                        </div>
+
+                        {/* Active Goals */}
+                        <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-500/10 via-green-400/10 to-green-500/10 p-6 backdrop-blur-sm border border-green-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300">
+                          <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-green-500/20 to-green-400/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+                          <div className="relative z-10 text-center">
+                            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-3">
+                              <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                            </div>
+                            <div className="text-3xl font-bold text-green-600 mb-1">{activeGoals}</div>
+                            <div className="text-sm text-[var(--fg)]/70 font-medium">Active</div>
+                          </div>
+                        </div>
+
+                        {/* Completed Goals */}
+                        <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500/10 via-purple-400/10 to-purple-500/10 p-6 backdrop-blur-sm border border-purple-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300">
+                          <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-purple-500/20 to-purple-400/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+                          <div className="relative z-10 text-center">
+                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-3">
+                              <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                                <div className="w-3 h-3 bg-purple-600 rounded-full" />
+                              </div>
+                            </div>
+                            <div className="text-3xl font-bold text-purple-600 mb-1">{completedGoals}</div>
+                            <div className="text-sm text-[var(--fg)]/70 font-medium">Completed</div>
+                          </div>
+                        </div>
+
+                        {/* Total Streak */}
+                        <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500/10 via-orange-400/10 to-orange-500/10 p-6 backdrop-blur-sm border border-orange-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300">
+                          <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-orange-500/20 to-orange-400/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+                          <div className="relative z-10 text-center">
+                            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-3">
+                              <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
+                                <div className="w-2 h-2 bg-orange-600 rounded-full animate-pulse" />
+                              </div>
+                            </div>
+                            <div className="text-3xl font-bold text-orange-600 mb-1">{totalStreak}</div>
+                            <div className="text-sm text-[var(--fg)]/70 font-medium">Total Streak</div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
