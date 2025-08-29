@@ -112,11 +112,11 @@ export default function Home() {
                 animatedElements.has('hero-heading') ? 'animate-in' : 'animate-on-scroll'
               }`}
             >
-              <span className="text-[var(--fg)]">Master Any Skill with</span>
+              <span className="text-[var(--fg)] animate-fade-in-up" style={{animationDelay: '0.2s'}}>Master Any Skill with</span>
               <br />
-              <span className="bg-gradient-to-r from-brand via-purple-500 to-brand bg-clip-text text-transparent bg-size-200 animate-pulse animate-pulse-glow">AI-Powered</span>
+              <span className="bg-gradient-to-r from-brand via-purple-500 to-brand bg-clip-text text-transparent bg-size-200 animate-pulse animate-float" style={{animationDelay: '0.4s'}}>AI-Powered</span>
               <br />
-              <span className="text-[var(--fg)]">Learning Paths</span>
+              <span className="text-[var(--fg)] animate-fade-in-up" style={{animationDelay: '0.6s'}}>Learning Paths</span>
             </h1>
 
             {/* Subtitle */}
@@ -126,7 +126,11 @@ export default function Home() {
                 animatedElements.has('hero-subtitle') ? 'animate-in' : 'animate-on-scroll'
               }`}
             >
-              Get personalized daily lessons, track your progress, and achieve your learning goals with intelligent AI guidance that adapts to your style.
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.8s'}}>Get personalized daily lessons,</span>{' '}
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.0s'}}>track your progress,</span>{' '}
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.2s'}}>and achieve your learning goals</span>{' '}
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.4s'}}>with intelligent AI guidance</span>{' '}
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.6s'}}>that adapts to your style.</span>
             </p>
 
             {/* CTA Buttons */}
@@ -181,16 +185,16 @@ export default function Home() {
                 animatedElements.has('hero-stats') ? 'animate-in' : 'animate-on-scroll'
               }`}
             >
-              <div className="text-center group">
-                <div className="text-3xl font-bold text-[var(--fg)] group-hover:text-brand transition-colors duration-300">10K+</div>
+              <div className="text-center group animate-fade-in-up" style={{animationDelay: '1.8s'}}>
+                <div className="text-3xl font-bold text-[var(--fg)] group-hover:text-brand transition-colors duration-300 hover-bounce">10K+</div>
                 <div className="text-sm text-[var(--fg)]/70">Active Learners</div>
               </div>
-              <div className="text-center group">
-                <div className="text-3xl font-bold text-[var(--fg)] group-hover:text-brand transition-colors duration-300">500+</div>
+              <div className="text-center group animate-fade-in-up" style={{animationDelay: '2.0s'}}>
+                <div className="text-3xl font-bold text-[var(--fg)] group-hover:text-brand transition-colors duration-300 hover-bounce">500+</div>
                 <div className="text-sm text-[var(--fg)]/70">Skills Available</div>
               </div>
-              <div className="text-center group">
-                <div className="text-3xl font-bold text-[var(--fg)] group-hover:text-brand transition-colors duration-300">95%</div>
+              <div className="text-center group animate-fade-in-up" style={{animationDelay: '2.2s'}}>
+                <div className="text-3xl font-bold text-[var(--fg)] group-hover:text-brand transition-colors duration-300 hover-bounce">95%</div>
                 <div className="text-sm text-[var(--fg)]/70">Success Rate</div>
               </div>
             </div>
@@ -215,10 +219,15 @@ export default function Home() {
             }`}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-[var(--fg)] mb-6">
-              Why Choose <span className="text-brand">Learnovium</span>?
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.2s'}}>Why Choose</span>{' '}
+              <span className="inline-block animate-fade-in-up text-brand" style={{animationDelay: '0.4s'}}>Learnovium</span>
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.6s'}}>?</span>
             </h2>
             <p className="text-xl text-[var(--fg)]/70 max-w-3xl mx-auto leading-relaxed">
-              Our platform combines cutting-edge AI with proven learning methodologies to deliver an unparalleled educational experience
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.8s'}}>Our platform combines cutting-edge AI</span>{' '}
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.0s'}}>with proven learning methodologies</span>{' '}
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.2s'}}>to deliver an unparalleled</span>{' '}
+              <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.4s'}}>educational experience</span>
             </p>
           </div>
 
@@ -410,14 +419,18 @@ export default function Home() {
       <section className="py-24 bg-gradient-to-b from-transparent to-muted/30">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-[var(--fg)] mb-6">
-            Choose Your <span className="text-brand">Learning Journey</span>
+            <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.2s'}}>Choose Your</span>{' '}
+            <span className="inline-block animate-fade-in-up text-brand" style={{animationDelay: '0.4s'}}>Learning Journey</span>
           </h2>
           <p className="text-xl text-[var(--fg)]/70 max-w-3xl mx-auto leading-relaxed mb-8">
-            Start for free and upgrade as you grow. All plans include our AI-powered learning engine and personalized content.
+            <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.6s'}}>Start for free and upgrade as you grow.</span>{' '}
+            <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.8s'}}>All plans include our AI-powered learning engine</span>{' '}
+            <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.0s'}}>and personalized content.</span>
           </p>
           <Link 
             href="/pricing"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-brand to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg text-lg hover-bounce"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-brand to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg text-lg hover-bounce animate-fade-in-up"
+            style={{animationDelay: '1.2s'}}
           >
             <Star className="w-5 h-5" />
             View All Plans
@@ -444,10 +457,15 @@ export default function Home() {
             
             <div className="relative z-10 max-w-4xl mx-auto space-y-8">
               <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-                Ready to Transform Your <span className="text-yellow-200">Learning</span>?
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.2s'}}>Ready to Transform Your</span>{' '}
+                <span className="inline-block animate-fade-in-up text-yellow-200" style={{animationDelay: '0.4s'}}>Learning</span>
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.6s'}}>?</span>
               </h2>
               <p className="text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-                Join thousands of learners who are already achieving their goals with AI-powered guidance. Start your journey today and unlock your full potential.
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.8s'}}>Join thousands of learners who are already</span>{' '}
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.0s'}}>achieving their goals with AI-powered guidance.</span>{' '}
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.2s'}}>Start your journey today and unlock</span>{' '}
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.4s'}}>your full potential.</span>
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
