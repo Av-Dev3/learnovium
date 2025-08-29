@@ -27,7 +27,6 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
 
   const navItems = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
     { href: "/pricing", label: "Pricing" },
     { href: "/auth", label: "Get Started" },
   ];

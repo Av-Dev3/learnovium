@@ -93,6 +93,13 @@ export function Footer() {
                   <span>Learning Plans</span>
                   <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
                 </Link>
+                <Link 
+                  href="/pricing" 
+                  className="group flex items-center text-[var(--fg)]/70 hover:text-[var(--fg)] transition-all duration-300 hover:translate-x-1"
+                >
+                  <span>Pricing</span>
+                  <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
+                </Link>
               </nav>
             </div>
 
@@ -105,6 +112,13 @@ export function Footer() {
                   className="group flex items-center text-[var(--fg)]/70 hover:text-[var(--fg)] transition-all duration-300 hover:translate-x-1"
                 >
                   <span>About</span>
+                  <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
+                </Link>
+                <Link 
+                  href="/pricing" 
+                  className="group flex items-center text-[var(--fg)]/70 hover:text-[var(--fg)] transition-all duration-300 hover:translate-x-1"
+                >
+                  <span>Pricing</span>
                   <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
                 </Link>
                 <Link 
