@@ -1,31 +1,81 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AppHeader } from "@/components/app-header";
 import { Footer } from "@/components/layout/footer";
 
-import { ArrowRight, Target, Brain, Calendar, Sparkles, Zap, Shield, Users, TrendingUp } from "lucide-react";
+import { ArrowRight, Target, Brain, Calendar, Sparkles, Zap, Shield, Users, TrendingUp, Star } from "lucide-react";
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { useEffect, useRef, useState } from "react";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
-  // Check authentication status server-side
-  const supabase = await supabaseServer();
-  const { data: { session }, error } = await supabase.auth.getSession();
-  const isAuthenticated = !!session;
-  const user = session?.user;
+// Custom hook for scroll animations
+function useScrollAnimation() {
+  const [animatedElements, setAnimatedElements] = useState<Set<string>>(new Set());
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  console.log("Homepage auth check - session:", !!session, "user:", user?.email, "error:", error);
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('data-animate-id');
+            if (id) {
+              setAnimatedElements(prev => new Set(prev).add(id));
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
 
-  // For testing purposes, let's force the user menu to show
-  const testAuth = true; // TEMPORARY: Force authentication for testing
+    const elements = document.querySelectorAll('[data-animate-id]');
+    elements.forEach(el => observerRef.current?.observe(el));
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  return animatedElements;
+}
+
+export default function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const animatedElements = useScrollAnimation();
+
+  useEffect(() => {
+    // Check authentication status client-side
+    const checkAuth = async () => {
+      try {
+        const supabase = await supabaseServer();
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
+        setUser(session?.user || null);
+      } catch (err) {
+        console.error('Auth check error:', err);
+      }
+    };
+    
+    checkAuth();
+  }, []);
+
+  console.log("Homepage auth check - isAuthenticated:", isAuthenticated, "user:", user?.email);
 
   return (
     <div className="min-h-screen bg-[var(--bg)] overflow-x-hidden">
       <AppHeader 
-        isLoggedIn={testAuth} 
-        userName={user?.email || "test@example.com"}
+        isLoggedIn={isAuthenticated} 
+        userName={user?.email || "Guest"}
         userAvatarUrl={user?.user_metadata?.avatar_url}
       />
 
@@ -37,41 +87,61 @@ export default async function Home() {
           <div className="absolute inset-0 [mask-image:radial-gradient(closest-side,white,transparent)] opacity-[0.08]" style={{backgroundImage:"linear-gradient(to_right,rgba(0,0,0,.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,.4)_1px,transparent_1px)",backgroundSize:"64px_64px"}} />
           
           {/* Floating geometric shapes */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0s'}} />
-          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
-          <div className="absolute bottom-40 left-1/4 w-28 h-28 bg-gradient-to-br from-blue-400/20 to-cyan-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '4s'}} />
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-2xl animate-pulse animate-float" style={{animationDelay: '0s'}} />
+          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-2xl animate-pulse animate-float" style={{animationDelay: '2s'}} />
+          <div className="absolute bottom-40 left-1/4 w-28 h-28 bg-gradient-to-br from-blue-400/20 to-cyan-500/20 rounded-full blur-2xl animate-pulse animate-float" style={{animationDelay: '4s'}} />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 border border-[var(--border)]/40 bg-[var(--bg)]/80 backdrop-blur-md shadow-lg animate-fade-in">
+            <div 
+              data-animate-id="hero-badge"
+              className={`inline-flex items-center gap-2 rounded-full px-6 py-3 border border-[var(--border)]/40 bg-[var(--bg)]/80 backdrop-blur-md shadow-lg transition-all duration-1000 ${
+                animatedElements.has('hero-badge') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               <Sparkles className="w-4 h-4 text-brand animate-bounce-gentle" />
               <span className="text-sm font-semibold text-[var(--fg)]/90">AI-Powered Learning Platform</span>
             </div>
 
             {/* Main Heading */}
-            <h1 className="text-5xl md:text-7xl font-bold leading-tight tracking-tight animate-slide-up">
+            <h1 
+              data-animate-id="hero-heading"
+              className={`text-5xl md:text-7xl font-bold leading-tight tracking-tight transition-all duration-1000 ${
+                animatedElements.has('hero-heading') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               <span className="text-[var(--fg)]">Master Any Skill with</span>
               <br />
-              <span className="bg-gradient-to-r from-brand via-purple-500 to-brand bg-clip-text text-transparent bg-size-200 animate-pulse">AI-Powered</span>
+              <span className="bg-gradient-to-r from-brand via-purple-500 to-brand bg-clip-text text-transparent bg-size-200 animate-pulse animate-pulse-glow">AI-Powered</span>
               <br />
               <span className="text-[var(--fg)]">Learning Paths</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-[var(--fg)]/70 max-w-3xl mx-auto leading-relaxed animate-slide-up [animation-delay:200ms]">
+            <p 
+              data-animate-id="hero-subtitle"
+              className={`text-xl md:text-2xl text-[var(--fg)]/70 max-w-3xl mx-auto leading-relaxed transition-all duration-1000 ${
+                animatedElements.has('hero-subtitle') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               Get personalized daily lessons, track your progress, and achieve your learning goals with intelligent AI guidance that adapts to your style.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up [animation-delay:400ms]">
+            <div 
+              data-animate-id="hero-cta"
+              className={`flex flex-col sm:flex-row gap-4 justify-center items-center transition-all duration-1000 ${
+                animatedElements.has('hero-cta') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               {isAuthenticated ? (
                 <Button 
                   size="lg" 
                   shape="pill"
                   asChild 
-                  className="text-lg px-8 py-5 bg-gradient-to-r from-brand to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                  className="text-lg px-8 py-5 bg-gradient-to-r from-brand to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 hover-bounce"
                 >
                   <Link href="/app">
                     Go to Dashboard
@@ -84,7 +154,7 @@ export default async function Home() {
                     size="lg" 
                     shape="pill"
                     asChild 
-                    className="text-lg px-8 py-5 bg-gradient-to-r from-brand to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                    className="text-lg px-8 py-5 bg-gradient-to-r from-brand to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 hover-bounce"
                   >
                     <Link href="/auth">
                       Start Learning Free
@@ -96,7 +166,7 @@ export default async function Home() {
                     variant="outline" 
                     shape="pill"
                     asChild 
-                    className="text-lg px-8 py-5 border-2 border-[var(--border)] hover:bg-muted hover:border-brand/50 transition-all duration-300"
+                    className="text-lg px-8 py-5 border-2 border-[var(--border)] hover:bg-muted hover:border-brand/50 transition-all duration-300 hover-wiggle"
                   >
                     <Link href="/auth">Watch Demo</Link>
                   </Button>
@@ -105,7 +175,12 @@ export default async function Home() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto pt-8 animate-slide-up [animation-delay:600ms]">
+            <div 
+              data-animate-id="hero-stats"
+              className={`grid grid-cols-3 gap-8 max-w-2xl mx-auto pt-8 transition-all duration-1000 ${
+                animatedElements.has('hero-stats') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               <div className="text-center group">
                 <div className="text-3xl font-bold text-[var(--fg)] group-hover:text-brand transition-colors duration-300">10K+</div>
                 <div className="text-sm text-[var(--fg)]/70">Active Learners</div>
@@ -128,12 +203,17 @@ export default async function Home() {
         {/* Enhanced background with animated elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-b from-muted/30 via-brand/5 to-transparent" />
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-brand/10 via-purple-500/10 to-transparent rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-br from-purple-400/10 via-pink-500/10 to-transparent rounded-full blur-3xl animate-pulse" style={{animationDelay: '3s'}} />
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-brand/10 via-purple-500/10 to-transparent rounded-full blur-3xl animate-pulse animate-float" style={{animationDelay: '1s'}} />
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-br from-purple-400/10 via-pink-500/10 to-transparent rounded-full blur-3xl animate-pulse animate-float" style={{animationDelay: '3s'}} />
         </div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-20">
+          <div 
+            data-animate-id="features-header"
+            className={`text-center mb-20 transition-all duration-1000 ${
+              animatedElements.has('features-header') ? 'animate-in' : 'animate-on-scroll'
+            }`}
+          >
             <h2 className="text-4xl md:text-5xl font-bold text-[var(--fg)] mb-6">
               Why Choose <span className="text-brand">Learnovium</span>?
             </h2>
@@ -144,7 +224,12 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <Card className="group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10">
+            <Card 
+              data-animate-id="feature-1"
+              className={`group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10 ${
+                animatedElements.has('feature-1') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               {/* Animated background elements */}
               <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-brand/25 via-purple-500/25 to-indigo-500/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
               <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-purple-400/25 via-indigo-400/25 to-blue-500/25 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
@@ -169,7 +254,12 @@ export default async function Home() {
             </Card>
 
             {/* Feature 2 */}
-            <Card className="group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10">
+            <Card 
+              data-animate-id="feature-2"
+              className={`group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10 ${
+                animatedElements.has('feature-2') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               {/* Animated background elements */}
               <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-green-500/25 via-emerald-500/25 to-teal-500/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
               <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-emerald-400/25 via-teal-400/25 to-green-400/25 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
@@ -194,7 +284,12 @@ export default async function Home() {
             </Card>
 
             {/* Feature 3 */}
-            <Card className="group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10">
+            <Card 
+              data-animate-id="feature-3"
+              className={`group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10 ${
+                animatedElements.has('feature-3') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               {/* Animated background elements */}
               <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-purple-500/25 via-pink-500/25 to-rose-500/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
               <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-pink-400/25 via-rose-400/25 to-purple-400/25 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
@@ -219,7 +314,12 @@ export default async function Home() {
             </Card>
 
             {/* Feature 4 */}
-            <Card className="group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10">
+            <Card 
+              data-animate-id="feature-4"
+              className={`group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10 ${
+                animatedElements.has('feature-4') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               {/* Animated background elements */}
               <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-orange-500/25 via-amber-500/25 to-yellow-500/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
               <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-amber-400/25 via-yellow-400/25 to-orange-400/25 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
@@ -244,7 +344,12 @@ export default async function Home() {
             </Card>
 
             {/* Feature 5 */}
-            <Card className="group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10">
+            <Card 
+              data-animate-id="feature-5"
+              className={`group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10 ${
+                animatedElements.has('feature-5') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               {/* Animated background elements */}
               <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-red-500/25 via-rose-500/25 to-pink-500/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
               <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-rose-400/25 via-pink-400/25 to-red-400/25 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
@@ -269,7 +374,12 @@ export default async function Home() {
             </Card>
 
             {/* Feature 6 */}
-            <Card className="group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10">
+            <Card 
+              data-animate-id="feature-6"
+              className={`group relative border-0 bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-3xl overflow-hidden backdrop-blur-xl hover:from-white/30 hover:via-white/20 hover:to-white/10 ${
+                animatedElements.has('feature-6') ? 'animate-in' : 'animate-on-scroll'
+              }`}
+            >
               {/* Animated background elements */}
               <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-indigo-500/25 via-blue-500/25 to-cyan-500/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
               <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-blue-400/25 via-cyan-400/25 to-indigo-400/25 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
@@ -296,15 +406,33 @@ export default async function Home() {
         </div>
       </section>
 
-
+      {/* Pricing CTA Section */}
+      <section className="py-24 bg-gradient-to-b from-transparent to-muted/30">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-[var(--fg)] mb-6">
+            Choose Your <span className="text-brand">Learning Journey</span>
+          </h2>
+          <p className="text-xl text-[var(--fg)]/70 max-w-3xl mx-auto leading-relaxed mb-8">
+            Start for free and upgrade as you grow. All plans include our AI-powered learning engine and personalized content.
+          </p>
+          <Link 
+            href="/pricing"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-brand to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg text-lg hover-bounce"
+          >
+            <Star className="w-5 h-5" />
+            View All Plans
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-24 relative overflow-hidden">
         {/* Enhanced background with animated elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand/5 to-transparent" />
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-brand/10 via-purple-500/10 to-transparent rounded-full blur-3xl animate-pulse" style={{animationDelay: '0s'}} />
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-br from-purple-400/10 via-pink-500/10 to-transparent rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}} />
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-brand/10 via-purple-500/10 to-transparent rounded-full blur-3xl animate-pulse animate-float" style={{animationDelay: '0s'}} />
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-br from-purple-400/10 via-pink-500/10 to-transparent rounded-full blur-3xl animate-pulse animate-float" style={{animationDelay: '2s'}} />
         </div>
         
         <div className="max-w-6xl mx-auto px-6 relative z-10">
@@ -328,7 +456,7 @@ export default async function Home() {
                     size="lg" 
                     shape="pill"
                     asChild 
-                    className="text-lg px-8 py-5 bg-white text-brand hover:bg-blue-50 border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                    className="text-lg px-8 py-5 bg-white text-brand hover:bg-blue-50 border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 hover-bounce"
                   >
                     <Link href="/app">
                       Go to Dashboard
@@ -341,7 +469,7 @@ export default async function Home() {
                       size="lg" 
                       shape="pill"
                       asChild 
-                      className="text-lg px-8 py-5 bg-white text-brand hover:bg-blue-50 border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                      className="text-lg px-8 py-5 bg-white text-brand hover:bg-blue-50 border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 hover-bounce"
                     >
                       <Link href="/auth">
                         Start Learning Free
@@ -353,7 +481,7 @@ export default async function Home() {
                       variant="outline" 
                       shape="pill"
                       asChild 
-                      className="text-lg px-8 py-5 border-2 border-white text-white hover:bg-white hover:text-brand transition-all duration-300"
+                      className="text-lg px-8 py-5 border-2 border-white text-white hover:bg-white hover:text-brand transition-all duration-300 hover-wiggle"
                     >
                       <Link href="/pricing">
                         View Pricing
