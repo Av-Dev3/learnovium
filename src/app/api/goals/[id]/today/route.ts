@@ -47,6 +47,10 @@ function checkRate(userId: string, goalId: string) {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Add timeout configuration for lesson generation
+const LESSON_GENERATION_TIMEOUT_MS = 120000; // 2 minutes for lesson generation
+const RAG_TIMEOUT_MS = 45000; // 45 seconds for RAG operations
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { user, supabase, res } = await requireUser(req);
@@ -140,14 +144,25 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     // Focus query should be about the planned topic, not random variations
     const focusQuery = `${goal.topic} — ${plannedTopic} (level: ${userLevel}, day ${dayIndex})`;
 
-    // Retrieve context relevant to the planned topic
-    const { context } = await retrieveContext(focusQuery, 3, goal.topic);
+    // Retrieve context relevant to the planned topic with timeout
+    const ragPromise = retrieveContext(focusQuery, 3, goal.topic);
+    const ragTimeoutPromise = new Promise<never>((_, reject) => 
+      setTimeout(() => reject(new Error('RAG operation timeout')), RAG_TIMEOUT_MS)
+    );
+    
+    const { context } = await Promise.race([ragPromise, ragTimeoutPromise]);
     
     // Build lesson prompt focused on the planned topic
     const msgs = buildAdvancedLessonPrompt(context, goal.topic, plannedFocus, dayIndex, userLevel);
     
     try {
-      const { data: lesson, usage: _usage } = await generateLesson(msgs, user.id, goalId);
+      // Add timeout wrapper for lesson generation
+      const lessonGenerationPromise = generateLesson(msgs, user.id, goalId);
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('Lesson generation timeout')), LESSON_GENERATION_TIMEOUT_MS)
+      );
+      
+      const { data: lesson, usage: _usage } = await Promise.race([lessonGenerationPromise, timeoutPromise]);
       
       // Validate the lesson quality
       if (!lesson || !lesson.topic || !lesson.reading || !lesson.walkthrough) {
@@ -253,6 +268,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         level: goal.level
       });
       
+      // Check if it's a timeout error
+      const isTimeout = error instanceof Error && (
+        error.message.includes('timeout') || 
+        error.message.includes('Lesson generation timeout') ||
+        error.message.includes('RAG operation timeout')
+      );
+      
+      if (isTimeout) {
+        console.log("Lesson generation timeout detected, proceeding to fallback");
+      }
+      
       // Log the failed AI call for tracking
       const latency_ms = Date.now() - t0;
       try {
@@ -260,7 +286,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           user_id: user.id,
           goal_id: goalId,
           endpoint: "lesson",
-          model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          model: isTimeout ? "timeout_fallback" : (process.env.OPENAI_MODEL_LESSON || "gpt-5-mini"),
           prompt_tokens: 0, // We don't have usage data for failed calls
           completion_tokens: 0,
           success: false,

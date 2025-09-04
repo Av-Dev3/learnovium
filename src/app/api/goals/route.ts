@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/api/utils";
 import { buildPlannerPromptWithRAG } from "@/lib/prompts";
 import { generatePlan } from "@/lib/aiCall";
-// import { canonicalizeSignature } from "@/lib/goalSignature"; // Temporarily disabled
+import { canonicalizeSignature } from "@/lib/goalSignature";
 import { logCall } from "@/lib/aiGuard"; // Re-enabled for AI call tracking
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Add timeout configuration
-const PLAN_GENERATION_TIMEOUT_MS = 60000; // 60 seconds for plan generation
-const RAG_TIMEOUT_MS = 30000; // 30 seconds for RAG operations
-const API_RESPONSE_TIMEOUT_MS = 90000; // 90 seconds total API response time
+// Add timeout configuration - increased for comprehensive plan generation
+const PLAN_GENERATION_TIMEOUT_MS = 180000; // 3 minutes for plan generation (was 60s)
+const RAG_TIMEOUT_MS = 60000; // 1 minute for RAG operations (was 30s)
+const API_RESPONSE_TIMEOUT_MS = 300000; // 5 minutes total API response time (was 90s)
 
 // Helper function to generate fallback plans
 function generateFallbackPlan(topic: string, focus: string | undefined, level: string, duration: number, minutesPerDay: number) {
@@ -66,18 +66,53 @@ function getModuleTitle(topic: string, level: string, moduleIndex: number): stri
 
 function getDayTopic(topic: string, level: string, day: number, totalDays: number, focus: string | undefined): string {
   const focusText = focus ? ` - ${focus}` : '';
+  const levelPrefix = level.charAt(0).toUpperCase() + level.slice(1);
   
-  if (day === 1) {
-    return `${level.charAt(0).toUpperCase() + level.slice(1)} Introduction to ${topic}${focusText}`;
-  } else if (day <= totalDays * 0.3) {
-    return `Basic ${topic} Concepts${focusText}`;
-  } else if (day <= totalDays * 0.6) {
-    return `Intermediate ${topic} Skills${focusText}`;
-  } else if (day <= totalDays * 0.8) {
-    return `Advanced ${topic} Techniques${focusText}`;
-  } else {
-    return `${topic} Mastery & Application${focusText}`;
+  // Create more specific, unique topics for each day
+  const topicVariations = [
+    `${levelPrefix} Introduction to ${topic}${focusText}`,
+    `Understanding ${topic} Fundamentals${focusText}`,
+    `Core ${topic} Principles and Concepts${focusText}`,
+    `Essential ${topic} Terminology and Basics${focusText}`,
+    `Practical ${topic} Applications${focusText}`,
+    `${topic} Best Practices and Standards${focusText}`,
+    `Intermediate ${topic} Techniques${focusText}`,
+    `Advanced ${topic} Strategies${focusText}`,
+    `${topic} Problem-Solving Methods${focusText}`,
+    `Real-World ${topic} Implementation${focusText}`,
+    `${topic} Optimization and Performance${focusText}`,
+    `Advanced ${topic} Concepts${focusText}`,
+    `${topic} Expert Techniques${focusText}`,
+    `Mastering ${topic} Workflows${focusText}`,
+    `${topic} Integration and Deployment${focusText}`,
+    `${topic} Troubleshooting and Debugging${focusText}`,
+    `${topic} Security and Best Practices${focusText}`,
+    `${topic} Testing and Quality Assurance${focusText}`,
+    `${topic} Documentation and Maintenance${focusText}`,
+    `${topic} Advanced Projects and Portfolio${focusText}`,
+    `${topic} Industry Standards and Trends${focusText}`,
+    `${topic} Collaboration and Teamwork${focusText}`,
+    `${topic} Performance Monitoring${focusText}`,
+    `${topic} Scalability and Architecture${focusText}`,
+    `${topic} Final Project and Review${focusText}`,
+    `${topic} Certification and Next Steps${focusText}`,
+    `${topic} Community and Resources${focusText}`,
+    `${topic} Career Applications${focusText}`,
+    `${topic} Mastery Assessment${focusText}`,
+    `${topic} Professional Development${focusText}`
+  ];
+  
+  // Ensure we have enough variations for any duration
+  const topicIndex = (day - 1) % topicVariations.length;
+  let selectedTopic = topicVariations[topicIndex];
+  
+  // If we need more topics than we have variations, add day-specific suffixes
+  if (day > topicVariations.length) {
+    const cycle = Math.floor((day - 1) / topicVariations.length) + 1;
+    selectedTopic = `${selectedTopic} (Part ${cycle})`;
   }
+  
+  return selectedTopic;
 }
 
 // GET /api/goals — list current user's goals
@@ -161,30 +196,25 @@ async function createGoalInternal(req: NextRequest) {
     if (!topic) return NextResponse.json({ error: "Missing topic" }, { status: 400 });
 
     // Pull profile to build signature
-    // Temporarily disabled while setting up database migrations
-    /*
     const { data: profile } = await supabase
       .from("profiles")
       .select("level, minutes_per_day, tz")
       .eq("id", user.id)
       .maybeSingle();
-    */
     
-    // const signature = await canonicalizeSignature({ // Temporarily disabled
-    //   topic,
-    //   focus,
-    //   level: level || 'beginner', // Temporarily use default values
-    //   minutes_per_day: minutes_per_day || 30, // Temporarily use default values
-    //   duration_days: duration_days || null,
-    //   locale: 'en', // Temporarily use default values
-    //   version: 1,
-    // });
+    const signature = await canonicalizeSignature({
+      topic,
+      focus,
+      level: level || profile?.level || 'beginner',
+      minutes_per_day: minutes_per_day || profile?.minutes_per_day || 30,
+      duration_days: duration_days || null,
+      locale: profile?.tz || 'en',
+      version: 1,
+    });
 
     // 1) Try to reuse existing plan_template
-    // const template = null; // Temporarily disabled
+    let template = null;
     try {
-      // Temporarily disabled while setting up database migrations
-      /*
       const { data: templateData } = await supabase
         .from("plan_template")
         .select("id, plan_json")
@@ -193,17 +223,13 @@ async function createGoalInternal(req: NextRequest) {
         .maybeSingle();
       template = templateData;
       console.log("POST /api/goals - template found:", Boolean(template));
-      */
     } catch {
       // plan_template table might not exist yet, continue with plan generation
       console.log("plan_template table not available, generating new plan");
     }
 
-    // Temporarily disabled template reuse
-    /*
     if (template) {
       // Link a new user-owned goal to the template instantly (no AI call)
-      // Temporarily disabled while setting up database migrations
       const { data: goal, error } = await supabase
         .from("learning_goals")
         .insert({
@@ -225,7 +251,6 @@ async function createGoalInternal(req: NextRequest) {
       console.log("POST /api/goals - goal created (reuse):", goal?.id);
       return NextResponse.json({ ...goal, reused: true }, { status: 201 });
     }
-    */
 
     // 2) No template yet: generate with RAG + GPT
     const t0 = Date.now();
@@ -357,10 +382,8 @@ async function createGoalInternal(req: NextRequest) {
     }
 
     // Save template for future reuse
-    // const newTemplate: { id: string } | null = null; // Temporarily disabled
+    let newTemplate: { id: string } | null = null;
     try {
-      // Temporarily disabled while setting up database migrations
-      /*
       const { data: templateData, error: tErr } = await supabase
         .from("plan_template")
         .insert({
@@ -369,10 +392,9 @@ async function createGoalInternal(req: NextRequest) {
           focus,
           level: level || profile?.level || null,
           minutes_per_day: minutes_per_day || profile?.minutes_per_day || null,
-          duration_days: duration_days || null,
-          plan_json,
           locale: profile?.tz || "en",
           version: 1,
+          plan_json,
         })
         .select("id")
         .single();
@@ -390,7 +412,6 @@ async function createGoalInternal(req: NextRequest) {
       } else {
         newTemplate = templateData;
       }
-      */
     } catch {
       // plan_template table might not exist yet, continue without caching
       console.log("plan_template table not available, skipping template caching");
@@ -416,8 +437,7 @@ async function createGoalInternal(req: NextRequest) {
         level,
         plan_version: 1,
         plan_json,
-        // Temporarily disabled while setting up database migrations
-        // ...(newTemplate?.id && { plan_template_id: newTemplate.id }),
+        ...(newTemplate?.id && { plan_template_id: newTemplate.id }),
       })
       .select("id, topic, focus, plan_version, created_at")
       .single();
