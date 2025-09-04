@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser, dayIndexFrom } from "@/lib/api/utils";
 // import { retrieveContextDB } from "@/rag/retriever_db"; // Temporarily disabled
 import { retrieveContext } from "@/rag/retriever"; // Fallback RAG retriever
-import { generateLesson } from "@/lib/aiCall";
+import { generateLesson, generateFlashcards } from "@/lib/aiCall";
 import { buildAdvancedLessonPrompt } from "@/lib/prompts";
 import { logCall } from "@/lib/aiGuard"; // Re-enabled for AI call tracking
+import { supabaseServer } from "@/lib/supabaseServer";
 
 // Define the types inline since they're not exported from a central location
 interface PlanDay {
@@ -42,6 +43,92 @@ function checkRate(userId: string, goalId: string) {
   }
   globalThis.__todayRate.set(key, now);
   return { ok: true, retry_ms: 0 };
+}
+
+// Helper function to generate flashcards from a lesson
+async function generateFlashcardsFromLesson(
+  userId: string,
+  goalId: string,
+  dayIndex: number,
+  lesson: any,
+  goalTopic: string,
+  goalFocus?: string
+) {
+  try {
+    const supabase = await supabaseServer();
+
+    // Check if flashcards already exist for this lesson
+    const { data: existingCards } = await supabase
+      .from("flashcards")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("goal_id", goalId)
+      .eq("lesson_day_index", dayIndex)
+      .limit(1);
+
+    if (existingCards && existingCards.length > 0) {
+      console.log(`Flashcards already exist for goal ${goalId}, day ${dayIndex}`);
+      return;
+    }
+
+    // Get the flashcard category for this goal
+    const { data: category } = await supabase
+      .from("flashcard_categories")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("goal_id", goalId)
+      .single();
+
+    if (!category) {
+      console.warn(`No flashcard category found for goal ${goalId}`);
+      return;
+    }
+
+    // Prepare lesson content for flashcard generation
+    const lessonContent = [{
+      day: dayIndex + 1,
+      topic: lesson.topic || `Day ${dayIndex + 1}`,
+      reading: lesson.reading || "",
+      walkthrough: lesson.walkthrough || "",
+      quiz: lesson.quiz || []
+    }];
+
+    // Generate flashcards using AI
+    const { data: generatedCards, error } = await generateFlashcards(
+      lessonContent,
+      goalTopic,
+      goalFocus
+    );
+
+    if (error || !generatedCards || generatedCards.length === 0) {
+      console.warn("Failed to generate flashcards:", error);
+      return;
+    }
+
+    // Save flashcards to database
+    const flashcardsToInsert = generatedCards.map((card: any) => ({
+      user_id: userId,
+      category_id: category.id,
+      goal_id: goalId,
+      lesson_day_index: dayIndex,
+      front: card.front,
+      back: card.back,
+      difficulty: card.difficulty || "medium",
+      source: "lesson",
+    }));
+
+    const { error: saveError } = await supabase
+      .from("flashcards")
+      .insert(flashcardsToInsert);
+
+    if (saveError) {
+      console.error("Failed to save generated flashcards:", saveError);
+    } else {
+      console.log(`Generated ${generatedCards.length} flashcards for goal ${goalId}, day ${dayIndex}`);
+    }
+  } catch (error) {
+    console.error("Error in generateFlashcardsFromLesson:", error);
+  }
 }
 
 export const runtime = "nodejs";
@@ -254,6 +341,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         exercise: lesson.exercise?.substring(0, 50) + "...",
         est_minutes: lesson.est_minutes
       });
+
+      // Generate flashcards from this lesson (async, don't block response)
+      generateFlashcardsFromLesson(user.id, goalId, dayIndex, lesson, goal.topic, goal.focus)
+        .catch(error => console.warn("Failed to generate flashcards from lesson:", error));
       
       return NextResponse.json({ reused: false, lesson });
     } catch (error) {

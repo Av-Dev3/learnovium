@@ -249,6 +249,30 @@ async function createGoalInternal(req: NextRequest) {
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
       console.log("POST /api/goals - goal created (reuse):", goal?.id);
+
+      // Create flashcard category for this goal
+      try {
+        const { error: categoryError } = await supabase
+          .from("flashcard_categories")
+          .insert({
+            user_id: user.id,
+            goal_id: goal.id,
+            name: topic,
+            description: `Flashcards for ${topic}${focus ? ` - ${focus}` : ''}`,
+            color: '#6366f1', // Default brand color
+          });
+
+        if (categoryError) {
+          console.warn("Failed to create flashcard category:", categoryError);
+          // Don't fail the goal creation if category creation fails
+        } else {
+          console.log("Flashcard category created for goal:", goal.id);
+        }
+      } catch (categoryErr) {
+        console.warn("Error creating flashcard category:", categoryErr);
+        // Don't fail the goal creation if category creation fails
+      }
+
       return NextResponse.json({ ...goal, reused: true }, { status: 201 });
     }
 
@@ -455,6 +479,30 @@ async function createGoalInternal(req: NextRequest) {
     
     console.log("POST /api/goals - Goal created successfully:", goal);
     console.log("POST /api/goals - goal created (new):", goal?.id);
+
+    // Create flashcard category for this goal
+    try {
+      const { error: categoryError } = await supabase
+        .from("flashcard_categories")
+        .insert({
+          user_id: user.id,
+          goal_id: goal.id,
+          name: topic,
+          description: `Flashcards for ${topic}${focus ? ` - ${focus}` : ''}`,
+          color: '#6366f1', // Default brand color
+        });
+
+      if (categoryError) {
+        console.warn("Failed to create flashcard category:", categoryError);
+        // Don't fail the goal creation if category creation fails
+      } else {
+        console.log("Flashcard category created for goal:", goal.id);
+      }
+    } catch (categoryErr) {
+      console.warn("Error creating flashcard category:", categoryErr);
+      // Don't fail the goal creation if category creation fails
+    }
+
     return NextResponse.json({ ...goal, reused: false }, { status: 201 });
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : "Unknown error in POST /api/goals";

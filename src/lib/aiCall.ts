@@ -132,3 +132,65 @@ export async function validateLesson(messages: Msg[], userId?: string, goalId?: 
   const { ValidationJSON } = await import("@/types/ai");
   return chatJSON({ task: "validator", messages, schema: ValidationJSON, temperature: 0, userId, goalId });
 }
+
+export async function generateFlashcards(
+  lessonContent: Array<{
+    day: number;
+    topic: string;
+    reading: string;
+    walkthrough: string;
+    quiz?: Array<{ question: string; options: string[]; correctAnswer: number }>;
+  }>,
+  goalTopic: string,
+  goalFocus?: string
+) {
+  const { FlashcardJSON } = await import("@/types/ai");
+  
+  const systemPrompt = `You are an expert at creating educational flashcards for spaced repetition learning. 
+
+Create high-quality flashcards from the provided lesson content that:
+1. Test key concepts and practical knowledge
+2. Use clear, concise questions and answers
+3. Vary in difficulty (easy, medium, hard)
+4. Focus on understanding, not just memorization
+5. Include practical applications when possible
+
+Generate 3-5 flashcards per lesson, focusing on the most important concepts.`;
+
+  const userPrompt = `Topic: ${goalTopic}
+${goalFocus ? `Focus: ${goalFocus}` : ''}
+
+Lesson Content:
+${lessonContent.map(lesson => `
+Day ${lesson.day}: ${lesson.topic}
+
+Reading:
+${lesson.reading}
+
+Walkthrough:
+${lesson.walkthrough}
+
+${lesson.quiz ? `Quiz Questions:
+${lesson.quiz.map(q => `- ${q.question}`).join('\n')}` : ''}
+`).join('\n---\n')}
+
+Create flashcards that help students master these concepts through spaced repetition. Mix question types and difficulty levels.`;
+
+  const messages: Msg[] = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt }
+  ];
+
+  try {
+    const result = await chatJSON({ 
+      task: "lesson", // Reuse lesson model for flashcard generation
+      messages, 
+      schema: FlashcardJSON, 
+      temperature: 0.7 
+    });
+    return { data: result.data.flashcards, usage: result.usage };
+  } catch (error) {
+    console.error("Flashcard generation error:", error);
+    return { error: "Failed to generate flashcards", data: null };
+  }
+}
