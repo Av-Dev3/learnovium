@@ -9,6 +9,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { ArrowLeft, BookOpen, Target, Clock, CheckCircle, Brain, Zap, ExternalLink, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { MarkCompleteButton } from "@/app/components/MarkCompleteButton";
+import { LessonContentFormatter } from "@/components/ui/lesson-content-formatter";
 
 interface Lesson {
   topic: string;
@@ -346,16 +347,25 @@ export default function LessonPage() {
             </div>
           </div>
           
-          <div className="prose prose-lg max-w-none">
-            <div className="text-[var(--fg)] leading-relaxed text-lg md:text-xl font-normal space-y-6">
-              {lesson.reading.split('\n').map((paragraph, index) => (
-                <p key={index} className="leading-8">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
+          <LessonContentFormatter content={lesson.reading} />
         </div>
+
+        {/* Walkthrough Section */}
+        {lesson.walkthrough && lesson.walkthrough.trim() && (
+          <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                <Target className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Step-by-Step Guide</h2>
+                <p className="text-[var(--fg)]/70">Follow along with detailed instructions</p>
+              </div>
+            </div>
+            
+            <LessonContentFormatter content={lesson.walkthrough} />
+          </div>
+        )}
 
         {/* Quiz Section */}
         {lesson.quiz && lesson.quiz.length > 0 && (
@@ -462,15 +472,7 @@ export default function LessonPage() {
             </div>
           </div>
           
-          <div className="prose prose-lg max-w-none">
-            <div className="text-[var(--fg)] leading-relaxed text-lg md:text-xl font-normal space-y-6">
-              {lesson.exercise.split('\n').map((paragraph, index) => (
-                <p key={index} className="leading-8">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
+          <LessonContentFormatter content={lesson.exercise} />
         </div>
 
         {/* Citations */}
