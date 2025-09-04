@@ -12,8 +12,51 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
   const formatContent = (text: string) => {
     if (!text) return [];
 
-    // Split by double newlines to get paragraphs
-    const sections = text.split(/\n\s*\n/).filter(section => section.trim());
+    // First, try to split by double newlines for natural paragraphs
+    let sections = text.split(/\n\s*\n/).filter(section => section.trim());
+    
+    // If we only get one big section, try to break it up more aggressively
+    if (sections.length === 1) {
+      // Split by single newlines and group sentences
+      const lines = text.split('\n').filter(line => line.trim());
+      sections = [];
+      let currentSection = '';
+      
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) continue;
+        
+        // If line looks like a heading or starts a new concept
+        if (trimmedLine.match(/^(Step \d+|First|Then|Next|Finally|Lastly|Introduction|Conclusion|Overview|Summary|Key Points?|Important|Note|Remember|Tip)/i) ||
+            trimmedLine.length < 100 && trimmedLine.endsWith(':')) {
+          if (currentSection) {
+            sections.push(currentSection.trim());
+            currentSection = '';
+          }
+          sections.push(trimmedLine);
+        } else if (trimmedLine.match(/^\d+\./) || trimmedLine.match(/^[-*•]/)) {
+          // List items - group consecutive ones
+          if (currentSection && !currentSection.match(/^\d+\.|^[-*•]/)) {
+            sections.push(currentSection.trim());
+            currentSection = trimmedLine;
+          } else {
+            currentSection += (currentSection ? '\n' : '') + trimmedLine;
+          }
+        } else {
+          // Regular content - group into reasonable chunks
+          if (currentSection.length > 300) {
+            sections.push(currentSection.trim());
+            currentSection = trimmedLine;
+          } else {
+            currentSection += (currentSection ? '\n' : '') + trimmedLine;
+          }
+        }
+      }
+      
+      if (currentSection) {
+        sections.push(currentSection.trim());
+      }
+    }
     
     return sections.map((section, sectionIndex) => {
       const trimmedSection = section.trim();
@@ -86,33 +129,69 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
       }
       
       // Check if it's a step or instruction (starts with Step, First, Then, etc.)
-      if (/^(Step \d+|First|Then|Next|Finally|Lastly)/i.test(trimmedSection)) {
+      if (/^(Step \d+|First|Then|Next|Finally|Lastly|To begin|To start|Begin by|Start by|Now|After that|Once you)/i.test(trimmedSection) ||
+          (trimmedSection.length < 150 && /^(How to|When to|Why|What|Where)/i.test(trimmedSection))) {
+        
+        // Break long instructions into smaller parts
+        const sentences = trimmedSection.split(/(?<=[.!?])\s+/).filter(s => s.trim());
+        
         return (
           <div key={sectionIndex} className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/30 rounded-2xl p-4 mb-6">
-            <p className="text-[var(--fg)] leading-relaxed font-medium">
-              {trimmedSection}
-            </p>
+            {sentences.length > 3 ? (
+              <div className="space-y-2">
+                {sentences.map((sentence, sentIndex) => (
+                  <p key={sentIndex} className="text-[var(--fg)] leading-relaxed font-medium">
+                    {sentence.trim()}
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[var(--fg)] leading-relaxed font-medium">
+                {trimmedSection}
+              </p>
+            )}
           </div>
         );
       }
       
-      // Regular paragraph - split by single newlines for better formatting
-      const paragraphLines = trimmedSection.split('\n').filter(line => line.trim());
+      // Regular paragraph - break into sentences for better readability
+      const sentences = trimmedSection.split(/(?<=[.!?])\s+/).filter(s => s.trim());
       
-      if (paragraphLines.length === 1) {
-        // Single line paragraph
+      if (sentences.length <= 2) {
+        // Short content - keep as single paragraph
         return (
           <p key={sectionIndex} className="text-[var(--fg)] leading-relaxed mb-6 text-lg">
-            {paragraphLines[0]}
+            {trimmedSection}
           </p>
         );
-      } else {
-        // Multi-line paragraph - treat each line as a separate point
+      } else if (sentences.length <= 4) {
+        // Medium content - split into two paragraphs
+        const midPoint = Math.ceil(sentences.length / 2);
+        const firstPart = sentences.slice(0, midPoint).join(' ');
+        const secondPart = sentences.slice(midPoint).join(' ');
+        
         return (
-          <div key={sectionIndex} className="mb-6 space-y-3">
-            {paragraphLines.map((line, lineIndex) => (
-              <p key={lineIndex} className="text-[var(--fg)] leading-relaxed text-lg">
-                {line.trim()}
+          <div key={sectionIndex} className="mb-6 space-y-4">
+            <p className="text-[var(--fg)] leading-relaxed text-lg">
+              {firstPart}
+            </p>
+            <p className="text-[var(--fg)] leading-relaxed text-lg">
+              {secondPart}
+            </p>
+          </div>
+        );
+      } else {
+        // Long content - break into multiple paragraphs
+        const chunks = [];
+        for (let i = 0; i < sentences.length; i += 3) {
+          chunks.push(sentences.slice(i, i + 3).join(' '));
+        }
+        
+        return (
+          <div key={sectionIndex} className="mb-6 space-y-4">
+            {chunks.map((chunk, chunkIndex) => (
+              <p key={chunkIndex} className="text-[var(--fg)] leading-relaxed text-lg">
+                {chunk}
               </p>
             ))}
           </div>
