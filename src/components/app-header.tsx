@@ -88,7 +88,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
               <>
                 <ThemeToggle />
                 <Button variant="ghost" size="sm" shape="pill" asChild className="hidden sm:inline-flex">
-                  <Link href="/auth/sign-in">Sign In</Link>
+                  <Link href="/auth">Sign In</Link>
                 </Button>
                 <Button size="sm" shape="pill" asChild className="bg-gradient-to-r from-brand to-purple-600 hover:opacity-95 text-white border-0 shadow-md hidden sm:inline-flex">
                   <Link href="/auth">Get Started</Link>

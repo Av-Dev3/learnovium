@@ -136,12 +136,12 @@ export default function AuthPage() {
       <div className="relative z-10 w-full max-w-md">
         {/* Logo and Branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center mb-6">
-            <Logo />
-          </div>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20 mb-4">
-            <Sparkles className="w-4 h-4 text-brand" />
-            <span className="text-brand font-medium text-sm">AI-Powered Learning</span>
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <Logo size="lg" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20">
+              <Sparkles className="w-4 h-4 text-brand" />
+              <span className="text-brand font-medium text-sm">AI-Powered Learning</span>
+            </div>
           </div>
         </div>
 
