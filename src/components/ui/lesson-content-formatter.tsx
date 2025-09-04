@@ -136,17 +136,17 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         const sentences = trimmedSection.split(/(?<=[.!?])\s+/).filter(s => s.trim());
         
         return (
-          <div key={sectionIndex} className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/30 rounded-2xl p-4 mb-6">
+          <div key={sectionIndex} className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
             {sentences.length > 3 ? (
               <div className="space-y-2">
                 {sentences.map((sentence, sentIndex) => (
-                  <p key={sentIndex} className="text-[var(--fg)] leading-relaxed font-medium">
+                  <p key={sentIndex} className="text-[var(--fg)] leading-relaxed font-medium text-sm sm:text-base">
                     {sentence.trim()}
                   </p>
                 ))}
               </div>
             ) : (
-              <p className="text-[var(--fg)] leading-relaxed font-medium">
+              <p className="text-[var(--fg)] leading-relaxed font-medium text-sm sm:text-base">
                 {trimmedSection}
               </p>
             )}
@@ -160,7 +160,7 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
       if (sentences.length <= 2) {
         // Short content - keep as single paragraph
         return (
-          <p key={sectionIndex} className="text-[var(--fg)] leading-relaxed mb-6 text-lg">
+          <p key={sectionIndex} className="text-[var(--fg)] leading-relaxed mb-4 sm:mb-6 text-base sm:text-lg">
             {trimmedSection}
           </p>
         );
@@ -171,11 +171,11 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         const secondPart = sentences.slice(midPoint).join(' ');
         
         return (
-          <div key={sectionIndex} className="mb-6 space-y-4">
-            <p className="text-[var(--fg)] leading-relaxed text-lg">
+          <div key={sectionIndex} className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
+            <p className="text-[var(--fg)] leading-relaxed text-base sm:text-lg">
               {firstPart}
             </p>
-            <p className="text-[var(--fg)] leading-relaxed text-lg">
+            <p className="text-[var(--fg)] leading-relaxed text-base sm:text-lg">
               {secondPart}
             </p>
           </div>
@@ -188,9 +188,9 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         }
         
         return (
-          <div key={sectionIndex} className="mb-6 space-y-4">
+          <div key={sectionIndex} className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
             {chunks.map((chunk, chunkIndex) => (
-              <p key={chunkIndex} className="text-[var(--fg)] leading-relaxed text-lg">
+              <p key={chunkIndex} className="text-[var(--fg)] leading-relaxed text-base sm:text-lg">
                 {chunk}
               </p>
             ))}

@@ -275,7 +275,7 @@ export default function LessonPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
-      <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-8 space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <Button 
@@ -305,29 +305,29 @@ export default function LessonPage() {
         </div>
 
         {/* Lesson Header */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand via-purple-600 to-brand p-8 text-center text-white shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-brand via-purple-600 to-brand p-4 sm:p-8 text-center text-white shadow-2xl">
           {/* Background effects */}
-          <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
-          <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+          <div className="absolute -top-6 -left-6 sm:-top-10 sm:-left-10 h-40 w-40 sm:h-80 sm:w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
+          <div className="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 h-32 w-32 sm:h-80 sm:w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
           
-          <div className="relative z-10 space-y-6">
-            <div className="inline-flex items-center gap-2 px-6 py-3 border border-white/20 bg-white/10 backdrop-blur-md rounded-full text-sm font-medium">
-              <Target className="h-4 w-4" />
+          <div className="relative z-10 space-y-4 sm:space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-6 py-2 sm:py-3 border border-white/20 bg-white/10 backdrop-blur-md rounded-full text-xs sm:text-sm font-medium">
+              <Target className="h-3 w-3 sm:h-4 sm:w-4" />
               Today&apos;s Learning Focus
             </div>
             
-            <h1 className="text-3xl md:text-5xl font-bold leading-tight tracking-tight">
+            <h1 className="text-xl sm:text-3xl md:text-5xl font-bold leading-tight tracking-tight px-2">
               {lesson.topic}
             </h1>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm">
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="font-medium">{lesson.est_minutes} minutes estimated</span>
               </div>
               {isReused && (
-                <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                  <BookOpen className="h-3 w-3 mr-1" />
+                <Badge variant="secondary" className="bg-white/20 text-white border-white/30 text-xs">
+                  <BookOpen className="h-2 w-2 sm:h-3 sm:w-3 mr-1" />
                   Cached Lesson
                 </Badge>
               )}
@@ -336,14 +336,14 @@ export default function LessonPage() {
         </div>
 
         {/* Reading Section */}
-        <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center">
-              <BookOpen className="h-8 w-8 text-white" />
+        <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-brand to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+              <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Lesson Content</h2>
-              <p className="text-[var(--fg)]/70">Read and understand the core concepts</p>
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-[var(--fg)]">Lesson Content</h2>
+              <p className="text-sm sm:text-base text-[var(--fg)]/70">Read and understand the core concepts</p>
             </div>
           </div>
           
@@ -352,14 +352,14 @@ export default function LessonPage() {
 
         {/* Walkthrough Section */}
         {lesson.walkthrough && lesson.walkthrough.trim() && (
-          <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center">
-                <Target className="h-8 w-8 text-white" />
+          <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                <Target className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Step-by-Step Guide</h2>
-                <p className="text-[var(--fg)]/70">Follow along with detailed instructions</p>
+                <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-[var(--fg)]">Step-by-Step Guide</h2>
+                <p className="text-sm sm:text-base text-[var(--fg)]/70">Follow along with detailed instructions</p>
               </div>
             </div>
             
@@ -369,29 +369,29 @@ export default function LessonPage() {
 
         {/* Quiz Section */}
         {lesson.quiz && lesson.quiz.length > 0 && (
-          <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                <Brain className="h-8 w-8 text-white" />
+          <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Knowledge Check</h2>
-                <p className="text-[var(--fg)]/70">{totalQuestions} questions to test your understanding</p>
+                <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-[var(--fg)]">Knowledge Check</h2>
+                <p className="text-sm sm:text-base text-[var(--fg)]/70">{totalQuestions} questions to test your understanding</p>
               </div>
             </div>
             
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {lesson.quiz.map((question, questionIndex) => (
-                <div key={questionIndex} className="p-6 border-2 border-[var(--border)]/40 rounded-2xl bg-[var(--bg)]/30 backdrop-blur-sm">
-                  <h3 className="font-bold text-xl md:text-2xl text-[var(--fg)] leading-tight mb-6">
+                <div key={questionIndex} className="p-4 sm:p-6 border-2 border-[var(--border)]/40 rounded-xl sm:rounded-2xl bg-[var(--bg)]/30 backdrop-blur-sm">
+                  <h3 className="font-bold text-lg sm:text-xl md:text-2xl text-[var(--fg)] leading-tight mb-4 sm:mb-6">
                     {questionIndex + 1}. {question.q}
                   </h3>
                   
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 gap-3 sm:gap-4">
                     {question.a.map((answer, answerIndex) => (
                       <div
                         key={answerIndex}
-                        className={`p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] ${
+                        className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] ${
                           selectedAnswers[questionIndex] === answerIndex
                             ? "border-brand bg-brand/10 shadow-lg ring-2 ring-brand/20"
                             : "border-[var(--border)]/50 hover:border-brand/50 hover:bg-[var(--bg)]/30 hover:shadow-md"
@@ -408,20 +408,20 @@ export default function LessonPage() {
                         }`}
                         onClick={() => !quizSubmitted && handleAnswerSelect(questionIndex, answerIndex)}
                       >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold ${
+                        <div className="flex items-start gap-3 sm:gap-4">
+                          <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 flex items-center justify-center text-xs sm:text-sm font-bold flex-shrink-0 ${
                             selectedAnswers[questionIndex] === answerIndex
                               ? "border-brand bg-brand text-white shadow-md"
                               : "border-[var(--border)]/50 bg-[var(--bg)]/50 text-[var(--fg)]/60"
                           }`}>
                             {String.fromCharCode(65 + answerIndex)}
                           </div>
-                          <span className="text-lg font-medium leading-relaxed text-[var(--fg)]">
+                          <span className="text-base sm:text-lg font-medium leading-relaxed text-[var(--fg)]">
                             {answer}
                           </span>
                         </div>
                         {quizSubmitted && answerIndex === question.correct_index && (
-                          <CheckCircle className="h-6 w-6 text-green-600 ml-auto mt-2" />
+                          <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 ml-auto mt-2" />
                         )}
                       </div>
                     ))}
@@ -432,24 +432,24 @@ export default function LessonPage() {
               {!quizSubmitted ? (
                 <Button 
                   onClick={handleQuizSubmit}
-                  className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl"
+                  className="w-full py-3 sm:py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl sm:rounded-2xl"
                   disabled={selectedAnswers.length !== totalQuestions}
                 >
                   Submit Quiz
                 </Button>
               ) : (
-                <div className="text-center p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-3xl border-2 border-green-200 dark:border-green-800">
-                  <div className="text-3xl md:text-4xl font-bold mb-4 text-green-700 dark:text-green-300">
+                <div className="text-center p-4 sm:p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-2xl sm:rounded-3xl border-2 border-green-200 dark:border-green-800">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-green-700 dark:text-green-300">
                     Quiz Results: {correctAnswers}/{totalQuestions} correct
                   </div>
-                  <div className="text-xl mb-6 text-green-600 dark:text-green-400">
+                  <div className="text-lg sm:text-xl mb-4 sm:mb-6 text-green-600 dark:text-green-400">
                     {correctAnswers === totalQuestions 
                       ? "🎉 Excellent! You&apos;ve mastered this material!" 
                       : correctAnswers >= totalQuestions / 2
                       ? "👍 Good effort! You&apos;re on the right track."
                       : "📚 Keep studying! Review the material and try again."}
                   </div>
-                  <p className="text-green-700 dark:text-green-400 font-medium text-lg">
+                  <p className="text-green-700 dark:text-green-400 font-medium text-base sm:text-lg">
                     {correctAnswers === totalQuestions 
                       ? "You&apos;re ready to move forward!" 
                       : "Take your time to understand the concepts before continuing."}
@@ -461,14 +461,14 @@ export default function LessonPage() {
         )}
 
         {/* Exercise Section */}
-        <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center">
-              <Zap className="h-8 w-8 text-white" />
+        <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+              <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Practice Exercise</h2>
-              <p className="text-[var(--fg)]/70">Apply what you&apos;ve learned</p>
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-[var(--fg)]">Practice Exercise</h2>
+              <p className="text-sm sm:text-base text-[var(--fg)]/70">Apply what you&apos;ve learned</p>
             </div>
           </div>
           
@@ -477,22 +477,22 @@ export default function LessonPage() {
 
         {/* Citations */}
         {lesson.citations && lesson.citations.length > 0 && (
-          <div className="p-8 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-slate-500 to-slate-600 rounded-2xl flex items-center justify-center">
-                <ExternalLink className="h-8 w-8 text-white" />
+          <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                <ExternalLink className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-[var(--fg)]">Sources & References</h2>
-                <p className="text-[var(--fg)]/70">Learn more from these resources</p>
+                <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-[var(--fg)]">Sources & References</h2>
+                <p className="text-sm sm:text-base text-[var(--fg)]/70">Learn more from these resources</p>
               </div>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {lesson.citations.map((citation, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 bg-[var(--bg)]/30 rounded-2xl border border-[var(--border)]/30">
-                  <div className="w-3 h-3 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-lg text-[var(--fg)]/80 leading-relaxed">
+                <div key={index} className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-[var(--bg)]/30 rounded-xl sm:rounded-2xl border border-[var(--border)]/30">
+                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-base sm:text-lg text-[var(--fg)]/80 leading-relaxed">
                     {citation}
                   </p>
                 </div>
@@ -502,21 +502,21 @@ export default function LessonPage() {
         )}
 
         {/* Completion Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 p-8 text-center text-white shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 p-4 sm:p-8 text-center text-white shadow-2xl">
           {/* Background effects */}
-          <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
-          <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+          <div className="absolute -top-6 -left-6 sm:-top-10 sm:-left-10 h-40 w-40 sm:h-80 sm:w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
+          <div className="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 h-32 w-32 sm:h-80 sm:w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
           
-          <div className="relative z-10 space-y-6">
-            <div className="w-20 h-20 mx-auto bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
-              <CheckCircle className="h-10 w-10 text-white" />
+          <div className="relative z-10 space-y-4 sm:space-y-6">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
+              <CheckCircle className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
             </div>
             
-            <h3 className="text-2xl md:text-3xl font-bold">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold px-2">
               Great job completing today&apos;s lesson!
             </h3>
             
-            <p className="text-lg text-green-100 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-green-100 max-w-2xl mx-auto px-2">
               Mark this lesson as complete to track your progress and unlock the next one
             </p>
             
@@ -524,7 +524,7 @@ export default function LessonPage() {
               goalId={goalId}
               variant="default"
               size="lg"
-              className="bg-white text-green-600 hover:bg-green-50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl px-8 py-4 text-lg font-semibold"
+              className="bg-white text-green-600 hover:bg-green-50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl sm:rounded-2xl px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold"
             />
           </div>
         </div>
