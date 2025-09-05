@@ -15,7 +15,7 @@ export const PlanModule = z.object({
 });
 
 export const PlanJSON = z.object({
-  version: z.literal("1"),
+  version: z.union([z.literal("1"), z.literal("1.0")]).transform(() => "1"), // Accept both "1" and "1.0" 
   topic: z.string(),
   total_days: z.number().int().min(1),
   modules: z.array(PlanModule).min(1),

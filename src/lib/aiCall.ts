@@ -98,8 +98,12 @@ async function chatJSON<T>(opts: {
 
       const text = res.choices[0]?.message?.content ?? "";
       console.log("AI: Raw response text length:", text.length);
+      console.log("AI: Raw response preview:", text.substring(0, 500) + "...");
+      
       const parsed = coerceJSON(text);
       console.log("AI: JSON parsed successfully");
+      console.log("AI: Parsed JSON keys:", Object.keys(parsed));
+      
       const data = opts.schema.parse(parsed);
       console.log("AI: Schema validation successful");
       
@@ -117,6 +121,10 @@ async function chatJSON<T>(opts: {
       return { data, usage };
     } catch (err) {
       console.error("AI: Error in chatJSON:", err);
+      if (err instanceof Error && err.message.includes("parse")) {
+        console.error("AI: This was a schema validation error");
+        console.error("AI: Full error details:", JSON.stringify(err, null, 2));
+      }
       throw err;
     }
   }, { retries: 1, baseMs: 1000 }); // Reduced retries for faster timeout detection
