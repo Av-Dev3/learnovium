@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 minutes for Vercel function timeout
 
 // Add timeout configuration - increased for comprehensive plan generation
-const PLAN_GENERATION_TIMEOUT_MS = 180000; // 3 minutes for plan generation (was 60s)
+const PLAN_GENERATION_TIMEOUT_MS = 270000; // 4.5 minutes for plan generation (longer than OpenAI timeout)
 const RAG_TIMEOUT_MS = 60000; // 1 minute for RAG operations (was 30s)
 const API_RESPONSE_TIMEOUT_MS = 300000; // 5 minutes total API response time (was 90s)
 
@@ -314,13 +314,18 @@ async function createGoalInternal(req: NextRequest) {
       const msgs = await Promise.race([ragPromise, ragTimeoutPromise]);
       
       console.log("POST /api/goals - Calling OpenAI...");
+      console.log("POST /api/goals - Plan generation timeout set to:", PLAN_GENERATION_TIMEOUT_MS, "ms");
       
       // Add timeout wrapper for plan generation
       const planGenerationPromise = generatePlan(msgs, user.id);
       const timeoutPromise = new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error('Plan generation timeout')), PLAN_GENERATION_TIMEOUT_MS)
+        setTimeout(() => {
+          console.log("POST /api/goals - Plan generation timeout reached after", PLAN_GENERATION_TIMEOUT_MS, "ms");
+          reject(new Error('Plan generation timeout'));
+        }, PLAN_GENERATION_TIMEOUT_MS)
       );
       
+      console.log("POST /api/goals - Starting Promise.race with plan generation...");
       const { data: planResult, usage } = await Promise.race([planGenerationPromise, timeoutPromise]);
       
       console.log("POST /api/goals - OpenAI response received:", { planResult, usage });
@@ -335,7 +340,7 @@ async function createGoalInternal(req: NextRequest) {
       if (usage) {
         const { estimateCostUSD } = await import("@/lib/costs");
         cost_usd = estimateCostUSD(
-          "gpt-5-mini", // or get from usage
+          "gpt-4o-mini", // or get from usage
           usage.prompt_tokens || 0,
           usage.completion_tokens || 0
         );
@@ -349,7 +354,7 @@ async function createGoalInternal(req: NextRequest) {
           user_id: user.id,
           goal_id: undefined, // No goal_id yet since we're creating it
           endpoint: "planner",
-          model: "gpt-5-mini",
+          model: "gpt-4o-mini",
           prompt_tokens: usage?.prompt_tokens || 0,
           completion_tokens: usage?.completion_tokens || 0,
           success: true,

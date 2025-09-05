@@ -271,7 +271,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       if (_usage) {
         const { estimateCostUSD } = await import("@/lib/costs");
         cost_usd = estimateCostUSD(
-          process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          process.env.OPENAI_MODEL_LESSON || "gpt-4o-mini",
           _usage.prompt_tokens || 0,
           _usage.completion_tokens || 0
         );
@@ -283,7 +283,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           user_id: user.id,
           goal_id: goalId,
           endpoint: "lesson",
-          model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          model: process.env.OPENAI_MODEL_LESSON || "gpt-4o-mini",
           prompt_tokens: _usage?.prompt_tokens || 0,
           completion_tokens: _usage?.completion_tokens || 0,
           success: true,
@@ -303,7 +303,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             plan_template_id: goal.plan_template_id,
             day_index: dayIndex,
             version: 1,
-            model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+            model: process.env.OPENAI_MODEL_LESSON || "gpt-4o-mini",
             lesson_json: lesson,
           }).select("id").maybeSingle();
           console.log("Lesson template cached successfully");
@@ -320,7 +320,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           goal_id: goalId,
           day_index: dayIndex,
           chunk_ids: null, // uuid[] column; we'll store null until we track actual chunk IDs
-          model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+          model: process.env.OPENAI_MODEL_LESSON || "gpt-4o-mini",
           citations: lesson.citations || [],  // jsonb array is OK
           lesson_json: lesson,                // <-- now exists and is jsonb
         });

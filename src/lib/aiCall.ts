@@ -30,7 +30,7 @@ function coerceJSON(text: string) {
   }
 }
 
-// Budget models (e.g., gpt-5-mini) reject custom temperature.
+// Budget models (e.g., gpt-4o-mini) reject custom temperature.
 function supportsCustomTemp(model: string) {
   return !/mini/i.test(model);
 }
@@ -106,7 +106,7 @@ async function chatJSON<T>(opts: {
       console.error("AI: Error in chatJSON:", err);
       throw err;
     }
-  }, { retries: 3, baseMs: 400 });
+  }, { retries: 1, baseMs: 1000 }); // Reduced retries for faster timeout detection
 }
 
 export async function generatePlan(messages: Msg[], userId?: string, goalId?: string) {

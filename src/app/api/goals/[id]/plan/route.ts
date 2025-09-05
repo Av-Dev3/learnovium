@@ -55,7 +55,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     if (usage) {
       const { estimateCostUSD } = await import("@/lib/costs");
       cost_usd = estimateCostUSD(
-        "gpt-5-mini",
+        "gpt-4o-mini",
         usage.prompt_tokens || 0,
         usage.completion_tokens || 0
       );
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         user_id: user.id,
         goal_id: goalId,
         endpoint: "planner",
-        model: "gpt-5-mini",
+        model: "gpt-4o-mini",
         prompt_tokens: usage?.prompt_tokens || 0,
         completion_tokens: usage?.completion_tokens || 0,
         success: true,
@@ -96,7 +96,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           user_id: user?.id,
           goal_id: goalId || undefined,
           endpoint: "planner",
-          model: "gpt-5-mini",
+          model: "gpt-4o-mini",
           prompt_tokens: 0,
           completion_tokens: 0,
           success: false,
