@@ -367,6 +367,10 @@ async function createGoalInternal(req: NextRequest) {
       }
     } catch (error) {
       console.error("POST /api/goals - AI plan generation failed:", error);
+      console.error("POST /api/goals - Error type:", typeof error);
+      console.error("POST /api/goals - Error name:", error instanceof Error ? error.name : 'Unknown');
+      console.error("POST /api/goals - Error message:", error instanceof Error ? error.message : String(error));
+      console.error("POST /api/goals - Error stack:", error instanceof Error ? error.stack : 'No stack');
       
       // Check if it's a timeout error
       const isTimeout = error instanceof Error && (
@@ -378,6 +382,8 @@ async function createGoalInternal(req: NextRequest) {
       
       if (isTimeout) {
         console.log("POST /api/goals - Timeout detected, using fallback plan");
+      } else {
+        console.log("POST /api/goals - Non-timeout error, using fallback plan");
       }
       
       // Create a fallback plan structure

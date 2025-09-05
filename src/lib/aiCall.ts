@@ -38,20 +38,29 @@ function supportsCustomTemp(model: string) {
 async function chatCore(model: string, messages: Msg[], desiredTemp?: number) {
   console.log("AI: chatCore called with model:", model, "temperature:", desiredTemp);
   const baseParams = { model, messages };
-  if (supportsCustomTemp(model) && typeof desiredTemp === "number") {
-    console.log("AI: Using custom temperature:", desiredTemp);
-    const result = await openai.chat.completions.create({
-      ...baseParams,
-      temperature: desiredTemp,
-    });
-    console.log("AI: chatCore with custom temp completed");
+  
+  try {
+    if (supportsCustomTemp(model) && typeof desiredTemp === "number") {
+      console.log("AI: Using custom temperature:", desiredTemp);
+      const result = await openai.chat.completions.create({
+        ...baseParams,
+        temperature: desiredTemp,
+      });
+      console.log("AI: chatCore with custom temp completed");
+      return result;
+    }
+    // Keep it simple: no response_format. We'll parse ourselves.
+    console.log("AI: Using default temperature");
+    const result = await openai.chat.completions.create(baseParams);
+    console.log("AI: chatCore with default temp completed");
     return result;
+  } catch (error) {
+    console.error("AI: chatCore failed with error:", error);
+    console.error("AI: Model used:", model);
+    console.error("AI: OpenAI API Key exists:", !!process.env.OPENAI_API_KEY);
+    console.error("AI: OpenAI API Key length:", process.env.OPENAI_API_KEY?.length || 0);
+    throw error;
   }
-  // Keep it simple: no response_format. We'll parse ourselves.
-  console.log("AI: Using default temperature");
-  const result = await openai.chat.completions.create(baseParams);
-  console.log("AI: chatCore with default temp completed");
-  return result;
 }
 
 async function chatJSON<T>(opts: {
@@ -79,9 +88,13 @@ async function chatJSON<T>(opts: {
     let usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number } | undefined;
 
     try {
+      console.log("AI: About to call chatCore with model:", model);
+      console.log("AI: Message count:", opts.messages.length);
+      console.log("AI: Temperature:", opts.temperature ?? 0.7);
+      
       const res = await chatCore(model, opts.messages, opts.temperature ?? 0.7);
       const dt = Date.now() - t0;
-      console.log("AI: OpenAI API call successful, response received");
+      console.log("AI: OpenAI API call successful, response received in", dt, "ms");
 
       const text = res.choices[0]?.message?.content ?? "";
       console.log("AI: Raw response text length:", text.length);
