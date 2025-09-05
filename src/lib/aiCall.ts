@@ -30,7 +30,7 @@ function coerceJSON(text: string) {
   }
 }
 
-// Budget models (e.g., gpt-4o-mini) reject custom temperature.
+// Budget models (e.g., gpt-5-mini) reject custom temperature.
 function supportsCustomTemp(model: string) {
   return !/mini/i.test(model);
 }

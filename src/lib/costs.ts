@@ -53,6 +53,10 @@ export const MODEL_PRICING: Record<string, ModelPricing> = {
     input_per_1k: 0.00125,  // $1.25 per million = $0.00125 per 1k
     output_per_1k: 0.01,    // $10.00 per million = $0.01 per 1k
   },
+  "gpt-5-mini": {
+    input_per_1k: 0.00025,  // $0.25 per million = $0.00025 per 1k
+    output_per_1k: 0.002,   // $2.00 per million = $0.002 per 1k
+  },
   "gpt-5-nano": {
     input_per_1k: 0.00005,  // $0.05 per million = $0.00005 per 1k
     output_per_1k: 0.0004,  // $0.40 per million = $0.0004 per 1k
@@ -69,8 +73,8 @@ export function estimateCostUSD(
 ): number {
   const pricing = MODEL_PRICING[model];
   if (!pricing) {
-    console.warn(`Unknown model pricing for: ${model}, using gpt-4o-mini fallback`);
-    const fallback = MODEL_PRICING["gpt-4o-mini"];
+    console.warn(`Unknown model pricing for: ${model}, using gpt-5-mini fallback`);
+    const fallback = MODEL_PRICING["gpt-5-mini"];
     return (
       (promptTokens / 1000) * fallback.input_per_1k +
       (completionTokens / 1000) * fallback.output_per_1k

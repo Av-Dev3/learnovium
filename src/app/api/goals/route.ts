@@ -340,7 +340,7 @@ async function createGoalInternal(req: NextRequest) {
       if (usage) {
         const { estimateCostUSD } = await import("@/lib/costs");
         cost_usd = estimateCostUSD(
-          "gpt-4o-mini", // or get from usage
+          "gpt-5-mini", // or get from usage
           usage.prompt_tokens || 0,
           usage.completion_tokens || 0
         );
@@ -354,7 +354,7 @@ async function createGoalInternal(req: NextRequest) {
           user_id: user.id,
           goal_id: undefined, // No goal_id yet since we're creating it
           endpoint: "planner",
-          model: "gpt-4o-mini",
+          model: "gpt-5-mini",
           prompt_tokens: usage?.prompt_tokens || 0,
           completion_tokens: usage?.completion_tokens || 0,
           success: true,
