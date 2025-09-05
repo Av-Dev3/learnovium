@@ -32,13 +32,13 @@ export async function GET(req: NextRequest) {
       .limit(10);
 
     // Parse and format the error details for better readability
-    const formatCallDetails = (calls: any[]) => {
+    const formatCallDetails = (calls: Record<string, unknown>[]) => {
       return calls?.map(call => {
-        let parsedError = null;
+        let parsedError: unknown = null;
         if (call.error_text) {
           try {
-            parsedError = JSON.parse(call.error_text);
-          } catch (e) {
+            parsedError = JSON.parse(call.error_text as string);
+          } catch {
             parsedError = call.error_text;
           }
         }
