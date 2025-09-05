@@ -7,6 +7,7 @@ import { logCall } from "@/lib/aiGuard"; // Re-enabled for AI call tracking
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 300; // 5 minutes for Vercel function timeout
 
 // Add timeout configuration - increased for comprehensive plan generation
 const PLAN_GENERATION_TIMEOUT_MS = 180000; // 3 minutes for plan generation (was 60s)

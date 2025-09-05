@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireUser } from "@/lib/supabaseServer";
+import { requireUser } from "@/lib/api/utils";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { generateFlashcards } from "@/lib/aiCall";
 
@@ -131,13 +131,13 @@ export async function POST(req: NextRequest) {
 
     // Generate flashcards using AI
     const lessonContent = lessons.map(l => {
-      const lesson = l.lesson as any;
+      const lesson = l.lesson as Record<string, unknown>;
       return {
         day: l.day_index + 1,
-        topic: lesson.topic || `Day ${l.day_index + 1}`,
-        reading: lesson.reading || "",
-        walkthrough: lesson.walkthrough || "",
-        quiz: lesson.quiz || []
+        topic: String(lesson.topic || `Day ${l.day_index + 1}`),
+        reading: String(lesson.reading || ""),
+        walkthrough: String(lesson.walkthrough || ""),
+        quiz: (lesson.quiz as Array<{ question: string; options: string[]; correctAnswer: number }>) || undefined
       };
     }).filter(l => l.reading || l.walkthrough);
 
@@ -163,7 +163,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Save generated flashcards to database
-    const flashcardsToInsert = generatedCards.map((card: any, index: number) => ({
+    const flashcardsToInsert = generatedCards.map((card: Record<string, unknown>, index: number) => ({
       user_id: user.id,
       category_id: finalCategoryId,
       goal_id: goal_id,

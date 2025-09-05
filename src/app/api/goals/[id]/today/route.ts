@@ -50,7 +50,7 @@ async function generateFlashcardsFromLesson(
   userId: string,
   goalId: string,
   dayIndex: number,
-  lesson: any,
+  lesson: Record<string, unknown>,
   goalTopic: string,
   goalFocus?: string
 ) {
@@ -87,10 +87,10 @@ async function generateFlashcardsFromLesson(
     // Prepare lesson content for flashcard generation
     const lessonContent = [{
       day: dayIndex + 1,
-      topic: lesson.topic || `Day ${dayIndex + 1}`,
-      reading: lesson.reading || "",
-      walkthrough: lesson.walkthrough || "",
-      quiz: lesson.quiz || []
+      topic: String(lesson.topic || `Day ${dayIndex + 1}`),
+      reading: String(lesson.reading || ""),
+      walkthrough: String(lesson.walkthrough || ""),
+      quiz: (lesson.quiz as Array<{ question: string; options: string[]; correctAnswer: number }>) || undefined
     }];
 
     // Generate flashcards using AI
@@ -106,7 +106,7 @@ async function generateFlashcardsFromLesson(
     }
 
     // Save flashcards to database
-    const flashcardsToInsert = generatedCards.map((card: any) => ({
+         const flashcardsToInsert = generatedCards.map((card: Record<string, unknown>) => ({
       user_id: userId,
       category_id: category.id,
       goal_id: goalId,

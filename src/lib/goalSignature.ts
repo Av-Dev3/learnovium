@@ -10,13 +10,11 @@ export type GoalSignatureInput = {
 
 export async function canonicalizeSignature(i: GoalSignatureInput): Promise<string> {
   const topic = (i.topic ?? "").trim().toLowerCase();
-  const focus = (i.focus ?? "").trim().toLowerCase();
-  const level = (i.level ?? "").trim().toLowerCase();
-  const minutes = String(i.minutes_per_day ?? 0);
-  const duration = String(i.duration_days ?? 0);
-  const locale = (i.locale ?? "en").trim().toLowerCase();
+  // Only include level and version in signature for broader template reuse
+  // Focus, minutes, duration variations should still use the same base template
+  const level = (i.level ?? "beginner").trim().toLowerCase();
   const version = String(i.version ?? 1);
-  const raw = [topic, focus, level, minutes, duration, locale, version].join("|");
+  const raw = [topic, level, version].join("|");
   
   // Use Web Crypto API for browser compatibility, fallback to Node.js crypto
   if (typeof window !== 'undefined' && window.crypto) {

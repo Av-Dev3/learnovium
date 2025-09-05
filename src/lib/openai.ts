@@ -9,7 +9,10 @@ if (!process.env.OPENAI_API_KEY) {
   throw new Error("Missing OPENAI_API_KEY");
 }
 
-export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+export const openai = new OpenAI({ 
+  apiKey: process.env.OPENAI_API_KEY!,
+  timeout: 240000, // 4 minutes timeout for OpenAI calls
+});
 console.log("AI: OpenAI client initialized successfully");
 
 // Helper to resolve model names with sane defaults per task.

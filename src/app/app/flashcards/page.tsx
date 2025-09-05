@@ -35,9 +35,7 @@ import {
   useCreateCategory, 
   useReviewFlashcard, 
   useGenerateFlashcards,
-  useGoals,
-  type Flashcard,
-  type FlashcardCategory
+  useGoals
 } from "@/app/lib/hooks";
 
 export default function FlashcardsPage() {
@@ -54,7 +52,7 @@ export default function FlashcardsPage() {
   const [showGenerateCards, setShowGenerateCards] = useState(false);
 
   // Form state
-  const [newCard, setNewCard] = useState({ front: '', back: '', difficulty: 'medium' as const });
+  const [newCard, setNewCard] = useState({ front: '', back: '', difficulty: 'medium' as 'easy' | 'medium' | 'hard' });
   const [newCategory, setNewCategory] = useState({ name: '', description: '', color: '#6366f1' });
   const [generateForm, setGenerateForm] = useState({ goal_id: '', lesson_days: [] as number[] });
 

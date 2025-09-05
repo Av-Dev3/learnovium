@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireUser } from "@/lib/supabaseServer";
+import { requireUser } from "@/lib/api/utils";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";

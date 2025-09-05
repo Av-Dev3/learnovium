@@ -49,7 +49,7 @@ export function useFlashcards(options: UseFlashcardsOptions = {}) {
 
   const { data, error, mutate } = useSWR<{ flashcards: Flashcard[] }>(
     `/api/flashcards?${params.toString()}`,
-    async (url) => {
+    async (url: string) => {
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch flashcards");
       return response.json();
@@ -67,7 +67,7 @@ export function useFlashcards(options: UseFlashcardsOptions = {}) {
 export function useFlashcardCategories() {
   const { data, error, mutate } = useSWR<{ categories: FlashcardCategory[] }>(
     "/api/flashcards/categories",
-    async (url) => {
+    async (url: string) => {
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch categories");
       return response.json();

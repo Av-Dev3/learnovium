@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireUser } from "@/lib/supabaseServer";
+import { requireUser } from "@/lib/api/utils";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -111,8 +111,16 @@ export async function POST(
 }
 
 // SM-2 Spaced Repetition Algorithm
+interface Flashcard {
+  current_interval?: number;
+  ease_factor?: number;
+  mastery_score?: number;
+  repetitions?: number;
+  next_review?: string;
+}
+
 function calculateSpacedRepetition(
-  flashcard: any,
+  flashcard: Flashcard,
   difficultyRating: "easy" | "medium" | "hard",
   wasCorrect: boolean
 ) {
