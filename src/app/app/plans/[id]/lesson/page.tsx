@@ -347,7 +347,16 @@ export default function LessonPage() {
             </div>
           </div>
           
-          <LessonContentFormatter content={lesson.reading} />
+          {lesson.reading ? (
+            <LessonContentFormatter content={lesson.reading} />
+          ) : (
+            <div className="p-4 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <p className="text-yellow-800 dark:text-yellow-200">
+                <strong>Debug:</strong> No reading content available. 
+                <br />Lesson data: {JSON.stringify(lesson, null, 2)}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Walkthrough Section */}
