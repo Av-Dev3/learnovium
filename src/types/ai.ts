@@ -26,7 +26,7 @@ export type TPlanJSON = z.infer<typeof PlanJSON>;
 
 export const LessonJSON = z.object({
   topic: z.string().min(10).max(100), // More specific topic requirements
-  reading: z.string().min(800).max(1500), // Substantial reading content
+  reading: z.string().min(800).max(2500), // Substantial reading content
   walkthrough: z.string().min(400).max(800), // Detailed walkthrough content
   quiz: z.array(z.object({ 
     q: z.string().min(20).max(200), 

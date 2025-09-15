@@ -129,33 +129,54 @@ Focus on making this lesson immediately useful and actionable.` },
 
 export function buildAdvancedLessonPrompt(context: string, topic: string, focus: string, dayIndex: number, level: string = 'beginner') {
   return [
-    { role: "system" as const, content: `You are a senior teacher. Produce a single JSON object that VALIDATES against LessonJSON. No prose, no backticks.
-Constraints:
-- audience: ${level}, day ${dayIndex}
-- focus: ${focus}
-- originality: use context only as background, write in your own words
-- quality: substantial, practical, copyright-safe
-- topic_alignment: strictly follow the planned topic for day ${dayIndex}
-- progression: build on previous days naturally
-Schema fields & lengths:
-- topic: 10-100 chars
-- reading: 800-1500 chars (this is the main lesson content)
-- walkthrough: 400-800 chars (extra practice tips, mistakes to avoid)
-- quiz: 2 items; q: 20-200; a: 4 options 10-100; correct_index: 0-3
-- exercise: 100-300 chars
-- citations: 1-3 strings (>=10 chars)
-- est_minutes: 5-20
-Output: ONLY JSON strictly matching the schema.` },
+    { role: "system" as const, content: "You are a senior teacher. You MUST return JSON that matches the LessonJSON schema exactly. Do not use any other structure. Follow the format precisely." },
+    { role: "user" as const, content: "Here is the EXACT JSON format you must use for lessons:" },
+    { role: "assistant" as const, content: `{
+  "topic": "Introduction to Variables in Programming",
+  "reading": "Variables are fundamental building blocks in programming that allow you to store and manipulate data. Think of a variable as a labeled box where you can put different types of information - numbers, text, or true/false values. In most programming languages, you create a variable by giving it a name and assigning a value using the equals sign (=). For example, 'age = 25' creates a variable called 'age' and stores the number 25 in it. Variables can change their values throughout your program, which makes them incredibly useful for calculations, storing user input, and keeping track of program state. The key is choosing descriptive names that clearly indicate what the variable represents, like 'userName' instead of just 'x' or 'data'. Practice creating variables with different data types and remember that variable names are case-sensitive, so 'age' and 'Age' are different variables. Variables are essential for building dynamic programs that can respond to user input, perform calculations, and maintain state. They allow you to store temporary data, pass information between functions, and create flexible code that can handle different scenarios. Understanding how to use variables effectively is the foundation of programming, as they enable you to create programs that can process data, make decisions, and produce meaningful output. Start with simple examples and gradually work your way up to more complex uses as you become comfortable with the concept.",
+  "walkthrough": "To work with variables effectively, start by identifying what data you need to store. Choose a clear, descriptive name using camelCase (like 'firstName') or snake_case (like 'first_name'). Declare your variable and assign an initial value. Practice with different data types: numbers for calculations, strings for text, and booleans for true/false conditions. Always initialize variables before using them to avoid errors. As you write more complex programs, you'll use variables to store user input, perform calculations, and control program flow.",
+  "quiz": [
+    {
+      "q": "What is the primary purpose of variables in programming?",
+      "a": ["To make code look longer", "To store and manipulate data", "To slow down the program", "To confuse other programmers"],
+      "correct_index": 1
+    },
+    {
+      "q": "Which of the following is the best variable name?",
+      "a": ["x", "data", "userAge", "stuff"],
+      "correct_index": 2
+    }
+  ],
+  "exercise": "Create three variables: one to store your name, one for your age, and one for whether you like programming. Then write a simple program that prints out a sentence using these variables.",
+  "citations": ["Programming Fundamentals Guide", "Variable Naming Best Practices"],
+  "est_minutes": 15
+}` },
     { role: "user" as const, content:
 `Context (condensed, use only for grounding; do not copy):
 ${context}
 
-Task: Create LessonJSON for topic "${topic}" teaching ONE concrete skill aligned with "${focus}" for a ${level} learner on day ${dayIndex}. 
+Now create a lesson using the EXACT same JSON structure as shown above, but replace the content with your own original lesson for the requested topic.
 
-IMPORTANT: This lesson should follow the pre-planned topic for day ${dayIndex}. Focus on teaching the specific topic that was planned, not random variations. Build naturally on previous days while staying true to the planned curriculum.
+Task: Create LessonJSON for topic "${topic}" teaching ONE concrete skill aligned with "${focus}" for a ${level} learner on day ${dayIndex}.
 
-Emphasize clarity, actionability, and topic-specific learning.
-Return ONLY the JSON object.` },
+CRITICAL RULES - FOLLOW THESE EXACTLY:
+- Use the EXACT same JSON structure as the example above
+- Replace the content with your own original lesson for the requested topic
+- topic: 10-100 characters describing what is being learned
+- reading: 800-2500 characters MAXIMUM (be comprehensive but stay within limit)
+- walkthrough: 400-800 characters MAXIMUM (step-by-step guidance)
+- quiz: Exactly 2 questions with 4 options each, correct_index 0-3
+- exercise: 100-300 characters MAXIMUM (practical task description)
+- citations: 1-3 strings with at least 10 characters each
+- est_minutes: 5-20 minutes
+- LENGTH IS CRITICAL: Stay within the character limits or validation will fail
+- Use the context to understand the topic, but create completely original content
+- Never copy phrases, sentences, or exact explanations from the sources
+- Focus on teaching the specific topic that was planned for day ${dayIndex}
+- Build naturally on previous days while staying true to the planned curriculum
+- Emphasize clarity, actionability, and topic-specific learning
+
+${JSON_RULES}` },
   ];
 }
 
