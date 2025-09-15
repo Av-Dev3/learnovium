@@ -55,7 +55,11 @@ async function generateFlashcardsFromLesson(
   goalFocus?: string
 ) {
   try {
-    console.log(`Starting flashcard generation for goal ${goalId}, day ${dayIndex}`);
+    console.log(`🚀 Starting flashcard generation for goal ${goalId}, day ${dayIndex}`);
+    console.log(`📋 Lesson topic: ${lesson.topic || 'Unknown'}`);
+    console.log(`📋 Lesson reading length: ${String(lesson.reading || '').length} characters`);
+    console.log(`📋 Lesson walkthrough length: ${String(lesson.walkthrough || '').length} characters`);
+    
     const supabase = await supabaseServer();
 
     // Check if flashcards already exist for this lesson
@@ -127,8 +131,8 @@ async function generateFlashcardsFromLesson(
       return;
     }
 
-    console.log(`Generating flashcards for lesson: ${lessonContent[0].topic}`);
-    console.log("Lesson content for flashcard generation:", {
+    console.log(`🤖 Generating flashcards for lesson: ${lessonContent[0].topic}`);
+    console.log("📝 Lesson content for flashcard generation:", {
       topic: lessonContent[0].topic,
       readingPreview: lessonContent[0].reading.substring(0, 200) + "...",
       walkthroughPreview: lessonContent[0].walkthrough.substring(0, 200) + "...",
@@ -136,11 +140,23 @@ async function generateFlashcardsFromLesson(
     });
     
     // Generate flashcards using AI
+    console.log("🔮 Calling AI to generate flashcards...");
     const { data: generatedCards, error } = await generateFlashcards(
       lessonContent,
       goalTopic,
       goalFocus
     );
+    
+    console.log("🔮 AI flashcard generation response:", {
+      hasError: !!error,
+      errorMessage: error,
+      cardsGenerated: generatedCards?.length || 0,
+      firstCardPreview: generatedCards?.[0] ? {
+        front: generatedCards[0].front?.substring(0, 100) + "...",
+        back: generatedCards[0].back?.substring(0, 100) + "...",
+        difficulty: generatedCards[0].difficulty
+      } : null
+    });
 
     console.log("Flashcard generation result:", { 
       error, 
@@ -167,8 +183,9 @@ async function generateFlashcardsFromLesson(
       source: "lesson",
     }));
 
-    console.log("Saving flashcards to database:", {
+    console.log("💾 Saving flashcards to database:", {
       count: flashcardsToInsert.length,
+      categoryId: category.id,
       sample: flashcardsToInsert[0]
     });
 
@@ -177,9 +194,16 @@ async function generateFlashcardsFromLesson(
       .insert(flashcardsToInsert);
 
     if (saveError) {
-      console.error("Failed to save generated flashcards:", saveError);
+      console.error("❌ Failed to save generated flashcards:", saveError);
+      console.error("💾 Save error details:", {
+        message: saveError.message,
+        code: saveError.code,
+        details: saveError.details,
+        hint: saveError.hint
+      });
     } else {
       console.log(`✅ Successfully generated and saved ${generatedCards.length} flashcards for goal ${goalId}, day ${dayIndex}`);
+      console.log(`📚 Flashcards are now available in category ${category.id}`);
     }
   } catch (error) {
     console.error("❌ Error in generateFlashcardsFromLesson:", error);
@@ -406,8 +430,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       });
 
       // Generate flashcards from this lesson (async, don't block response)
+      console.log("🚀 Starting async flashcard generation for lesson...");
       generateFlashcardsFromLesson(user.id, goalId, dayIndex, lesson, goal.topic, goal.focus)
-        .then(() => console.log("✅ Flashcard generation completed successfully"))
+        .then(() => {
+          console.log("✅ Flashcard generation completed successfully");
+          console.log(`📚 Flashcards should now be available for goal ${goalId}, day ${dayIndex}`);
+        })
         .catch(error => {
           console.error("❌ Failed to generate flashcards from lesson:", error);
           console.error("Error details:", {
@@ -417,6 +445,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             dayIndex,
             topic: goal.topic
           });
+          console.error("🔍 This error means flashcards won't be created for this lesson. Check the database migration and AI response format.");
         });
       
       return NextResponse.json({ reused: false, lesson });
@@ -515,8 +544,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         }
         
         // Generate flashcards from fallback lesson (async, don't block response)
+        console.log("🚀 Starting async flashcard generation for fallback lesson...");
         generateFlashcardsFromLesson(user.id, goalId, dayIndex, fallbackLesson, goal.topic, goal.focus)
-          .then(() => console.log("✅ Flashcard generation from fallback completed successfully"))
+          .then(() => {
+            console.log("✅ Flashcard generation from fallback completed successfully");
+            console.log(`📚 Fallback flashcards should now be available for goal ${goalId}, day ${dayIndex}`);
+          })
           .catch(error => {
             console.error("❌ Failed to generate flashcards from fallback lesson:", error);
             console.error("Fallback error details:", {
@@ -526,6 +559,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
               dayIndex,
               topic: goal.topic
             });
+            console.error("🔍 This error means flashcards won't be created even from the fallback lesson. Check the database migration and AI response format.");
           });
         
         return NextResponse.json({ 
