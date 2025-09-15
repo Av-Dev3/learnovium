@@ -8,15 +8,19 @@ export const dynamic = "force-dynamic";
 // POST /api/flashcards/generate - Generate flashcards from lessons
 export async function POST(req: NextRequest) {
   try {
+    console.log("Flashcard generate API called");
     const { user } = await requireUser(req);
     if (!user) {
+      console.log("No user found");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
+    console.log("Request body:", body);
     const { goal_id, lesson_day_indices, category_id } = body;
 
     if (!goal_id || !lesson_day_indices || !Array.isArray(lesson_day_indices)) {
+      console.log("Missing required fields:", { goal_id, lesson_day_indices });
       return NextResponse.json(
         { error: "Missing required fields: goal_id, lesson_day_indices (array)" },
         { status: 400 }
@@ -34,11 +38,14 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (goalError || !goal) {
+      console.log("Goal error:", goalError);
       return NextResponse.json(
         { error: "Goal not found or access denied" },
         { status: 404 }
       );
     }
+
+    console.log("Goal found:", goal);
 
     // Get lessons for the specified day indices
     const lessons = [];
@@ -95,13 +102,22 @@ export async function POST(req: NextRequest) {
     // Get or create category
     let finalCategoryId = category_id;
     if (!finalCategoryId) {
+      console.log("Creating or finding category...");
       // Create a category for this goal if it doesn't exist
-      const { data: existingCategory } = await supabase
+      const { data: existingCategory, error: categoryCheckError } = await supabase
         .from("flashcard_categories")
         .select("id")
         .eq("user_id", user.id)
         .eq("goal_id", goal_id)
         .single();
+
+      if (categoryCheckError && categoryCheckError.code !== 'PGRST116') {
+        console.error("Error checking for existing category:", categoryCheckError);
+        return NextResponse.json(
+          { error: "Database error: flashcard_categories table may not exist. Please run the migration first." },
+          { status: 500 }
+        );
+      }
 
       if (existingCategory) {
         finalCategoryId = existingCategory.id;
@@ -148,6 +164,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log("Generating flashcards with AI...");
     const { data: generatedCards, error: aiError } = await generateFlashcards(
       lessonContent,
       goal.topic,
@@ -157,10 +174,12 @@ export async function POST(req: NextRequest) {
     if (aiError || !generatedCards) {
       console.error("AI flashcard generation error:", aiError);
       return NextResponse.json(
-        { error: "Failed to generate flashcards" },
+        { error: `Failed to generate flashcards: ${aiError || 'Unknown error'}` },
         { status: 500 }
       );
     }
+
+    console.log("Generated cards:", generatedCards.length);
 
     // Save generated flashcards to database
     const flashcardsToInsert = generatedCards.map((card: Record<string, unknown>, index: number) => ({
@@ -174,6 +193,7 @@ export async function POST(req: NextRequest) {
       source: "generated",
     }));
 
+    console.log("Saving flashcards to database...");
     const { data: savedFlashcards, error: saveError } = await supabase
       .from("flashcards")
       .insert(flashcardsToInsert)
@@ -191,10 +211,12 @@ export async function POST(req: NextRequest) {
     if (saveError) {
       console.error("Error saving flashcards:", saveError);
       return NextResponse.json(
-        { error: "Failed to save generated flashcards" },
+        { error: `Failed to save generated flashcards: ${saveError.message}. Please ensure the migration has been run.` },
         { status: 500 }
       );
     }
+
+    console.log("Saved flashcards:", savedFlashcards?.length || 0);
 
     return NextResponse.json({
       flashcards: savedFlashcards,
@@ -205,7 +227,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Generate flashcards API error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }
