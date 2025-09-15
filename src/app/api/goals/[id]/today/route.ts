@@ -373,11 +373,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       // Log the failed AI call for tracking
       const latency_ms = Date.now() - t0;
       try {
+        // Get the actual model that was attempted
+        const { modelFor } = await import("@/lib/openai");
+        const attemptedModel = modelFor("lesson");
+        
         await logCall({
           user_id: user.id,
           goal_id: goalId,
           endpoint: "lesson",
-          model: isTimeout ? "timeout_fallback" : (process.env.OPENAI_MODEL_LESSON || "gpt-5-mini"),
+          model: attemptedModel, // Use the actual model that was attempted
           prompt_tokens: 0, // We don't have usage data for failed calls
           completion_tokens: 0,
           success: false,
@@ -385,7 +389,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           cost_usd: 0,
           error_text: error instanceof Error ? error.message : "Unknown error",
         });
-        console.log("Failed AI call logged successfully");
+        console.log("Failed AI call logged successfully with model:", attemptedModel);
       } catch (logError) {
         console.error("Failed to log failed AI call:", logError);
       }

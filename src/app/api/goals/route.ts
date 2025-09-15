@@ -339,8 +339,10 @@ async function createGoalInternal(req: NextRequest) {
       let cost_usd = 0;
       if (usage) {
         const { estimateCostUSD } = await import("@/lib/costs");
+        const { modelFor } = await import("@/lib/openai");
+        const usedModel = modelFor("planner");
         cost_usd = estimateCostUSD(
-          "gpt-5-mini", // or get from usage
+          usedModel, // Use the actual model that was used
           usage.prompt_tokens || 0,
           usage.completion_tokens || 0
         );
@@ -350,18 +352,22 @@ async function createGoalInternal(req: NextRequest) {
       
       // Log the AI call for tracking
       try {
+        // Get the actual model that was used
+        const { modelFor } = await import("@/lib/openai");
+        const usedModel = modelFor("planner");
+        
         await logCall({
           user_id: user.id,
           goal_id: undefined, // No goal_id yet since we're creating it
           endpoint: "planner",
-          model: "gpt-5-mini",
+          model: usedModel, // Use the actual model that was used
           prompt_tokens: usage?.prompt_tokens || 0,
           completion_tokens: usage?.completion_tokens || 0,
           success: true,
           latency_ms,
           cost_usd,
         });
-        console.log("AI call logged successfully");
+        console.log("AI call logged successfully with model:", usedModel);
       } catch (logError) {
         console.error("Failed to log AI call:", logError);
       }
@@ -399,11 +405,15 @@ async function createGoalInternal(req: NextRequest) {
       // Log the failed AI call for tracking
       const latency_ms = Date.now() - t0;
       try {
+        // Get the actual model that was attempted
+        const { modelFor } = await import("@/lib/openai");
+        const attemptedModel = modelFor("planner");
+        
         await logCall({
           user_id: user.id,
           goal_id: undefined,
           endpoint: "planner",
-          model: isTimeout ? "timeout_fallback" : "fallback",
+          model: attemptedModel, // Use the actual model that was attempted
           prompt_tokens: 0,
           completion_tokens: 0,
           success: false,
@@ -411,7 +421,7 @@ async function createGoalInternal(req: NextRequest) {
           cost_usd: 0,
           error_text: error instanceof Error ? error.message : "Unknown error",
         });
-        console.log("Failed AI call logged successfully");
+        console.log("Failed AI call logged successfully with model:", attemptedModel);
       } catch (logError) {
         console.error("Failed to log failed AI call:", logError);
       }
