@@ -635,10 +635,10 @@ export default function FlashcardsPage() {
 
       {/* Create Card Modal */}
       {showCreateCard && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[var(--bg)] rounded-2xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-[var(--fg)]">Create Flashcard</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Create Flashcard</h3>
               <Button
                 variant="ghost"
                 size="sm"
@@ -650,7 +650,7 @@ export default function FlashcardsPage() {
 
             <form onSubmit={handleCreateCard} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Category
                 </label>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory} required>
@@ -675,7 +675,7 @@ export default function FlashcardsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Front (Question)
                 </label>
                 <Textarea
@@ -687,7 +687,7 @@ export default function FlashcardsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Back (Answer)
                 </label>
                 <Textarea
@@ -699,7 +699,7 @@ export default function FlashcardsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Difficulty
                 </label>
                 <Select 
@@ -738,10 +738,10 @@ export default function FlashcardsPage() {
 
       {/* Create Category Modal */}
       {showCreateCategory && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[var(--bg)] rounded-2xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-[var(--fg)]">Create Category</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Create Category</h3>
               <Button
                 variant="ghost"
                 size="sm"
@@ -753,7 +753,7 @@ export default function FlashcardsPage() {
 
             <form onSubmit={handleCreateCategory} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Name
                 </label>
                 <Input
@@ -765,7 +765,7 @@ export default function FlashcardsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Description
                 </label>
                 <Textarea
@@ -776,7 +776,7 @@ export default function FlashcardsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Color
                 </label>
                 <div className="flex items-center gap-2">
@@ -814,10 +814,10 @@ export default function FlashcardsPage() {
 
       {/* Generate Cards Modal */}
       {showGenerateCards && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[var(--bg)] rounded-2xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-[var(--fg)]">Generate Flashcards</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Generate Flashcards</h3>
               <Button
                 variant="ghost"
                 size="sm"
@@ -829,7 +829,7 @@ export default function FlashcardsPage() {
 
             <form onSubmit={handleGenerateCards} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Learning Goal
                 </label>
                 <Select 
@@ -851,7 +851,7 @@ export default function FlashcardsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--fg)] mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Lesson Days (1-based)
                 </label>
                 <Input
@@ -865,7 +865,7 @@ export default function FlashcardsPage() {
                   }}
                   required
                 />
-                <p className="text-xs text-[var(--fg)]/60 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Enter comma-separated day numbers (e.g., 1,2,3 for first 3 days)
                 </p>
               </div>
