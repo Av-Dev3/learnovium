@@ -115,12 +115,25 @@ async function generateFlashcardsFromLesson(
 
     // Only generate flashcards if there's meaningful content
     const hasContent = lessonContent[0].reading.length > 800 || lessonContent[0].walkthrough.length > 400;
+    console.log("Content validation:", {
+      readingLength: lessonContent[0].reading.length,
+      walkthroughLength: lessonContent[0].walkthrough.length,
+      hasContent,
+      dayIndex
+    });
+    
     if (!hasContent) {
       console.log(`Insufficient lesson content for flashcard generation on day ${dayIndex}`);
       return;
     }
 
     console.log(`Generating flashcards for lesson: ${lessonContent[0].topic}`);
+    console.log("Lesson content for flashcard generation:", {
+      topic: lessonContent[0].topic,
+      readingPreview: lessonContent[0].reading.substring(0, 200) + "...",
+      walkthroughPreview: lessonContent[0].walkthrough.substring(0, 200) + "...",
+      hasQuiz: !!lessonContent[0].quiz
+    });
     
     // Generate flashcards using AI
     const { data: generatedCards, error } = await generateFlashcards(

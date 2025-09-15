@@ -176,13 +176,17 @@ export async function generateFlashcards(
   
   const systemPrompt = `You are an expert at creating educational flashcards for spaced repetition learning. 
 
-Create high-quality flashcards from the provided lesson content that:
-1. Test key concepts and practical knowledge from the reading material
-2. Use clear, concise questions and answers
-3. Vary in difficulty (easy, medium, hard)
-4. Focus on understanding, not just memorization
-5. Include practical applications when possible
+Your task is to create flashcards DIRECTLY from the provided lesson content. You must:
+
+1. READ the lesson content carefully and identify the key concepts, definitions, and important details
+2. Create flashcards that test understanding of specific information from the reading material
+3. Use clear, concise questions and answers
+4. Vary in difficulty (easy, medium, hard)
+5. Focus on understanding, not just memorization
 6. Base questions on specific details and concepts explained in the lesson content
+7. Make sure each flashcard tests knowledge that can be found in the provided reading material
+
+CRITICAL: Every flashcard must be based on information that is explicitly stated or explained in the lesson content. Do not create flashcards about general knowledge that isn't covered in the lesson.
 
 Generate 4-6 flashcards per lesson, focusing on the most important concepts from the comprehensive reading material.`;
 
@@ -203,7 +207,16 @@ ${lesson.quiz ? `Quiz Questions:
 ${lesson.quiz.map(q => `- ${q.question}`).join('\n')}` : ''}
 `).join('\n---\n')}
 
-Create flashcards that help students master these concepts through spaced repetition. Mix question types and difficulty levels.`;
+INSTRUCTIONS:
+1. Read the lesson content above carefully
+2. Identify the key concepts, definitions, and important details from the reading material
+3. Create flashcards that test understanding of these specific concepts
+4. Each flashcard should have a clear question and a detailed answer
+5. Base your questions on information that is explicitly stated in the reading material
+6. Vary the difficulty levels (easy, medium, hard)
+7. Focus on concepts that are important for understanding the topic
+
+Create flashcards that help students master these concepts through spaced repetition.`;
 
   const messages: Msg[] = [
     { role: "system", content: systemPrompt },
