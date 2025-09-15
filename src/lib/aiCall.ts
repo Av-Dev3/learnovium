@@ -188,6 +188,8 @@ Your task is to create flashcards DIRECTLY from the provided lesson content. You
 
 CRITICAL: Every flashcard must be based on information that is explicitly stated or explained in the lesson content. Do not create flashcards about general knowledge that isn't covered in the lesson.
 
+CRITICAL: You MUST return ONLY valid JSON in the exact format specified. No markdown, no backticks, no commentary, no human-readable format. Only pure JSON.
+
 Generate 4-6 flashcards per lesson, focusing on the most important concepts from the comprehensive reading material.`;
 
   const userPrompt = `Topic: ${goalTopic}
@@ -216,7 +218,23 @@ INSTRUCTIONS:
 6. Vary the difficulty levels (easy, medium, hard)
 7. Focus on concepts that are important for understanding the topic
 
-Create flashcards that help students master these concepts through spaced repetition.`;
+CRITICAL: You MUST return ONLY valid JSON in this EXACT format:
+{
+  "flashcards": [
+    {
+      "front": "Question text here",
+      "back": "Answer text here", 
+      "difficulty": "easy"
+    },
+    {
+      "front": "Another question",
+      "back": "Another answer",
+      "difficulty": "medium"
+    }
+  ]
+}
+
+Do NOT include any other text, explanations, or formatting. Only return the JSON object.`;
 
   const messages: Msg[] = [
     { role: "system", content: systemPrompt },
