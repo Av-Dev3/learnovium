@@ -11,7 +11,7 @@ export function buildPlannerPrompt(context: string) {
 ${context}
 
 Task:
-Create an ORIGINAL learning plan in this shape:
+Create an ORIGINAL learning plan in this EXACT JSON format:
 {
   "version": "1",
   "topic": "<string>",
@@ -33,6 +33,11 @@ CRITICAL REQUIREMENTS:
 6. Avoid repetitive topics or similar-sounding objectives
 7. Create a logical progression from basic to advanced concepts
 8. Each topic should be specific and actionable
+9. MUST include "version": "1" field
+10. MUST use "total_days" not "duration_weeks" or "days_total"
+11. MUST use "modules" array, not "weeks" or "days" array
+12. Each module must have "title" and "days" fields
+13. Each day must have all required fields: day_index, topic, objective, practice, assessment, est_minutes
 
 Example of good progression:
 - Day 1: "Basic Concepts and Terminology"

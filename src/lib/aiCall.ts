@@ -103,9 +103,7 @@ async function chatJSON<T>(opts: {
       const parsed = coerceJSON(text);
       console.log("AI: JSON parsed successfully");
       console.log("AI: Parsed JSON keys:", Object.keys(parsed));
-      
-      const data = opts.schema.parse(parsed);
-      console.log("AI: Schema validation successful");
+      console.log("AI: Parsed JSON sample:", JSON.stringify(parsed, null, 2).substring(0, 1000) + "...");
       
       usage = res.usage ? {
         prompt_tokens: res.usage.prompt_tokens ?? 0,
@@ -113,12 +111,21 @@ async function chatJSON<T>(opts: {
         total_tokens: res.usage.total_tokens ?? 0
       } : undefined;
 
-      // Keep existing tracking
-      track({ task: opts.task, model, ms: dt, usage });
+      try {
+        const data = opts.schema.parse(parsed);
+        console.log("AI: Schema validation successful");
+        
+        // Keep existing tracking
+        track({ task: opts.task, model, ms: dt, usage });
 
-      const costStr = usage ? `$${(usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000).toFixed(6)}` : "?";
-      console.log(`[AI:${opts.task}] model=${model} tokens=${usage?.total_tokens ?? "?"} cost=${costStr}`);
-      return { data, usage };
+        const costStr = usage ? `$${(usage.prompt_tokens * 0.00015/1000 + usage.completion_tokens * 0.0006/1000).toFixed(6)}` : "?";
+        console.log(`[AI:${opts.task}] model=${model} tokens=${usage?.total_tokens ?? "?"} cost=${costStr}`);
+        return { data, usage };
+      } catch (schemaError) {
+        console.error("AI: Schema validation failed:", schemaError);
+        console.error("AI: Parsed JSON that failed validation:", JSON.stringify(parsed, null, 2));
+        throw schemaError;
+      }
     } catch (err) {
       console.error("AI: Error in chatJSON:", err);
       if (err instanceof Error && err.message.includes("parse")) {
