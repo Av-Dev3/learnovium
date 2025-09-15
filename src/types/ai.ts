@@ -26,7 +26,7 @@ export type TPlanJSON = z.infer<typeof PlanJSON>;
 
 export const LessonJSON = z.object({
   topic: z.string().min(10).max(100), // More specific topic requirements
-  reading: z.string().min(800).max(2500), // Substantial reading content
+  reading: z.string().min(800).max(4000), // Increased reading content limit
   walkthrough: z.string().min(400).max(800), // Detailed walkthrough content
   quiz: z.array(z.object({ 
     q: z.string().min(20).max(200), 
@@ -53,7 +53,7 @@ export const FlashcardJSON = z.object({
     front: z.string().min(10).max(200), // Question/prompt
     back: z.string().min(5).max(300), // Answer/explanation
     difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
-  })).min(3).max(20), // 3-20 flashcards per generation
+  })).min(4).max(20), // 4-20 flashcards per generation
 });
 
 export type TFlashcardJSON = z.infer<typeof FlashcardJSON>; 

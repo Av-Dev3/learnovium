@@ -116,9 +116,9 @@ Create a focused, practical daily lesson that teaches ONE specific skill or conc
 
 Requirements:
 - Topic: Be specific about what skill/concept is being learned today
-- Reading: 150-250 words explaining the concept with clear examples
+- Reading: 200-500 words explaining the concept with clear examples (aim for comprehensive coverage)
 - Walkthrough: 200-300 words showing step-by-step how to apply the concept
-- Quiz: 2 questions that test understanding and application (not just memorization)
+- Quiz: 2 questions that test understanding and application based on the reading material
 - Exercise: A practical task that can be completed in 5-10 minutes
 - Citations: Use the provided context sources
 - Est minutes: Realistic time estimate (5-15 minutes)
@@ -133,18 +133,18 @@ export function buildAdvancedLessonPrompt(context: string, topic: string, focus:
     { role: "user" as const, content: "Here is the EXACT JSON format you must use for lessons:" },
     { role: "assistant" as const, content: `{
   "topic": "Introduction to Variables in Programming",
-  "reading": "Variables are fundamental building blocks in programming that allow you to store and manipulate data. Think of a variable as a labeled box where you can put different types of information - numbers, text, or true/false values. In most programming languages, you create a variable by giving it a name and assigning a value using the equals sign (=). For example, 'age = 25' creates a variable called 'age' and stores the number 25 in it. Variables can change their values throughout your program, which makes them incredibly useful for calculations, storing user input, and keeping track of program state. The key is choosing descriptive names that clearly indicate what the variable represents, like 'userName' instead of just 'x' or 'data'. Practice creating variables with different data types and remember that variable names are case-sensitive, so 'age' and 'Age' are different variables. Variables are essential for building dynamic programs that can respond to user input, perform calculations, and maintain state. They allow you to store temporary data, pass information between functions, and create flexible code that can handle different scenarios. Understanding how to use variables effectively is the foundation of programming, as they enable you to create programs that can process data, make decisions, and produce meaningful output. Start with simple examples and gradually work your way up to more complex uses as you become comfortable with the concept.",
+  "reading": "Variables are fundamental building blocks in programming that allow you to store and manipulate data. Think of a variable as a labeled box where you can put different types of information - numbers, text, or true/false values. In most programming languages, you create a variable by giving it a name and assigning a value using the equals sign (=). For example, 'age = 25' creates a variable called 'age' and stores the number 25 in it. Variables can change their values throughout your program, which makes them incredibly useful for calculations, storing user input, and keeping track of program state. The key is choosing descriptive names that clearly indicate what the variable represents, like 'userName' instead of just 'x' or 'data'. Practice creating variables with different data types and remember that variable names are case-sensitive, so 'age' and 'Age' are different variables. Variables are essential for building dynamic programs that can respond to user input, perform calculations, and maintain state. They allow you to store temporary data, pass information between functions, and create flexible code that can handle different scenarios. Understanding how to use variables effectively is the foundation of programming, as they enable you to create programs that can process data, make decisions, and produce meaningful output. Start with simple examples and gradually work your way up to more complex uses as you become comfortable with the concept. Variables also have different scopes - some are accessible throughout your entire program (global variables) while others are only available within specific functions or code blocks (local variables). This concept of scope is crucial for writing clean, maintainable code. When you declare a variable inside a function, it's only accessible within that function unless you explicitly return it or pass it as a parameter. Global variables, while sometimes necessary, should be used sparingly as they can make code harder to debug and maintain. Another important aspect is variable types - some languages require you to declare the type explicitly (like int age = 25 in C++), while others infer the type automatically (like age = 25 in Python). Understanding type systems helps prevent errors and makes your code more predictable. Variables can also be constants, meaning their values cannot be changed once set. This is useful for values that should remain the same throughout your program's execution, like mathematical constants or configuration settings. The concept of variables extends beyond simple data storage - they're the foundation for more complex data structures like arrays, objects, and classes. As you progress in programming, you'll learn how to create custom data types and use variables to build sophisticated programs that can model real-world scenarios. Remember that good variable naming is not just about following syntax rules, but about making your code self-documenting and easy to understand for both yourself and other developers who might work with your code in the future.",
   "walkthrough": "To work with variables effectively, start by identifying what data you need to store. Choose a clear, descriptive name using camelCase (like 'firstName') or snake_case (like 'first_name'). Declare your variable and assign an initial value. Practice with different data types: numbers for calculations, strings for text, and booleans for true/false conditions. Always initialize variables before using them to avoid errors. As you write more complex programs, you'll use variables to store user input, perform calculations, and control program flow.",
   "quiz": [
     {
-      "q": "What is the primary purpose of variables in programming?",
-      "a": ["To make code look longer", "To store and manipulate data", "To slow down the program", "To confuse other programmers"],
+      "q": "Based on the lesson, what happens when you declare a variable inside a function?",
+      "a": ["It becomes global automatically", "It's only accessible within that function", "It causes a syntax error", "It overwrites existing variables"],
       "correct_index": 1
     },
     {
-      "q": "Which of the following is the best variable name?",
-      "a": ["x", "data", "userAge", "stuff"],
-      "correct_index": 2
+      "q": "According to the lesson, why should global variables be used sparingly?",
+      "a": ["They use more memory", "They make code harder to debug and maintain", "They run slower", "They can't store numbers"],
+      "correct_index": 1
     }
   ],
   "exercise": "Create three variables: one to store your name, one for your age, and one for whether you like programming. Then write a simple program that prints out a sentence using these variables.",
@@ -163,9 +163,12 @@ CRITICAL RULES - FOLLOW THESE EXACTLY:
 - Use the EXACT same JSON structure as the example above
 - Replace the content with your own original lesson for the requested topic
 - topic: 10-100 characters describing what is being learned
-- reading: 800-2500 characters MAXIMUM (be comprehensive but stay within limit)
+- reading: 800-4000 characters MAXIMUM (be comprehensive and detailed, aim for 2000+ characters)
 - walkthrough: 400-800 characters MAXIMUM (step-by-step guidance)
 - quiz: Exactly 2 questions with 4 options each, correct_index 0-3
+  * CRITICAL: Quiz questions MUST be based on specific content from the reading material
+  * Questions should test understanding of concepts explained in the reading
+  * Use phrases like "Based on the lesson..." or "According to the reading..." to ensure questions reference the material
 - exercise: 100-300 characters MAXIMUM (practical task description)
 - citations: 1-3 strings with at least 10 characters each
 - est_minutes: 5-20 minutes
@@ -175,6 +178,7 @@ CRITICAL RULES - FOLLOW THESE EXACTLY:
 - Focus on teaching the specific topic that was planned for day ${dayIndex}
 - Build naturally on previous days while staying true to the planned curriculum
 - Emphasize clarity, actionability, and topic-specific learning
+- Make the reading content comprehensive and detailed - this is the core learning material
 
 ${JSON_RULES}` },
   ];

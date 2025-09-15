@@ -114,7 +114,7 @@ async function generateFlashcardsFromLesson(
     }];
 
     // Only generate flashcards if there's meaningful content
-    const hasContent = lessonContent[0].reading.length > 50 || lessonContent[0].walkthrough.length > 50;
+    const hasContent = lessonContent[0].reading.length > 800 || lessonContent[0].walkthrough.length > 400;
     if (!hasContent) {
       console.log(`Insufficient lesson content for flashcard generation on day ${dayIndex}`);
       return;
@@ -300,7 +300,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       }
       
       // Ensure the lesson is focused and practical
-      if (lesson.topic.length < 10 || lesson.reading.length < 150 || lesson.walkthrough.length < 200) {
+      if (lesson.topic.length < 10 || lesson.reading.length < 800 || lesson.walkthrough.length < 400) {
         console.warn("Generated lesson content is too short, regenerating...");
         // Could implement retry logic here if needed
       }

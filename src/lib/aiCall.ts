@@ -177,13 +177,14 @@ export async function generateFlashcards(
   const systemPrompt = `You are an expert at creating educational flashcards for spaced repetition learning. 
 
 Create high-quality flashcards from the provided lesson content that:
-1. Test key concepts and practical knowledge
+1. Test key concepts and practical knowledge from the reading material
 2. Use clear, concise questions and answers
 3. Vary in difficulty (easy, medium, hard)
 4. Focus on understanding, not just memorization
 5. Include practical applications when possible
+6. Base questions on specific details and concepts explained in the lesson content
 
-Generate 3-5 flashcards per lesson, focusing on the most important concepts.`;
+Generate 4-6 flashcards per lesson, focusing on the most important concepts from the comprehensive reading material.`;
 
   const userPrompt = `Topic: ${goalTopic}
 ${goalFocus ? `Focus: ${goalFocus}` : ''}
