@@ -55,6 +55,7 @@ async function generateFlashcardsFromLesson(
   goalFocus?: string
 ) {
   try {
+    console.log(`Starting flashcard generation for goal ${goalId}, day ${dayIndex}`);
     const supabase = await supabaseServer();
 
     // Check if flashcards already exist for this lesson
@@ -67,12 +68,12 @@ async function generateFlashcardsFromLesson(
       .limit(1);
 
     if (existingCards && existingCards.length > 0) {
-      console.log(`Flashcards already exist for goal ${goalId}, day ${dayIndex}`);
+      console.log(`Flashcards already exist for goal ${goalId}, day ${dayIndex} - skipping generation`);
       return;
     }
 
-    // Get the flashcard category for this goal
-    const { data: category } = await supabase
+    // Get or create the flashcard category for this goal
+    let { data: category } = await supabase
       .from("flashcard_categories")
       .select("id")
       .eq("user_id", userId)
@@ -80,8 +81,24 @@ async function generateFlashcardsFromLesson(
       .single();
 
     if (!category) {
-      console.warn(`No flashcard category found for goal ${goalId}`);
-      return;
+      console.log(`Creating flashcard category for goal ${goalId}`);
+      const { data: newCategory, error: categoryError } = await supabase
+        .from("flashcard_categories")
+        .insert({
+          user_id: userId,
+          goal_id: goalId,
+          name: goalTopic,
+          description: `Flashcards for ${goalTopic}${goalFocus ? ` - ${goalFocus}` : ''}`,
+          color: '#6366f1', // Default brand color
+        })
+        .select("id")
+        .single();
+
+      if (categoryError) {
+        console.error("Failed to create flashcard category:", categoryError);
+        return;
+      }
+      category = newCategory;
     }
 
     // Prepare lesson content for flashcard generation
@@ -93,6 +110,15 @@ async function generateFlashcardsFromLesson(
       quiz: (lesson.quiz as Array<{ question: string; options: string[]; correctAnswer: number }>) || undefined
     }];
 
+    // Only generate flashcards if there's meaningful content
+    const hasContent = lessonContent[0].reading.length > 50 || lessonContent[0].walkthrough.length > 50;
+    if (!hasContent) {
+      console.log(`Insufficient lesson content for flashcard generation on day ${dayIndex}`);
+      return;
+    }
+
+    console.log(`Generating flashcards for lesson: ${lessonContent[0].topic}`);
+    
     // Generate flashcards using AI
     const { data: generatedCards, error } = await generateFlashcards(
       lessonContent,
@@ -105,8 +131,10 @@ async function generateFlashcardsFromLesson(
       return;
     }
 
+    console.log(`AI generated ${generatedCards.length} flashcards`);
+
     // Save flashcards to database
-         const flashcardsToInsert = generatedCards.map((card: Record<string, unknown>) => ({
+    const flashcardsToInsert = generatedCards.map((card: Record<string, unknown>) => ({
       user_id: userId,
       category_id: category.id,
       goal_id: goalId,
@@ -124,7 +152,7 @@ async function generateFlashcardsFromLesson(
     if (saveError) {
       console.error("Failed to save generated flashcards:", saveError);
     } else {
-      console.log(`Generated ${generatedCards.length} flashcards for goal ${goalId}, day ${dayIndex}`);
+      console.log(`✅ Successfully generated and saved ${generatedCards.length} flashcards for goal ${goalId}, day ${dayIndex}`);
     }
   } catch (error) {
     console.error("Error in generateFlashcardsFromLesson:", error);
@@ -440,6 +468,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         } catch (saveError) {
           console.warn("Error saving fallback lesson:", saveError);
         }
+        
+        // Generate flashcards from fallback lesson (async, don't block response)
+        generateFlashcardsFromLesson(user.id, goalId, dayIndex, fallbackLesson, goal.topic, goal.focus)
+          .catch(error => console.warn("Failed to generate flashcards from fallback lesson:", error));
         
         return NextResponse.json({ 
           reused: false, 

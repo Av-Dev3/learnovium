@@ -868,6 +868,12 @@ export default function FlashcardsPage() {
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Enter comma-separated day numbers (e.g., 1,2,3 for first 3 days)
                 </p>
+                <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    💡 <strong>Tip:</strong> Flashcards are automatically generated when you visit lesson pages. 
+                    If you don&apos;t see flashcards for certain days, try visiting those lesson pages first.
+                  </p>
+                </div>
               </div>
 
               <div className="flex gap-3 pt-2">
