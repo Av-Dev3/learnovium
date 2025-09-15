@@ -11,7 +11,7 @@ import { Plus, Target, TrendingUp, BookOpen, Clock, Zap, ArrowRight, Sparkles, B
 import Link from "next/link";
 import { useGoals } from "@/app/lib/hooks";
 import { MarkCompleteButton } from "@/app/components/MarkCompleteButton";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 // Types for the lesson data
 interface PlanDay {
@@ -49,8 +49,8 @@ export default function Dashboard() {
   const [dashboardItems, setDashboardItems] = useState<DashboardItem[]>([]);
   const [itemsLoading, setItemsLoading] = useState(true);
 
-  // Ensure goals is always an array
-  const safeGoals = Array.isArray(goals) ? goals : [];
+  // Ensure goals is always an array and memoize to prevent infinite loops
+  const safeGoals = useMemo(() => Array.isArray(goals) ? goals : [], [goals]);
 
   // Function to compute day index
   const computeDayIndex = (createdAt: string) => {
@@ -69,8 +69,6 @@ export default function Dashboard() {
 
   // Load dashboard items when goals change
   useEffect(() => {
-    console.log("App page: Goals changed:", safeGoals.length);
-    console.log("App page: Goals data:", safeGoals);
     
     if (safeGoals.length > 0) {
       setItemsLoading(true);
@@ -86,30 +84,12 @@ export default function Dashboard() {
           let estMinutes: number | undefined;
           let hasLesson = false;
 
-          console.log(`App page: Processing goal ${goal.id}:`, {
-            topic: goal.topic,
-            created_at: goal.created_at,
-            dayIndex,
-            has_plan_json: !!goal.plan_json
-          });
 
           // Try to extract lesson data from plan_json if it exists
           if (goal.plan_json) {
             try {
               const plan = goal.plan_json as unknown as PlanData;
-              console.log(`App page: Plan data for goal ${goal.id}:`, {
-                has_modules: !!plan.modules,
-                modules_count: plan.modules?.length || 0,
-                plan_type: typeof plan,
-                plan_keys: Object.keys(plan)
-              });
-              
               const flatDays = (plan.modules || []).flatMap((m: PlanModule) => m.days || []);
-              console.log(`App page: Flat days for goal ${goal.id}:`, {
-                total_days: flatDays.length,
-                day_indices: flatDays.map((d: PlanDay) => d.day_index),
-                looking_for_day: dayIndex
-              });
               
               const day = flatDays.find((d: PlanDay) => d.day_index === dayIndex);
               if (day) {
@@ -118,23 +98,7 @@ export default function Dashboard() {
                 estMinutes = day.est_minutes;
                 hasLesson = true;
                 
-                console.log(`App page: Using plan data for goal ${goal.id}:`, { 
-                  title: lessonTitle, 
-                  snippet: lessonSnippet?.substring(0, 50),
-                  day_index: day.day_index,
-                  has_objective: !!day.objective,
-                  has_practice: !!day.practice,
-                  has_assessment: !!day.assessment
-                });
-              } else {
-                console.log(`App page: No plan day found for goal ${goal.id}, day ${dayIndex}. Available days:`, flatDays.map(d => d.day_index));
               }
-            } catch (error) {
-              console.log(`App page: Error processing plan_json for goal ${goal.id}:`, error);
-            }
-          } else {
-            console.log(`App page: No plan data for goal ${goal.id}. This goal needs a learning plan.`);
-          }
 
           items.push({
             goalId: goal.id,
@@ -148,11 +112,9 @@ export default function Dashboard() {
         }
       });
 
-      console.log("App page: Final dashboard items:", items);
       setDashboardItems(items);
       setItemsLoading(false);
     } else {
-      console.log("App page: No goals found");
       setDashboardItems([]);
       setItemsLoading(false);
     }

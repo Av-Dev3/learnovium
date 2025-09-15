@@ -43,7 +43,7 @@ export default function FlashcardsPage() {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [studyMode, setStudyMode] = useState<'review' | 'practice'>('review');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showDueTodayOnly, setShowDueTodayOnly] = useState(false);
 
   // State for modals
@@ -58,11 +58,11 @@ export default function FlashcardsPage() {
 
   // Hooks
   const { flashcards, loading: flashcardsLoading, mutate: mutateFlashcards } = useFlashcards({
-    category_id: selectedCategory || undefined,
+    category_id: selectedCategory && selectedCategory !== 'all' ? selectedCategory : undefined,
     due_today: showDueTodayOnly
   });
   const { categories, loading: categoriesLoading, mutate: mutateCategories } = useFlashcardCategories();
-  const { goals } = useGoals();
+  const { goals, isLoading: goalsLoading } = useGoals();
   const { createFlashcard, loading: createCardLoading } = useCreateFlashcard();
   const { createCategory, loading: createCategoryLoading } = useCreateCategory();
   const { reviewFlashcard, loading: reviewLoading } = useReviewFlashcard();
@@ -134,7 +134,7 @@ export default function FlashcardsPage() {
 
   const handleCreateCard = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedCategory) {
+    if (!selectedCategory || selectedCategory === 'all') {
       alert('Please select a category first');
       return;
     }
@@ -200,7 +200,7 @@ export default function FlashcardsPage() {
     return 'text-red-600';
   };
 
-  if (flashcardsLoading || categoriesLoading) {
+  if (flashcardsLoading || categoriesLoading || goalsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)] flex items-center justify-center">
         <div className="text-center">
@@ -256,7 +256,7 @@ export default function FlashcardsPage() {
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
                 {categories.map(category => (
                   <SelectItem key={category.id} value={category.id}>
                     <div className="flex items-center gap-2">
@@ -549,20 +549,31 @@ export default function FlashcardsPage() {
             <BookOpen className="h-16 w-16 text-[var(--fg)]/30 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-[var(--fg)] mb-2">No flashcards found</h3>
             <p className="text-[var(--fg)]/70 mb-4">
-              {selectedCategory || showDueTodayOnly 
+              {selectedCategory !== 'all' || showDueTodayOnly 
                 ? "Try adjusting your filters or create new flashcards"
+                : categories.length === 0
+                ? "Create your first category and flashcard to get started"
                 : "Create your first flashcard or generate them from your lessons"
               }
             </p>
             <div className="flex justify-center gap-3">
-              <Button onClick={() => setShowCreateCard(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Flashcard
-              </Button>
-              <Button variant="outline" onClick={() => setShowGenerateCards(true)}>
-                <Sparkles className="h-4 w-4 mr-2" />
-                Generate from Lessons
-              </Button>
+              {categories.length === 0 ? (
+                <Button onClick={() => setShowCreateCategory(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Category
+                </Button>
+              ) : (
+                <>
+                  <Button onClick={() => setShowCreateCard(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Flashcard
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowGenerateCards(true)}>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate from Lessons
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -649,6 +660,7 @@ export default function FlashcardsPage() {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
                     {categories.map(category => (
                       <SelectItem key={category.id} value={category.id}>
                         <div className="flex items-center gap-2">
