@@ -182,59 +182,11 @@ export async function buildPlannerPromptWithRAG(query: string, topic?: string, k
   const { context } = await retrieveContext(query, k, topic);
   return [
     { role: "system" as const, content: "You are a learning plan generator. You MUST return JSON that matches the PlanJSON schema exactly. Do not use any other structure. Follow the format precisely." },
-    { role: "user" as const, content: "Create a 7-day learning plan for Python programming. Use this EXACT format:" },
+    { role: "user" as const, content: "Here is the EXACT JSON format you must use for learning plans:" },
     { role: "assistant" as const, content: `{
   "version": "1",
-  "topic": "Python Programming",
+  "topic": "TOPIC_NAME_HERE",
   "total_days": 7,
-  "modules": [
-    {
-      "title": "Python Fundamentals",
-      "days": [
-        {
-          "day_index": 1,
-          "topic": "Introduction to Python Syntax",
-          "objective": "Learn basic Python syntax and data types",
-          "practice": "Write simple Python programs with variables and print statements",
-          "assessment": "Complete 5 coding exercises with correct syntax",
-          "est_minutes": 45
-        },
-        {
-          "day_index": 2,
-          "topic": "Control Structures",
-          "objective": "Master if statements and loops",
-          "practice": "Create programs using if/else and for/while loops",
-          "assessment": "Build a number guessing game",
-          "est_minutes": 60
-        }
-      ]
-    },
-    {
-      "title": "Data Structures",
-      "days": [
-        {
-          "day_index": 3,
-          "topic": "Lists and Dictionaries",
-          "objective": "Work with Python lists and dictionaries",
-          "practice": "Manipulate data using list methods and dictionary operations",
-          "assessment": "Create a contact book using dictionaries",
-          "est_minutes": 50
-        }
-      ]
-    }
-  ],
-  "citations": ["Python.org documentation", "Real Python tutorials"]
-}` },
-    { role: "user" as const, content:
-`Context (RAG top-${k}, use as inspiration only):
-${context}
-
-Now create a learning plan using the EXACT same format as the example above. Do not deviate from this structure:
-
-{
-  "version": "1",
-  "topic": "Your Topic Here",
-  "total_days": 30,
   "modules": [
     {
       "title": "Module Title",
@@ -245,24 +197,39 @@ Now create a learning plan using the EXACT same format as the example above. Do 
           "objective": "Learning objective",
           "practice": "Practice activity",
           "assessment": "Assessment method",
-          "est_minutes": 30
+          "est_minutes": 45
+        },
+        {
+          "day_index": 2,
+          "topic": "Another Day Topic",
+          "objective": "Another learning objective",
+          "practice": "Another practice activity",
+          "assessment": "Another assessment method",
+          "est_minutes": 60
         }
       ]
     }
   ],
   "citations": ["Source 1", "Source 2"]
-}
+}` },
+    { role: "user" as const, content:
+`Context (RAG top-${k}, use as inspiration only):
+${context}
+
+Now create a learning plan for: ${query}
+
+Use the EXACT same JSON structure as shown above, but replace the content with your own original plan for the requested topic. Do not copy the example content - only use the structure.
 
 CRITICAL RULES:
 - MUST start with "version": "1"
-- MUST use "topic" (not "plan_title" or "title")
+- MUST use "topic" field with the actual requested topic name
 - MUST use "total_days" (not "duration_weeks" or "days_total")
 - MUST use "modules" array (not "weeks" or "days")
 - Each module MUST have "title" and "days"
 - Each day MUST have: day_index, topic, objective, practice, assessment, est_minutes
 - est_minutes MUST be between 5 and 120
 - day_index MUST be a number starting from 1
-- Create 30 days total across multiple modules
+- Create the requested number of days total across multiple modules
 - Make each day topic unique and progressive
 - Use the context to understand the topic, but create completely original plan content
 - Never copy phrases, sentences, or exact explanations from the sources
