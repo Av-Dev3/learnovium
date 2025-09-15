@@ -99,6 +99,9 @@ async function generateFlashcardsFromLesson(
         return;
       }
       category = newCategory;
+      console.log(`Flashcard category created with ID: ${category.id}`);
+    } else {
+      console.log(`Using existing flashcard category: ${category.id}`);
     }
 
     // Prepare lesson content for flashcard generation
@@ -126,6 +129,12 @@ async function generateFlashcardsFromLesson(
       goalFocus
     );
 
+    console.log("Flashcard generation result:", { 
+      error, 
+      generatedCards: generatedCards?.length || 0,
+      generatedCardsData: generatedCards 
+    });
+
     if (error || !generatedCards || generatedCards.length === 0) {
       console.warn("Failed to generate flashcards:", error);
       return;
@@ -144,6 +153,11 @@ async function generateFlashcardsFromLesson(
       difficulty: card.difficulty || "medium",
       source: "lesson",
     }));
+
+    console.log("Saving flashcards to database:", {
+      count: flashcardsToInsert.length,
+      sample: flashcardsToInsert[0]
+    });
 
     const { error: saveError } = await supabase
       .from("flashcards")

@@ -210,12 +210,14 @@ Create flashcards that help students master these concepts through spaced repeti
   ];
 
   try {
+    console.log("Starting AI flashcard generation...");
     const result = await chatJSON({ 
       task: "lesson", // Reuse lesson model for flashcard generation
       messages, 
       schema: FlashcardJSON, 
       temperature: 0.7 
     });
+    console.log("AI flashcard generation successful:", result.data);
     return { data: result.data.flashcards, usage: result.usage };
   } catch (error) {
     console.error("Flashcard generation error:", error);
