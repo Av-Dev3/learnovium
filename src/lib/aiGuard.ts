@@ -3,13 +3,23 @@
  */
 
 import { DateTime } from "luxon";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-const sb = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { persistSession: false } }
-);
+let _sb: SupabaseClient | null = null;
+
+function getSupabase(): SupabaseClient {
+  if (!_sb) {
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error("Missing Supabase environment variables");
+    }
+    _sb = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      { auth: { persistSession: false } }
+    );
+  }
+  return _sb;
+}
 
 type Cfg = { userCap:number; globalCap:number; disabled:string[] };
 let _cache: { cfg: Cfg; at: number } | null = null;
@@ -18,7 +28,7 @@ export async function loadConfig(ttlMs = 5000): Promise<Cfg> {
   const now = Date.now();
   if (_cache && now - _cache.at < ttlMs) return _cache.cfg;
 
-  const { data } = await sb
+  const { data } = await getSupabase()
     .from("admin_config")
     .select("daily_user_budget_usd,daily_global_budget_usd,disable_endpoints")
     .eq("id", 1)
@@ -56,12 +66,12 @@ export async function checkCapsOrThrow(
   const day = DateTime.now().toISODate();
 
   const [{ data: u }, { data: g }] = await Promise.all([
-    sb.from("ai_daily_user_spend")
+    getSupabase().from("ai_daily_user_spend")
       .select("cost_usd,total_cost_usd")
       .eq("user_id", user_id)
       .eq("day", day)
       .maybeSingle(),
-    sb.from("ai_daily_global_spend")
+    getSupabase().from("ai_daily_global_spend")
       .select("cost_usd,total_cost_usd")
       .eq("day", day)
       .maybeSingle(),
@@ -95,7 +105,7 @@ export async function logCall(entry: {
   cost_usd: number;
 }) {
   try {
-    await sb.from("ai_call_log").insert({
+    await getSupabase().from("ai_call_log").insert({
       user_id: entry.user_id || null,
       goal_id: entry.goal_id || null,
       endpoint: entry.endpoint,
@@ -113,8 +123,8 @@ export async function logCall(entry: {
     if (entry.success && entry.user_id) {
       const day = DateTime.now().toISODate();
       await Promise.all([
-        sb.rpc("inc_user_spend", { p_user_id: entry.user_id, p_day: day, p_cost_usd: entry.cost_usd }),
-        sb.rpc("inc_global_spend", { p_day: day, p_cost_usd: entry.cost_usd }),
+        getSupabase().rpc("inc_user_spend", { p_user_id: entry.user_id, p_day: day, p_cost_usd: entry.cost_usd }),
+        getSupabase().rpc("inc_global_spend", { p_day: day, p_cost_usd: entry.cost_usd }),
       ]);
     }
   } catch (error) {

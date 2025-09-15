@@ -14,9 +14,9 @@ export async function GET(req: NextRequest) {
     const supabase = await supabaseServer();
     
     const results = {
-      flashcard_categories: { exists: false, error: null },
-      flashcards: { exists: false, error: null },
-      flashcard_reviews: { exists: false, error: null }
+      flashcard_categories: { exists: false, error: null as string | null },
+      flashcards: { exists: false, error: null as string | null },
+      flashcard_reviews: { exists: false, error: null as string | null }
     };
 
     // Test flashcard_categories table

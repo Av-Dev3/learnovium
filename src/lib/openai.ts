@@ -1,19 +1,32 @@
 import OpenAI from "openai";
 
-console.log("AI: Initializing OpenAI client...");
-console.log("AI: OPENAI_API_KEY exists:", !!process.env.OPENAI_API_KEY);
-console.log("AI: OPENAI_API_KEY length:", process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.length : 0);
+let _openai: OpenAI | null = null;
 
-if (!process.env.OPENAI_API_KEY) {
-  console.error("AI: Missing OPENAI_API_KEY environment variable");
-  throw new Error("Missing OPENAI_API_KEY");
+function getOpenAI(): OpenAI {
+  if (!_openai) {
+    console.log("AI: Initializing OpenAI client...");
+    console.log("AI: OPENAI_API_KEY exists:", !!process.env.OPENAI_API_KEY);
+    console.log("AI: OPENAI_API_KEY length:", process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.length : 0);
+
+    if (!process.env.OPENAI_API_KEY) {
+      console.error("AI: Missing OPENAI_API_KEY environment variable");
+      throw new Error("Missing OPENAI_API_KEY");
+    }
+
+    _openai = new OpenAI({ 
+      apiKey: process.env.OPENAI_API_KEY!,
+      timeout: 240000, // 4 minutes timeout for OpenAI calls
+    });
+    console.log("AI: OpenAI client initialized successfully");
+  }
+  return _openai;
 }
 
-export const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY!,
-  timeout: 240000, // 4 minutes timeout for OpenAI calls
+export const openai = new Proxy({} as OpenAI, {
+  get(target, prop) {
+    return getOpenAI()[prop as keyof OpenAI];
+  }
 });
-console.log("AI: OpenAI client initialized successfully");
 
 // Helper to resolve model names with sane defaults per task.
 export function modelFor(task: "planner"|"lesson"|"validator") {
