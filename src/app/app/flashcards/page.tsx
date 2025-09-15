@@ -75,6 +75,19 @@ export default function FlashcardsPage() {
   const currentCard = flashcards[currentCardIndex];
   const totalCards = flashcards.length;
 
+  // Debug logging
+  useEffect(() => {
+    console.log("🔍 Flashcard page debug:", {
+      flashcardsCount: flashcards.length,
+      categoriesCount: categories.length,
+      selectedCategory,
+      showDueTodayOnly,
+      flashcardsLoading,
+      categoriesLoading,
+      flashcards: flashcards.slice(0, 3).map(c => ({ id: c.id, front: c.front?.substring(0, 50), category: c.category?.name }))
+    });
+  }, [flashcards, categories, selectedCategory, showDueTodayOnly, flashcardsLoading, categoriesLoading]);
+
   // Stats calculations
   const dueTodayCount = flashcards.filter(card => 
     new Date(card.next_review_at) <= new Date()
@@ -390,6 +403,37 @@ export default function FlashcardsPage() {
             </Button>
           </div>
         </div>
+
+        {/* Empty State */}
+        {totalCards === 0 && (
+          <div className="text-center py-16 space-y-6">
+            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center">
+              <BookOpen className="h-12 w-12 text-white" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-[var(--fg)]">No Flashcards Yet</h2>
+              <p className="text-[var(--fg)]/70 max-w-md mx-auto">
+                You don&apos;t have any flashcards yet. Create some manually or generate them from your lessons.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                onClick={() => setShowCreateCard(true)}
+                className="bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create First Card
+              </Button>
+              <Button
+                onClick={() => setShowGenerateCards(true)}
+                variant="outline"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Generate from Lessons
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Main Flashcard */}
         {totalCards > 0 && currentCard ? (
