@@ -30,7 +30,7 @@ export const LessonJSON = z.object({
   walkthrough: z.string().min(400).max(800), // Detailed walkthrough content
   quiz: z.array(z.object({ 
     q: z.string().min(20).max(200), 
-    a: z.array(z.string().min(10).max(100)).length(4), // Always 4 options
+    a: z.array(z.string().min(5).max(150)).length(4), // Always 4 options - more flexible length
     correct_index: z.number().int().min(0).max(3) 
   })).length(2), // Exactly 2 questions
   exercise: z.string().min(100).max(300), // More substantial exercise requirements

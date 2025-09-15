@@ -169,6 +169,8 @@ CRITICAL RULES - FOLLOW THESE EXACTLY:
   * CRITICAL: Quiz questions MUST be based on specific content from the reading material
   * Questions should test understanding of concepts explained in the reading
   * Use phrases like "Based on the lesson..." or "According to the reading..." to ensure questions reference the material
+  * Quiz answers must be 5-150 characters each - keep them concise but descriptive
+  * Avoid answers that are too short (< 5 chars) or too long (> 150 chars)
 - exercise: 100-300 characters MAXIMUM (practical task description)
 - citations: 1-3 strings with at least 10 characters each
 - est_minutes: 5-20 minutes
