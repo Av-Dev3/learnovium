@@ -450,34 +450,42 @@ export default function FlashcardsPage() {
             {/* Flashcard */}
             <div className="flex justify-center">
               <div 
-                className="w-full max-w-2xl h-80 cursor-pointer perspective-1000"
+                className="w-full max-w-2xl h-80 cursor-pointer"
                 onClick={handleFlip}
+                style={{ perspective: '1000px' }}
               >
-                <div className={`relative w-full h-full transition-transform duration-700 transform-style-preserve-3d ${
-                  isFlipped ? 'rotate-y-180' : ''
-                }`}>
+                <div 
+                  className={`relative w-full h-full transition-transform duration-700`}
+                  style={{ 
+                    transformStyle: 'preserve-3d',
+                    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                  }}
+                >
                   {/* Front of card */}
-                  <div className="absolute inset-0 backface-hidden">
-                    <div className="w-full h-full p-8 rounded-3xl bg-[var(--bg)]/50 border-2 border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-center items-center text-center">
+                  <div 
+                    className="absolute inset-0"
+                    style={{ backfaceVisibility: 'hidden' }}
+                  >
+                    <div className="w-full h-full p-8 rounded-3xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-center items-center text-center">
                       <div className="flex items-center gap-2 mb-4">
                         <Badge className={getDifficultyColor(currentCard.difficulty)}>
                           {currentCard.difficulty}
                         </Badge>
-                        <Badge variant="outline" className="bg-[var(--bg)]/30 border-[var(--border)]/40">
+                        <Badge variant="outline" className="bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600">
                           {currentCard.category.name}
                         </Badge>
                         {currentCard.source === 'lesson' && (
-                          <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700">
+                          <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900 dark:border-blue-700 dark:text-blue-300">
                             Day {(currentCard.lesson_day_index || 0) + 1}
                           </Badge>
                         )}
                       </div>
                       
-                      <h3 className="text-2xl md:text-3xl font-bold text-[var(--fg)] mb-6 leading-relaxed">
+                      <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 leading-relaxed">
                         {currentCard.front}
                       </h3>
                       
-                      <div className="flex items-center gap-4 text-sm text-[var(--fg)]/60">
+                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                         <div className="flex items-center gap-1">
                           <Star className="h-4 w-4" />
                           <span>Mastery: {currentCard.mastery_score}%</span>
@@ -488,22 +496,28 @@ export default function FlashcardsPage() {
                         </div>
                       </div>
                       
-                      <p className="text-sm text-[var(--fg)]/50 mt-4">
+                      <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">
                         Click to flip
                       </p>
                     </div>
                   </div>
 
                   {/* Back of card */}
-                  <div className="absolute inset-0 backface-hidden rotate-y-180">
-                    <div className="w-full h-full p-8 rounded-3xl bg-gradient-to-br from-brand/10 to-purple-600/10 border-2 border-brand/40 backdrop-blur-sm shadow-xl flex flex-col justify-center items-center text-center">
+                  <div 
+                    className="absolute inset-0"
+                    style={{ 
+                      backfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)'
+                    }}
+                  >
+                    <div className="w-full h-full p-8 rounded-3xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 border-2 border-blue-200 dark:border-blue-700 shadow-lg flex flex-col justify-center items-center text-center">
                       <div className="flex items-center gap-2 mb-4">
-                        <Badge className="bg-brand/20 text-brand border-brand/30">
+                        <Badge className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-600">
                           Answer
                         </Badge>
                       </div>
                       
-                      <h3 className="text-2xl md:text-3xl font-bold text-[var(--fg)] mb-6 leading-relaxed">
+                      <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 leading-relaxed">
                         {currentCard.back}
                       </h3>
                       
@@ -514,7 +528,7 @@ export default function FlashcardsPage() {
                             disabled={reviewLoading}
                             variant="outline" 
                             size="sm" 
-                            className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+                            className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100 dark:bg-red-900 dark:border-red-700 dark:text-red-300"
                           >
                             <XCircle className="h-4 w-4 mr-2" />
                             Hard
@@ -542,7 +556,7 @@ export default function FlashcardsPage() {
                         </div>
                       )}
                       
-                      <p className="text-sm text-[var(--fg)]/50 mt-4">
+                      <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">
                         Click to flip back
                       </p>
                     </div>
@@ -558,17 +572,27 @@ export default function FlashcardsPage() {
                 disabled={currentCardIndex === 0}
                 variant="outline"
                 size="lg"
-                className="rounded-2xl px-6 py-3 hover:bg-[var(--bg)]/50"
+                className="rounded-2xl px-6 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
                 Previous
               </Button>
 
               <Button
+                onClick={handleFlip}
+                variant="outline"
+                size="lg"
+                className="rounded-2xl px-6 py-3 hover:bg-blue-50 dark:hover:bg-blue-900 border-blue-200 dark:border-blue-700"
+              >
+                <RotateCcw className="h-5 w-5 mr-2" />
+                {isFlipped ? 'Show Question' : 'Show Answer'}
+              </Button>
+
+              <Button
                 onClick={handleShuffle}
                 variant="outline"
                 size="lg"
-                className="rounded-2xl px-6 py-3 hover:bg-[var(--bg)]/50"
+                className="rounded-2xl px-6 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <Shuffle className="h-5 w-5 mr-2" />
                 Shuffle
@@ -579,7 +603,7 @@ export default function FlashcardsPage() {
                 disabled={currentCardIndex === totalCards - 1}
                 variant="outline"
                 size="lg"
-                className="rounded-2xl px-6 py-3 hover:bg-[var(--bg)]/50"
+                className="rounded-2xl px-6 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 Next
                 <ArrowRight className="h-5 w-5 ml-2" />
@@ -588,9 +612,9 @@ export default function FlashcardsPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <BookOpen className="h-16 w-16 text-[var(--fg)]/30 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-[var(--fg)] mb-2">No flashcards found</h3>
-            <p className="text-[var(--fg)]/70 mb-4">
+            <BookOpen className="h-16 w-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">No flashcards found</h3>
+            <p className="text-gray-500 dark:text-gray-500 mb-4">
               {selectedCategory !== 'all' || showDueTodayOnly 
                 ? "Try adjusting your filters or create new flashcards"
                 : categories.length === 0
