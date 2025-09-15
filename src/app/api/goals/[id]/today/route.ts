@@ -419,6 +419,28 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         };
         
         console.log("Fallback lesson generated successfully");
+        
+        // Save fallback lesson to database
+        try {
+          const { error: saveError } = await supabase.from("lesson_log").insert({
+            user_id: user.id,
+            goal_id: goalId,
+            day_index: dayIndex,
+            chunk_ids: null,
+            model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+            citations: fallbackLesson.citations || [],
+            lesson_json: fallbackLesson,
+          });
+          
+          if (saveError) {
+            console.warn("Failed to save fallback lesson:", saveError);
+          } else {
+            console.log("Fallback lesson saved to database");
+          }
+        } catch (saveError) {
+          console.warn("Error saving fallback lesson:", saveError);
+        }
+        
         return NextResponse.json({ 
           reused: false, 
           lesson: fallbackLesson,

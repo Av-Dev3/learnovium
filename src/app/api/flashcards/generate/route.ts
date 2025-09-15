@@ -50,8 +50,15 @@ export async function POST(req: NextRequest) {
     // Get lessons for the specified day indices
     const lessons = [];
     
+    console.log("Looking for lessons with:", {
+      goal_id,
+      lesson_day_indices,
+      plan_template_id: goal.plan_template_id
+    });
+
     if (goal.plan_template_id) {
       // Get from lesson templates
+      console.log("Checking lesson_template table...");
       const { data: lessonTemplates, error: templateError } = await supabase
         .from("lesson_template")
         .select("day_index, lesson_json")
@@ -62,7 +69,8 @@ export async function POST(req: NextRequest) {
       if (templateError) {
         console.error("Error fetching lesson templates:", templateError);
       } else {
-        lessons.push(...lessonTemplates.map(t => ({
+        console.log(`Found ${lessonTemplates?.length || 0} lesson templates`);
+        lessons.push(...(lessonTemplates || []).map(t => ({
           day_index: t.day_index,
           lesson: t.lesson_json
         })));
@@ -70,6 +78,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Get from user-specific lesson log (fallback or additional)
+    console.log("Checking lesson_log table...");
     const { data: userLessons, error: userLessonsError } = await supabase
       .from("lesson_log")
       .select("day_index, lesson_json")
@@ -80,9 +89,10 @@ export async function POST(req: NextRequest) {
     if (userLessonsError) {
       console.error("Error fetching user lessons:", userLessonsError);
     } else {
+      console.log(`Found ${userLessons?.length || 0} user lessons`);
       // Add user lessons that aren't already in templates
       const templateDayIndices = new Set(lessons.map(l => l.day_index));
-      userLessons.forEach(ul => {
+      (userLessons || []).forEach(ul => {
         if (!templateDayIndices.has(ul.day_index)) {
           lessons.push({
             day_index: ul.day_index,
@@ -92,11 +102,89 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    console.log(`Total lessons found: ${lessons.length}`);
+    console.log("Lesson day indices found:", lessons.map(l => l.day_index));
+
     if (lessons.length === 0) {
-      return NextResponse.json(
-        { error: "No lessons found for the specified day indices" },
-        { status: 404 }
-      );
+      // Try to generate lessons for the missing day indices
+      console.log("No lessons found, attempting to generate them...");
+      
+      try {
+        const { generateLesson } = await import("@/lib/aiCall");
+        const { buildAdvancedLessonPrompt } = await import("@/lib/prompts");
+        const { retrieveContext } = await import("@/rag/retriever");
+        
+        for (const dayIndex of lesson_day_indices) {
+          console.log(`Generating lesson for day ${dayIndex}...`);
+          
+          // Generate a lesson for this day
+          const focusQuery = `${goal.topic} — Day ${dayIndex + 1} lesson (level: ${goal.level || 'beginner'})`;
+          const { context } = await retrieveContext(focusQuery, 3, goal.topic);
+          const msgs = buildAdvancedLessonPrompt(context, goal.topic, goal.focus || `basic ${goal.topic} concepts`, dayIndex, goal.level || 'beginner');
+          
+          const { data: lesson, error: lessonError } = await generateLesson(msgs, user.id, goal_id);
+          
+          if (lessonError || !lesson) {
+            console.error(`Failed to generate lesson for day ${dayIndex}:`, lessonError);
+            continue;
+          }
+          
+          // Save the lesson to lesson_log
+          const { error: saveError } = await supabase.from("lesson_log").insert({
+            user_id: user.id,
+            goal_id: goal_id,
+            day_index: dayIndex,
+            chunk_ids: null,
+            model: process.env.OPENAI_MODEL_LESSON || "gpt-5-mini",
+            citations: lesson.citations || [],
+            lesson_json: lesson,
+          });
+          
+          if (saveError) {
+            console.error(`Failed to save lesson for day ${dayIndex}:`, saveError);
+            continue;
+          }
+          
+          lessons.push({
+            day_index: dayIndex,
+            lesson: lesson
+          });
+          
+          console.log(`Successfully generated and saved lesson for day ${dayIndex}`);
+        }
+        
+        if (lessons.length === 0) {
+          return NextResponse.json(
+            { 
+              error: "Failed to generate lessons for the specified day indices. Please ensure you have lessons available or try generating them first.",
+              debug: {
+                goal_id,
+                lesson_day_indices,
+                plan_template_id: goal.plan_template_id,
+                user_id: user.id
+              }
+            },
+            { status: 404 }
+          );
+        }
+        
+        console.log(`Generated ${lessons.length} lessons successfully`);
+      } catch (generateError) {
+        console.error("Error generating lessons:", generateError);
+        return NextResponse.json(
+          { 
+            error: "No lessons found for the specified day indices and failed to generate new ones",
+            debug: {
+              goal_id,
+              lesson_day_indices,
+              plan_template_id: goal.plan_template_id,
+              user_id: user.id,
+              generate_error: generateError instanceof Error ? generateError.message : "Unknown error"
+            }
+          },
+          { status: 404 }
+        );
+      }
     }
 
     // Get or create category
