@@ -99,6 +99,10 @@ export default function Dashboard() {
                 hasLesson = true;
                 
               }
+            } catch (error) {
+              // Error processing plan_json, continue with default values
+            }
+          }
 
           items.push({
             goalId: goal.id,
