@@ -234,6 +234,8 @@ CRITICAL: You MUST return ONLY valid JSON in this EXACT format:
   ]
 }
 
+IMPORTANT: Keep answers concise but informative. Front text should be 10-200 characters, back text should be 5-500 characters.
+
 Do NOT include any other text, explanations, or formatting. Only return the JSON object.`;
 
   const messages: Msg[] = [

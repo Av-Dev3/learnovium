@@ -51,7 +51,7 @@ export type TValidationJSON = z.infer<typeof ValidationJSON>;
 export const FlashcardJSON = z.object({
   flashcards: z.array(z.object({
     front: z.string().min(10).max(200), // Question/prompt
-    back: z.string().min(5).max(300), // Answer/explanation
+    back: z.string().min(5).max(500), // Answer/explanation - increased limit for detailed answers
     difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
   })).min(4).max(20), // 4-20 flashcards per generation
 });
