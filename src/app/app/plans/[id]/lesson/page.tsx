@@ -484,31 +484,6 @@ export default function LessonPage() {
           <LessonContentFormatter content={lesson.exercise} />
         </div>
 
-        {/* Citations */}
-        {lesson.citations && lesson.citations.length > 0 && (
-          <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
-                <ExternalLink className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
-              </div>
-              <div>
-                <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-[var(--fg)]">Sources & References</h2>
-                <p className="text-sm sm:text-base text-[var(--fg)]/70">Learn more from these resources</p>
-              </div>
-            </div>
-            
-            <div className="space-y-3 sm:space-y-4">
-              {lesson.citations.map((citation, index) => (
-                <div key={index} className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 bg-[var(--bg)]/30 rounded-xl sm:rounded-2xl border border-[var(--border)]/30">
-                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-base sm:text-lg text-[var(--fg)]/80 leading-relaxed">
-                    {citation}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Completion Section */}
         <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 p-4 sm:p-8 text-center text-white shadow-2xl">
