@@ -169,7 +169,15 @@ async function generateFlashcardsFromLesson(
       console.log(`✅ Successfully generated and saved ${generatedCards.length} flashcards for goal ${goalId}, day ${dayIndex}`);
     }
   } catch (error) {
-    console.error("Error in generateFlashcardsFromLesson:", error);
+    console.error("❌ Error in generateFlashcardsFromLesson:", error);
+    console.error("Error details:", {
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+      userId,
+      goalId,
+      dayIndex,
+      goalTopic
+    });
   }
 }
 
@@ -386,7 +394,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
       // Generate flashcards from this lesson (async, don't block response)
       generateFlashcardsFromLesson(user.id, goalId, dayIndex, lesson, goal.topic, goal.focus)
-        .catch(error => console.warn("Failed to generate flashcards from lesson:", error));
+        .then(() => console.log("✅ Flashcard generation completed successfully"))
+        .catch(error => {
+          console.error("❌ Failed to generate flashcards from lesson:", error);
+          console.error("Error details:", {
+            message: error instanceof Error ? error.message : "Unknown error",
+            stack: error instanceof Error ? error.stack : undefined,
+            goalId,
+            dayIndex,
+            topic: goal.topic
+          });
+        });
       
       return NextResponse.json({ reused: false, lesson });
     } catch (error) {
@@ -485,7 +503,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         
         // Generate flashcards from fallback lesson (async, don't block response)
         generateFlashcardsFromLesson(user.id, goalId, dayIndex, fallbackLesson, goal.topic, goal.focus)
-          .catch(error => console.warn("Failed to generate flashcards from fallback lesson:", error));
+          .then(() => console.log("✅ Flashcard generation from fallback completed successfully"))
+          .catch(error => {
+            console.error("❌ Failed to generate flashcards from fallback lesson:", error);
+            console.error("Fallback error details:", {
+              message: error instanceof Error ? error.message : "Unknown error",
+              stack: error instanceof Error ? error.stack : undefined,
+              goalId,
+              dayIndex,
+              topic: goal.topic
+            });
+          });
         
         return NextResponse.json({ 
           reused: false, 
