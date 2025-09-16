@@ -12,19 +12,17 @@ export default function AboutPage() {
           
           {/* Hero Section */}
           <section className="relative text-center space-y-8">
-            {/* Animated background elements */}
-            <div className="absolute -top-20 -left-20 w-40 h-40 bg-gradient-to-br from-brand/20 via-purple-500/20 to-indigo-500/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute -bottom-20 -right-20 w-32 h-32 bg-gradient-to-br from-purple-400/20 via-indigo-400/20 to-blue-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-br from-brand/15 to-purple-500/15 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
+            {/* Clean background */}
+            <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900" />
             
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20 mb-8">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-brand/10 rounded-full border border-brand/20 mb-8">
                 <Sparkles className="w-5 h-5 text-brand" />
                 <span className="text-brand font-medium">Revolutionizing Education</span>
               </div>
               
               <h1 className="font-heading text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl mb-6">
-                <span className="bg-gradient-to-r from-[var(--fg)] via-brand to-purple-600 bg-clip-text text-transparent">
+                <span className="text-slate-900 dark:text-slate-100">
                   About Learnovium
                 </span>
               </h1>
@@ -39,21 +37,16 @@ export default function AboutPage() {
           {/* Mission Statement Section */}
           <section className="relative space-y-8">
             <div className="text-center space-y-4 mb-12">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-brand/10 rounded-full border border-brand/20">
                 <Target className="w-5 h-5 text-brand" />
                 <span className="text-brand font-medium">Our Mission</span>
               </div>
               <h2 className="font-heading text-4xl font-bold">Transforming Education, One Learner at a Time</h2>
             </div>
             
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 p-12 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-white/10">
-              {/* Enhanced animated background elements */}
-              <div className="absolute -top-12 -right-12 w-40 h-40 bg-gradient-to-br from-brand/30 via-purple-500/30 to-indigo-500/30 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-gradient-to-br from-purple-400/30 via-indigo-400/30 to-blue-500/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
-              
-              <div className="relative z-10">
-                <div className="w-20 h-20 bg-gradient-to-br from-brand via-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-brand/25 mx-auto mb-8">
+            <div className="relative rounded-3xl bg-white dark:bg-slate-800 p-12 shadow-lg border border-slate-200 dark:border-slate-700">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-brand rounded-3xl flex items-center justify-center mx-auto mb-8">
                   <Heart className="h-10 w-10 text-white" />
                 </div>
                 

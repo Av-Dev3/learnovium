@@ -200,37 +200,31 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
       <div className="space-y-8 pt-8">
-        {/* Modern Header with Balanced Design */}
-        <header className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand via-blue-600 to-brand p-8 text-white shadow-2xl">
-          {/* Background effects */}
-          <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
-          <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
-          
-          <div className="relative z-10">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 border border-white/20 bg-white/10 backdrop-blur-md">
-                  <Sparkles className="w-5 h-5 text-yellow-200" />
-                  <span className="text-sm font-semibold">AI-Powered Learning</span>
-                </div>
-                
-                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
-                  Welcome back! 👋
-                </h1>
-                <p className="text-xl text-blue-100 max-w-2xl leading-relaxed">
-                  Continue your learning journey with today&apos;s personalized lessons
-                </p>
+        {/* Clean Header Design */}
+        <header className="relative overflow-hidden rounded-3xl bg-brand p-8 text-white shadow-lg">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-white/20">
+                <Sparkles className="w-5 h-5 text-yellow-200" />
+                <span className="text-sm font-semibold">AI-Powered Learning</span>
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center gap-6">
-                <div className="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
-                  <div className="text-3xl md:text-4xl font-bold text-yellow-200">{totalStreak}</div>
-                  <div className="text-blue-200 text-sm font-medium">Day Streak</div>
-                </div>
-                <div className="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
-                  <div className="text-3xl md:text-4xl font-bold text-green-200">{completedToday}</div>
-                  <div className="text-blue-200 text-sm font-medium">Active Goals</div>
-                </div>
+              <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+                Welcome back! 👋
+              </h1>
+              <p className="text-xl text-blue-100 max-w-2xl leading-relaxed">
+                Continue your learning journey with today&apos;s personalized lessons
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <div className="text-center p-4 rounded-2xl bg-white/20">
+                <div className="text-3xl md:text-4xl font-bold text-yellow-200">{totalStreak}</div>
+                <div className="text-blue-200 text-sm font-medium">Day Streak</div>
+              </div>
+              <div className="text-center p-4 rounded-2xl bg-white/20">
+                <div className="text-3xl md:text-4xl font-bold text-green-200">{completedToday}</div>
+                <div className="text-blue-200 text-sm font-medium">Active Goals</div>
               </div>
             </div>
           </div>
@@ -239,11 +233,10 @@ export default function Dashboard() {
         {/* Stats Cards - Compact Metric Design */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Active Goals Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:scale-102 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/60 to-indigo-50/40 dark:from-blue-900/20 dark:to-indigo-900/15" />
-            <div className="relative p-4">
+          <div className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300">
+            <div className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
                   <Target className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -255,11 +248,10 @@ export default function Dashboard() {
           </div>
 
           {/* Today's Lessons Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:scale-102 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/60 to-teal-50/40 dark:from-emerald-900/20 dark:to-teal-900/15" />
-            <div className="relative p-4">
+          <div className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300">
+            <div className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
                   <BookOpen className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -271,11 +263,10 @@ export default function Dashboard() {
           </div>
 
           {/* Time Today Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:scale-102 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50/60 to-violet-50/40 dark:from-purple-900/20 dark:to-violet-900/15" />
-            <div className="relative p-4">
+          <div className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300">
+            <div className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
                   <Clock className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -287,11 +278,10 @@ export default function Dashboard() {
           </div>
 
           {/* Learning Streak Card */}
-          <div className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:scale-102 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-50/60 to-amber-50/40 dark:from-orange-900/20 dark:to-amber-900/15" />
-            <div className="relative p-4">
+          <div className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300">
+            <div className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
                   <Flame className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -314,17 +304,13 @@ export default function Dashboard() {
             {/* Create New Goal Card */}
             <Link 
               href="/app/create"
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-50 via-indigo-100 to-purple-100 dark:from-indigo-950/30 dark:via-indigo-900/20 dark:to-purple-900/30 border border-indigo-200/50 dark:border-indigo-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-indigo-400/60"
+              className="group relative rounded-3xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 hover:shadow-lg transition-all duration-300"
             >
-              {/* Animated background elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-indigo-400/20 to-purple-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
-              
-              <div className="relative p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
+              <div className="p-6">
+                <div className="w-16 h-16 bg-indigo-500 rounded-2xl flex items-center justify-center mb-4">
                   <Plus className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-200 transition-colors">Create New Goal</h3>
+                <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2">Create New Goal</h3>
                 <p className="text-sm text-indigo-700 dark:text-indigo-200 leading-relaxed">Start learning a new skill with AI guidance</p>
               </div>
             </Link>
@@ -332,17 +318,13 @@ export default function Dashboard() {
             {/* View All Plans Card */}
             <Link 
               href="/app/plans"
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-100 to-teal-100 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-teal-900/30 border border-emerald-200/50 dark:border-emerald-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-emerald-400/60"
+              className="group relative rounded-3xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300"
             >
-              {/* Animated background elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-emerald-400/20 to-teal-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-teal-400/20 to-cyan-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
-              
-              <div className="relative p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
+              <div className="p-6">
+                <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mb-4">
                   <Trophy className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-2 group-hover:text-emerald-700 dark:group-hover:text-emerald-200 transition-colors">View All Plans</h3>
+                <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-2">View All Plans</h3>
                 <p className="text-sm text-emerald-700 dark:text-emerald-200 leading-relaxed">See your learning progress and plans</p>
               </div>
             </Link>
@@ -350,17 +332,13 @@ export default function Dashboard() {
             {/* Flashcards Card */}
             <Link 
               href="/app/flashcards"
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50 via-purple-100 to-violet-100 dark:from-purple-950/30 dark:via-purple-900/20 dark:to-violet-900/30 border border-purple-200/50 dark:border-purple-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-purple-400/60"
+              className="group relative rounded-3xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300"
             >
-              {/* Animated background elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-purple-400/20 to-violet-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-violet-400/20 to-fuchsia-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
-              
-              <div className="relative p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
+              <div className="p-6">
+                <div className="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center mb-4">
                   <Brain className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2 group-hover:text-purple-700 dark:group-hover:text-purple-200 transition-colors">Flashcards</h3>
+                <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2">Flashcards</h3>
                 <p className="text-sm text-purple-700 dark:text-purple-200 leading-relaxed">Master concepts with spaced repetition</p>
               </div>
             </Link>
@@ -368,17 +346,13 @@ export default function Dashboard() {
             {/* Learning History Card */}
             <Link 
               href="/app/history"
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-50 via-orange-100 to-amber-100 dark:from-orange-950/30 dark:via-orange-900/20 dark:to-amber-900/30 border border-orange-200/50 dark:border-orange-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-orange-400/60"
+              className="group relative rounded-3xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 hover:shadow-lg transition-all duration-300"
             >
-              {/* Animated background elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-orange-400/20 to-amber-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-amber-400/20 to-yellow-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
-              
-              <div className="relative p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
+              <div className="p-6">
+                <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mb-4">
                   <TrendingUp className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2 group-hover:text-orange-700 dark:group-hover:text-orange-200 transition-colors">Learning History</h3>
+                <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2">Learning History</h3>
                 <p className="text-sm text-orange-700 dark:text-orange-200 leading-relaxed">Track your achievements and progress</p>
               </div>
             </Link>
@@ -388,15 +362,10 @@ export default function Dashboard() {
         {/* Today's Lessons */}
         {dashboardItems.length > 0 ? (
           <section aria-labelledby="lessons-heading" className="relative space-y-6">
-            {/* Enhanced Header with Muted Design */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-100/80 via-slate-200/60 to-slate-300/40 dark:from-slate-800/60 dark:via-slate-700/40 dark:to-slate-600/20 p-8 backdrop-blur-xl shadow-2xl border border-slate-200/40 dark:border-slate-700/40">
-              {/* Enhanced animated background elements */}
-              <div className="absolute -top-12 -right-12 w-40 h-40 bg-gradient-to-br from-slate-300/20 via-slate-400/20 to-slate-500/20 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-gradient-to-br from-slate-400/20 via-slate-500/20 to-slate-600/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-br from-slate-300/15 to-slate-400/15 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
-              
-              <div className="relative z-10 flex items-center gap-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-slate-500 via-slate-600 to-slate-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-slate-500/25">
+            {/* Clean Header Design */}
+            <div className="relative rounded-3xl bg-slate-100 dark:bg-slate-800 p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 bg-slate-600 rounded-3xl flex items-center justify-center">
                   <BookOpen className="h-10 w-10 text-white" />
                 </div>
                 <div>
@@ -420,17 +389,13 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {dashboardItems.map((item) => (
                   <Link key={item.goalId} href={`/app/plans/${item.goalId}/lesson`} className="block group">
-                    <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-100/80 via-slate-200/60 to-slate-300/40 dark:from-slate-800/60 dark:via-slate-700/40 dark:to-slate-600/20 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 border border-slate-200/40 dark:border-slate-700/40 hover:border-slate-400/60">
-                      {/* Enhanced animated background elements */}
-                      <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-slate-300/20 via-slate-400/20 to-slate-500/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                      <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-slate-400/20 via-slate-500/20 to-slate-600/20 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700" />
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-slate-300/15 to-slate-400/15 rounded-full blur-xl group-hover:scale-200 transition-transform duration-700" style={{animationDelay: '0.5s'}} />
+                    <div className="group relative rounded-3xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-700">
                       
                       <div className="relative p-6 space-y-4">
                         {/* Header */}
                         <div className="flex items-start justify-between">
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 bg-slate-200/50 dark:bg-slate-700/50 px-3 py-1 rounded-full border border-slate-300/40 dark:border-slate-600/40 backdrop-blur-sm">
+                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
                               <Target className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                               <span className="font-medium">{item.goalTopic}</span>
                               <span className="text-slate-400 dark:text-slate-500">•</span>
@@ -450,14 +415,14 @@ export default function Dashboard() {
                             </h3>
                           </div>
                           
-                          <div className="w-14 h-14 bg-gradient-to-br from-slate-500 to-slate-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
+                          <div className="w-14 h-14 bg-slate-600 rounded-2xl flex items-center justify-center">
                             <Play className="h-7 w-7 text-white" />
                           </div>
                         </div>
 
                         {/* Content */}
                         {item.lessonSnippet && (
-                          <div className="bg-slate-200/50 dark:bg-slate-700/50 rounded-2xl p-4 backdrop-blur-sm border border-slate-300/40 dark:border-slate-600/40">
+                          <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl p-4">
                             <p className="text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-3 text-sm">
                               {item.lessonSnippet}
                             </p>
@@ -467,12 +432,12 @@ export default function Dashboard() {
                         {/* Status */}
                         <div className="flex items-center justify-between pt-2">
                           {!item.hasLesson ? (
-                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-700/50 px-3 py-1 rounded-full border border-slate-300/40 dark:border-slate-600/40">
+                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
                               <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse" />
                               <span>Lesson not generated yet</span>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-200/50 dark:bg-slate-700/50 px-3 py-1 rounded-full border border-slate-300/40 dark:border-slate-600/40">
+                            <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
                               <CheckCircle className="w-4 h-4" />
                               <span>Ready to start</span>
                             </div>
@@ -486,7 +451,7 @@ export default function Dashboard() {
                         
                         {/* Lesson variety note */}
                         {item.hasLesson && (
-                          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-200/30 dark:bg-slate-700/30 px-3 py-2 rounded-xl border border-slate-300/30 dark:border-slate-600/30 backdrop-blur-sm">
+                          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded-xl">
                             <Target className="w-3 h-3 text-slate-600 dark:text-slate-400" />
                             <span>Planned curriculum • Progressive learning</span>
                           </div>
@@ -606,12 +571,8 @@ export default function Dashboard() {
         </section>
 
         {/* Motivation Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-600 via-slate-700 to-slate-600 p-8 text-center text-white shadow-2xl">
-          {/* Background effects */}
-          <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/5 blur-3xl animate-pulse" />
-          <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/5 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
-          
-          <div className="relative z-10 space-y-4">
+        <div className="relative rounded-3xl bg-slate-600 p-8 text-center text-white shadow-lg">
+          <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold">
               Ready to crush today&apos;s goals? 🚀
             </h2>
