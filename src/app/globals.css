@@ -7,30 +7,30 @@
   /* Surfaces */
   --bg: 0 0% 100%;
   --card: 0 0% 100%;
-  --muted: 0 0% 96%;
-  --muted-foreground: 222 9% 35%;
-  --border: 0 0% 90%;
+  --muted: 0 0% 98%;
+  --muted-foreground: 220 13% 25%;
+  --border: 220 13% 88%;
 
-  /* Brand & text */
-  --primary: 222 90% 56%;
+  /* Brand & text - Muted, calming colors */
+  --primary: 220 25% 45%;
   --primary-foreground: 0 0% 100%;
-  --accent: 267 84% 64%;
+  --accent: 200 30% 50%;
   --accent-foreground: 0 0% 100%;
 
   /* Missing vars used by tailwind.config.ts */
-  --brand: hsl(222 90% 56%);
-  --fg: hsl(222 15% 18%);      /* default text color in light mode */
-  --ring: 222 90% 60%;
+  --brand: hsl(220 25% 45%);
+  --fg: hsl(220 15% 20%);      /* default text color in light mode */
+  --ring: 220 25% 50%;
   --radius: 12px;              /* for rounded-lg/md/sm extensions */
 }
 
 .dark:root{
-  --bg: 222 15% 8%;
-  --card: 222 14% 12%;
-  --muted: 222 12% 16%;
-  --muted-foreground: 222 9% 70%;
-  --border: 222 12% 18%;
-  --fg: hsl(0 0% 98%);         /* readable on dark */
+  --bg: 220 15% 6%;
+  --card: 220 12% 10%;
+  --muted: 220 10% 14%;
+  --muted-foreground: 220 9% 65%;
+  --border: 220 10% 20%;
+  --fg: hsl(220 5% 95%);         /* readable on dark */
 }
 
 /* Base */
@@ -95,7 +95,7 @@ body {
 }
 
 .gradient-text {
-  background-image: linear-gradient(90deg,hsl(var(--primary)),hsl(var(--accent)));
+  background-image: linear-gradient(90deg,hsl(220 25% 45%),hsl(200 30% 50%));
   -webkit-background-clip: text; 
   background-clip: text; 
   color: transparent;
