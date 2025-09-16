@@ -70,9 +70,9 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         return (
           <HeadingTag 
             key={sectionIndex} 
-            className="font-bold text-[var(--fg)] mb-4 mt-6 first:mt-0"
+            className="font-bold text-[var(--fg)] mb-3 mt-4 sm:mb-4 sm:mt-6 first:mt-0 text-sm sm:text-base"
             style={{
-              fontSize: level === 1 ? '1.5rem' : level === 2 ? '1.25rem' : '1.125rem'
+              fontSize: level === 1 ? '1.25rem' : level === 2 ? '1.125rem' : '1rem'
             }}
           >
             {headingText}
@@ -90,12 +90,12 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         return (
           <ListTag 
             key={sectionIndex} 
-            className={`space-y-2 mb-6 ${isOrdered ? 'list-decimal' : 'list-disc'} list-inside text-[var(--fg)] leading-relaxed`}
+            className={`space-y-1.5 sm:space-y-2 mb-4 sm:mb-6 ${isOrdered ? 'list-decimal' : 'list-disc'} list-inside text-[var(--fg)] leading-relaxed text-sm sm:text-base`}
           >
             {listItems.map((item, itemIndex) => {
               const cleanItem = item.replace(/^[-*•]\s|^\d+\.\s/, '').trim();
               return (
-                <li key={itemIndex} className="ml-2">
+                <li key={itemIndex} className="ml-1 sm:ml-2">
                   {cleanItem}
                 </li>
               );
@@ -107,7 +107,7 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
       // Check if it's a code block (contains code-like patterns)
       if (trimmedSection.includes('```') || trimmedSection.includes('`')) {
         return (
-          <div key={sectionIndex} className="bg-[var(--bg)]/30 border border-[var(--border)]/30 rounded-xl p-4 mb-6 font-mono text-sm overflow-x-auto">
+          <div key={sectionIndex} className="bg-[var(--bg)]/30 border border-[var(--border)]/30 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 font-mono text-xs sm:text-sm overflow-x-auto">
             <pre className="text-[var(--fg)] whitespace-pre-wrap">
               {trimmedSection.replace(/```/g, '')}
             </pre>
@@ -121,7 +121,7 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         return (
           <blockquote 
             key={sectionIndex} 
-            className="border-l-4 border-brand/50 pl-4 py-2 mb-6 italic text-[var(--fg)]/80 bg-[var(--bg)]/20 rounded-r-lg"
+            className="border-l-4 border-brand/50 pl-3 sm:pl-4 py-2 mb-4 sm:mb-6 italic text-[var(--fg)]/80 bg-[var(--bg)]/20 rounded-r-lg text-sm sm:text-base"
           >
             {quoteText}
           </blockquote>
@@ -136,17 +136,17 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         const sentences = trimmedSection.split(/(?<=[.!?])\s+/).filter(s => s.trim());
         
         return (
-          <div key={sectionIndex} className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/30 rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
+          <div key={sectionIndex} className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/30 rounded-lg sm:rounded-2xl p-2.5 sm:p-4 mb-3 sm:mb-6">
             {sentences.length > 3 ? (
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 {sentences.map((sentence, sentIndex) => (
-                  <p key={sentIndex} className="text-[var(--fg)] leading-relaxed font-medium text-sm sm:text-base">
+                  <p key={sentIndex} className="text-[var(--fg)] leading-relaxed font-medium text-xs sm:text-base">
                     {sentence.trim()}
                   </p>
                 ))}
               </div>
             ) : (
-              <p className="text-[var(--fg)] leading-relaxed font-medium text-sm sm:text-base">
+              <p className="text-[var(--fg)] leading-relaxed font-medium text-xs sm:text-base">
                 {trimmedSection}
               </p>
             )}
@@ -160,7 +160,7 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
       if (sentences.length <= 2) {
         // Short content - keep as single paragraph
         return (
-          <p key={sectionIndex} className="text-[var(--fg)] leading-relaxed mb-4 sm:mb-6 text-base sm:text-lg">
+          <p key={sectionIndex} className="text-[var(--fg)] leading-relaxed mb-3 sm:mb-6 text-sm sm:text-lg">
             {trimmedSection}
           </p>
         );
@@ -171,11 +171,11 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         const secondPart = sentences.slice(midPoint).join(' ');
         
         return (
-          <div key={sectionIndex} className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
-            <p className="text-[var(--fg)] leading-relaxed text-base sm:text-lg">
+          <div key={sectionIndex} className="mb-3 sm:mb-6 space-y-2 sm:space-y-4">
+            <p className="text-[var(--fg)] leading-relaxed text-sm sm:text-lg">
               {firstPart}
             </p>
-            <p className="text-[var(--fg)] leading-relaxed text-base sm:text-lg">
+            <p className="text-[var(--fg)] leading-relaxed text-sm sm:text-lg">
               {secondPart}
             </p>
           </div>
@@ -188,9 +188,9 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
         }
         
         return (
-          <div key={sectionIndex} className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
+          <div key={sectionIndex} className="mb-3 sm:mb-6 space-y-2 sm:space-y-4">
             {chunks.map((chunk, chunkIndex) => (
-              <p key={chunkIndex} className="text-[var(--fg)] leading-relaxed text-base sm:text-lg">
+              <p key={chunkIndex} className="text-[var(--fg)] leading-relaxed text-sm sm:text-lg">
                 {chunk}
               </p>
             ))}
@@ -203,8 +203,8 @@ export function LessonContentFormatter({ content, className = "" }: LessonConten
   const formattedContent = formatContent(content);
 
   return (
-    <div className={`prose prose-lg max-w-none ${className}`}>
-      <div className="space-y-4">
+    <div className={`prose prose-sm sm:prose-lg max-w-none ${className}`}>
+      <div className="space-y-3 sm:space-y-4">
         {formattedContent}
       </div>
     </div>
