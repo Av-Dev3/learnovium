@@ -11,16 +11,16 @@
   --muted-foreground: 220 13% 25%;
   --border: 220 13% 88%;
 
-  /* Brand & text - Muted, calming colors */
-  --primary: 220 25% 45%;
+  /* Brand & text - Balanced, learning-friendly colors */
+  --primary: 220 60% 55%;
   --primary-foreground: 0 0% 100%;
-  --accent: 200 30% 50%;
+  --accent: 200 65% 60%;
   --accent-foreground: 0 0% 100%;
 
   /* Missing vars used by tailwind.config.ts */
-  --brand: hsl(220 25% 45%);
+  --brand: hsl(220 60% 55%);
   --fg: hsl(220 15% 20%);      /* default text color in light mode */
-  --ring: 220 25% 50%;
+  --ring: 220 60% 60%;
   --radius: 12px;              /* for rounded-lg/md/sm extensions */
 }
 

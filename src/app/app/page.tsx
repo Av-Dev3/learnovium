@@ -200,36 +200,36 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
       <div className="space-y-8 pt-8">
-        {/* Modern Header with Muted Design */}
-        <header className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-600 via-slate-700 to-slate-600 p-8 text-white shadow-2xl">
+        {/* Modern Header with Balanced Design */}
+        <header className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand via-blue-600 to-brand p-8 text-white shadow-2xl">
           {/* Background effects */}
-          <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/5 blur-3xl animate-pulse" />
-          <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/5 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+          <div className="absolute -top-10 -left-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" />
+          <div className="absolute -bottom-10 -right-10 h-80 w-80 rounded-full bg-white/10 blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
           
           <div className="relative z-10">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 border border-white/10 bg-white/5 backdrop-blur-md">
-                  <Sparkles className="w-5 h-5 text-slate-300" />
+                <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 border border-white/20 bg-white/10 backdrop-blur-md">
+                  <Sparkles className="w-5 h-5 text-yellow-200" />
                   <span className="text-sm font-semibold">AI-Powered Learning</span>
                 </div>
                 
                 <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
                   Welcome back! 👋
                 </h1>
-                <p className="text-xl text-slate-200 max-w-2xl leading-relaxed">
+                <p className="text-xl text-blue-100 max-w-2xl leading-relaxed">
                   Continue your learning journey with today&apos;s personalized lessons
                 </p>
               </div>
               
               <div className="flex flex-col sm:flex-row items-center gap-6">
-                <div className="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10">
-                  <div className="text-3xl md:text-4xl font-bold text-slate-200">{totalStreak}</div>
-                  <div className="text-slate-300 text-sm font-medium">Day Streak</div>
+                <div className="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                  <div className="text-3xl md:text-4xl font-bold text-yellow-200">{totalStreak}</div>
+                  <div className="text-blue-200 text-sm font-medium">Day Streak</div>
                 </div>
-                <div className="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10">
-                  <div className="text-3xl md:text-4xl font-bold text-slate-200">{completedToday}</div>
-                  <div className="text-slate-300 text-sm font-medium">Active Goals</div>
+                <div className="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                  <div className="text-3xl md:text-4xl font-bold text-green-200">{completedToday}</div>
+                  <div className="text-blue-200 text-sm font-medium">Active Goals</div>
                 </div>
               </div>
             </div>
@@ -240,10 +240,10 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Active Goals Card */}
           <div className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:scale-102 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-100/50 to-slate-200/30 dark:from-slate-700/30 dark:to-slate-600/20" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/60 to-indigo-50/40 dark:from-blue-900/20 dark:to-indigo-900/15" />
             <div className="relative p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
                   <Target className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -256,10 +256,10 @@ export default function Dashboard() {
 
           {/* Today's Lessons Card */}
           <div className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:scale-102 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-100/50 to-slate-200/30 dark:from-slate-700/30 dark:to-slate-600/20" />
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/60 to-teal-50/40 dark:from-emerald-900/20 dark:to-teal-900/15" />
             <div className="relative p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm">
                   <BookOpen className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -272,10 +272,10 @@ export default function Dashboard() {
 
           {/* Time Today Card */}
           <div className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:scale-102 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-100/50 to-slate-200/30 dark:from-slate-700/30 dark:to-slate-600/20" />
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-50/60 to-violet-50/40 dark:from-purple-900/20 dark:to-violet-900/15" />
             <div className="relative p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center shadow-sm">
                   <Clock className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -288,10 +288,10 @@ export default function Dashboard() {
 
           {/* Learning Streak Card */}
           <div className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:shadow-lg hover:scale-102 transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-100/50 to-slate-200/30 dark:from-slate-700/30 dark:to-slate-600/20" />
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-50/60 to-amber-50/40 dark:from-orange-900/20 dark:to-amber-900/15" />
             <div className="relative p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center shadow-sm">
                   <Flame className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -314,72 +314,72 @@ export default function Dashboard() {
             {/* Create New Goal Card */}
             <Link 
               href="/app/create"
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-slate-800/50 dark:via-slate-700/30 dark:to-slate-600/20 border border-slate-200/50 dark:border-slate-700/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-slate-400/60"
+              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-50 via-indigo-100 to-purple-100 dark:from-indigo-950/30 dark:via-indigo-900/20 dark:to-purple-900/30 border border-indigo-200/50 dark:border-indigo-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-indigo-400/60"
             >
               {/* Animated background elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-slate-300/20 to-slate-400/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-slate-400/20 to-slate-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-indigo-400/20 to-purple-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
               
               <div className="relative p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-slate-500 to-slate-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
                   <Plus className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">Create New Goal</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Start learning a new skill with AI guidance</p>
+                <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-200 transition-colors">Create New Goal</h3>
+                <p className="text-sm text-indigo-700 dark:text-indigo-200 leading-relaxed">Start learning a new skill with AI guidance</p>
               </div>
             </Link>
 
             {/* View All Plans Card */}
             <Link 
               href="/app/plans"
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-slate-800/50 dark:via-slate-700/30 dark:to-slate-600/20 border border-slate-200/50 dark:border-slate-700/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-slate-400/60"
+              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-100 to-teal-100 dark:from-emerald-950/30 dark:via-emerald-900/20 dark:to-teal-900/30 border border-emerald-200/50 dark:border-emerald-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-emerald-400/60"
             >
               {/* Animated background elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-slate-300/20 to-slate-400/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-slate-400/20 to-slate-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-emerald-400/20 to-teal-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-teal-400/20 to-cyan-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
               
               <div className="relative p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-slate-500 to-slate-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
                   <Trophy className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">View All Plans</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">See your learning progress and plans</p>
+                <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-2 group-hover:text-emerald-700 dark:group-hover:text-emerald-200 transition-colors">View All Plans</h3>
+                <p className="text-sm text-emerald-700 dark:text-emerald-200 leading-relaxed">See your learning progress and plans</p>
               </div>
             </Link>
 
             {/* Flashcards Card */}
             <Link 
               href="/app/flashcards"
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-slate-800/50 dark:via-slate-700/30 dark:to-slate-600/20 border border-slate-200/50 dark:border-slate-700/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-slate-400/60"
+              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50 via-purple-100 to-violet-100 dark:from-purple-950/30 dark:via-purple-900/20 dark:to-violet-900/30 border border-purple-200/50 dark:border-purple-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-purple-400/60"
             >
               {/* Animated background elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-slate-300/20 to-slate-400/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-slate-400/20 to-slate-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-purple-400/20 to-violet-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-violet-400/20 to-fuchsia-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
               
               <div className="relative p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-slate-500 to-slate-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
                   <Brain className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">Flashcards</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Master concepts with spaced repetition</p>
+                <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2 group-hover:text-purple-700 dark:group-hover:text-purple-200 transition-colors">Flashcards</h3>
+                <p className="text-sm text-purple-700 dark:text-purple-200 leading-relaxed">Master concepts with spaced repetition</p>
               </div>
             </Link>
 
             {/* Learning History Card */}
             <Link 
               href="/app/history"
-              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-slate-800/50 dark:via-slate-700/30 dark:to-slate-600/20 border border-slate-200/50 dark:border-slate-700/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-slate-400/60"
+              className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-50 via-orange-100 to-amber-100 dark:from-orange-950/30 dark:via-orange-900/20 dark:to-amber-900/30 border border-orange-200/50 dark:border-orange-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-orange-400/60"
             >
               {/* Animated background elements */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-slate-300/20 to-slate-400/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-slate-400/20 to-slate-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-orange-400/20 to-amber-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-amber-400/20 to-yellow-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
               
               <div className="relative p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-slate-500 to-slate-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-4">
                   <TrendingUp className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">Learning History</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Track your achievements and progress</p>
+                <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2 group-hover:text-orange-700 dark:group-hover:text-orange-200 transition-colors">Learning History</h3>
+                <p className="text-sm text-orange-700 dark:text-orange-200 leading-relaxed">Track your achievements and progress</p>
               </div>
             </Link>
           </div>
