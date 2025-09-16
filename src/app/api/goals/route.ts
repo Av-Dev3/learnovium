@@ -304,6 +304,7 @@ async function createGoalInternal(req: NextRequest) {
       const ragPromise = buildPlannerPromptWithRAG(
         `Create a ${duration}-day ${userLevel} level learning plan for ${topic}${focus ? ` focusing on ${focus}` : ""}. The plan must strictly have total_days=${duration} and be appropriate for ${userLevel} level students. For longer plans, focus on progressive skill building with clear milestones.`,
         topic,
+        userLevel,
         ragContextSize
       );
       

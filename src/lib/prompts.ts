@@ -3,10 +3,58 @@ import { retrieveContext } from "@/rag/retriever";
 const JSON_RULES =
   "Respond with ONLY valid JSON. No backticks, no markdown, no commentary. If unsure, return the closest valid JSON.";
 
-export function buildPlannerPrompt(context: string) {
+function getLevelInstructions(level: string): string {
+  switch (level.toLowerCase()) {
+    case 'beginner':
+      return `BEGINNER LEVEL INSTRUCTIONS:
+- Assume the learner has NO prior knowledge of the topic
+- Start with absolute fundamentals and basic concepts
+- Use simple, clear language and avoid jargon
+- Focus on building a solid foundation
+- Each day should introduce one core concept at a time
+- Include plenty of examples and explanations
+- Make topics very specific and concrete (e.g., "What is a variable?" not "Programming concepts")
+- Keep exercises simple and achievable
+- Build confidence through small wins`;
+
+    case 'intermediate':
+      return `INTERMEDIATE LEVEL INSTRUCTIONS:
+- Assume the learner has basic knowledge but wants to deepen understanding
+- Build on fundamental concepts with more complex applications
+- Introduce best practices and common patterns
+- Include some technical terminology but explain it
+- Focus on practical applications and real-world scenarios
+- Each day should combine multiple concepts or dive deeper into one area
+- Include problem-solving and analysis exercises
+- Prepare for advanced topics`;
+
+    case 'advanced':
+      return `ADVANCED LEVEL INSTRUCTIONS:
+- Assume the learner has solid intermediate knowledge
+- Focus on complex concepts, optimization, and best practices
+- Include advanced techniques and industry standards
+- Use technical terminology appropriately
+- Cover edge cases, performance considerations, and architectural decisions
+- Each day should tackle sophisticated topics or deep dives
+- Include challenging exercises and real-world projects
+- Prepare for expert-level mastery`;
+
+    default:
+      return `SKILL LEVEL INSTRUCTIONS:
+- Adapt the content complexity based on the specified level
+- Ensure progression is appropriate for the learner's experience
+- Use language and examples that match the skill level`;
+  }
+}
+
+export function buildPlannerPrompt(context: string, level: string = 'beginner') {
+  const levelInstructions = getLevelInstructions(level);
+  
   return [
-    { role: "system" as const, content: "You are a learning plan generator. You MUST return JSON that matches the PlanJSON schema exactly. Do not use any other structure. Follow the format precisely." },
-    { role: "user" as const, content: "Create a 7-day learning plan for Python programming. Use this EXACT format:" },
+    { role: "system" as const, content: `You are a learning plan generator that creates skill-level-appropriate learning plans. You MUST return JSON that matches the PlanJSON schema exactly. Do not use any other structure. Follow the format precisely.
+
+${levelInstructions}` },
+    { role: "user" as const, content: `Create a 7-day learning plan for Python programming at ${level} level. Use this EXACT format:` },
     { role: "assistant" as const, content: `{
   "version": "1",
   "topic": "Python Programming",
@@ -53,7 +101,13 @@ export function buildPlannerPrompt(context: string) {
 `Context (use as knowledge base only):
 ${context}
 
-Now create a learning plan using the EXACT same format as the example above. Do not deviate from this structure:
+Now create a learning plan for a ${level} level learner using the EXACT same format as the example above. Do not deviate from this structure:
+
+IMPORTANT: This plan is for a ${level} level learner, so:
+- Adjust the complexity and depth of each day's topic based on the skill level
+- Make sure the progression is appropriate for someone at ${level} level
+- Use language and examples that match the ${level} level
+- Ensure each day builds appropriately on previous knowledge for a ${level} learner
 
 {
   "version": "1",
@@ -128,8 +182,19 @@ Focus on making this lesson immediately useful and actionable.` },
 }
 
 export function buildAdvancedLessonPrompt(context: string, topic: string, focus: string, dayIndex: number, level: string = 'beginner') {
+  const levelInstructions = getLevelInstructions(level);
+  
   return [
-    { role: "system" as const, content: "You are a senior teacher. You MUST return JSON that matches the LessonJSON schema exactly. Do not use any other structure. Follow the format precisely." },
+    { role: "system" as const, content: `You are a senior teacher who creates skill-level-appropriate lessons. You MUST return JSON that matches the LessonJSON schema exactly. Do not use any other structure. Follow the format precisely.
+
+${levelInstructions}
+
+LESSON CREATION GUIDELINES:
+- Adapt ALL content (reading, walkthrough, quiz, exercise) to the ${level} level
+- Use appropriate language complexity and technical depth
+- Include examples and explanations that match the skill level
+- Ensure the lesson builds on appropriate prior knowledge for a ${level} learner
+- Make the content immediately actionable for someone at ${level} level` },
     { role: "user" as const, content: "Here is the EXACT JSON format you must use for lessons:" },
     { role: "assistant" as const, content: `{
   "topic": "Introduction to Variables in Programming",
@@ -158,6 +223,13 @@ ${context}
 Now create a lesson using the EXACT same JSON structure as shown above, but replace the content with your own original lesson for the requested topic.
 
 Task: Create LessonJSON for topic "${topic}" teaching ONE concrete skill aligned with "${focus}" for a ${level} learner on day ${dayIndex}.
+
+CRITICAL: This lesson is for a ${level} level learner, so:
+- Adjust ALL content complexity to match ${level} level knowledge and experience
+- Use language and examples appropriate for a ${level} learner
+- Assume appropriate prior knowledge for someone at ${level} level
+- Make the lesson immediately actionable for a ${level} learner
+- Ensure the reading, walkthrough, quiz, and exercise all match the ${level} level
 
 CRITICAL RULES - FOLLOW THESE EXACTLY:
 - Use the EXACT same JSON structure as the example above
@@ -205,10 +277,14 @@ ${JSON_RULES}`
   ];
 }
 
-export async function buildPlannerPromptWithRAG(query: string, topic?: string, k = 6) {
+export async function buildPlannerPromptWithRAG(query: string, topic?: string, level: string = 'beginner', k = 6) {
   const { context } = await retrieveContext(query, k, topic);
+  const levelInstructions = getLevelInstructions(level);
+  
   return [
-    { role: "system" as const, content: "You are a learning plan generator. You MUST return JSON that matches the PlanJSON schema exactly. Do not use any other structure. Follow the format precisely." },
+    { role: "system" as const, content: `You are a learning plan generator that creates skill-level-appropriate learning plans. You MUST return JSON that matches the PlanJSON schema exactly. Do not use any other structure. Follow the format precisely.
+
+${levelInstructions}` },
     { role: "user" as const, content: "Here is the EXACT JSON format you must use for learning plans:" },
     { role: "assistant" as const, content: `{
   "version": "1",
@@ -243,9 +319,15 @@ export async function buildPlannerPromptWithRAG(query: string, topic?: string, k
 `Context (RAG top-${k}, use as inspiration only):
 ${context}
 
-Now create a learning plan for: ${query}
+Now create a learning plan for: ${query} at ${level} level
 
 Use the EXACT same JSON structure as shown above, but replace the content with your own original plan for the requested topic. Do not copy the example content - only use the structure.
+
+IMPORTANT: This plan is for a ${level} level learner, so:
+- Adjust the complexity and depth of each day's topic based on the skill level
+- Make sure the progression is appropriate for someone at ${level} level
+- Use language and examples that match the ${level} level
+- Ensure each day builds appropriately on previous knowledge for a ${level} learner
 
 CRITICAL RULES:
 - MUST start with "version": "1"

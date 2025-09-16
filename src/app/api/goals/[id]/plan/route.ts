@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     // 1) Fetch goal
     const { data: goal, error: gErr } = await supabase
       .from("learning_goals")
-      .select("id, topic, focus, plan_version, plan_json")
+      .select("id, topic, focus, level, plan_version, plan_json")
       .eq("id", goalId)
       .single();
 
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     // 3) Build RAG context + planner prompt
     const query = `${goal.topic} — ${goal.focus || "beginner track"}`;
     const { context } = await retrieveContext(query, 6, goal.topic);
-    const msgs = buildPlannerPrompt(`Topic: ${goal.topic}\nFocus: ${goal.focus || "general"}\nUse this context:\n${context}`);
+    const msgs = buildPlannerPrompt(`Topic: ${goal.topic}\nFocus: ${goal.focus || "general"}\nLevel: ${goal.level || "beginner"}\nUse this context:\n${context}`, goal.level || "beginner");
 
     // 4) Generate plan
     const t0 = Date.now();
