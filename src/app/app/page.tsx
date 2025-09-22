@@ -206,9 +206,9 @@ export default function Dashboard() {
           <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-white/30 backdrop-blur-sm">
-                <Sparkles className="w-5 h-5 text-yellow-200" />
-                <span className="text-sm font-semibold">AI-Powered Learning</span>
+              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 hover:from-yellow-400/30 hover:to-orange-400/30 transition-all duration-300">
+                <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
+                <span className="text-sm font-bold text-yellow-100 drop-shadow-sm">AI-Powered Learning</span>
               </div>
               
               <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
