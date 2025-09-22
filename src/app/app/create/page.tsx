@@ -132,20 +132,29 @@ export default function CreateGoal() {
 
   if (isLoading || creationStatus === "creating" || creationStatus === "generating_plan" || creationStatus === "saving") {
     return (
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Header */}
-        <header className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full text-blue-700 dark:text-blue-300 text-sm font-medium mb-6">
-            <Target className="h-4 w-4" />
-            Creating Your Learning Journey
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-            Creating Learning Goal
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Please wait while we create your personalized learning plan
-          </p>
-        </header>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-12 pt-8">
+          {/* Clean Header Design */}
+          <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+            <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 hover:from-yellow-400/30 hover:to-orange-400/30 transition-all duration-300">
+                  <Target className="w-5 h-5 text-yellow-300 animate-pulse" />
+                  <span className="text-sm font-bold text-yellow-100 drop-shadow-sm">Creating Learning Goal</span>
+                </div>
+                
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+                  Creating Learning Goal 🎯
+                </h1>
+                <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
+                  Please wait while we create your personalized learning plan
+                </p>
+              </div>
+            </div>
+            </header>
+          </section>
 
         {/* Progress Display */}
         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-2xl p-12 border-0 shadow-lg text-center">
@@ -174,25 +183,37 @@ export default function CreateGoal() {
             This process typically takes 2-3 minutes. Please don&apos;t close this page.
           </p>
         </div>
+        </div>
+        </div>
       </div>
     );
   }
 
   if (creationStatus === "success") {
     return (
-      <div className="max-w-4xl mx-auto space-y-8">
-        <header className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full text-green-700 dark:text-green-300 text-sm font-medium mb-6">
-            <CheckCircle className="h-4 w-4" />
-            Goal Created Successfully!
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
-            Learning Goal Created!
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Redirecting you to your dashboard...
-          </p>
-        </header>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-12 pt-8">
+          {/* Clean Header Design */}
+          <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+            <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-green-400/20 to-emerald-400/20 backdrop-blur-sm border border-green-300/30 hover:from-green-400/30 hover:to-emerald-400/30 transition-all duration-300">
+                  <CheckCircle className="w-5 h-5 text-green-300 animate-pulse" />
+                  <span className="text-sm font-bold text-green-100 drop-shadow-sm">Goal Created Successfully!</span>
+                </div>
+                
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+                  Learning Goal Created! 🎉
+                </h1>
+                <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
+                  Redirecting you to your dashboard...
+                </p>
+              </div>
+            </div>
+            </header>
+          </section>
 
         <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-2xl p-12 border-0 shadow-lg text-center">
           <div className="w-24 h-24 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-8">
@@ -214,25 +235,37 @@ export default function CreateGoal() {
             />
           </div>
         </div>
+        </div>
+        </div>
       </div>
     );
   }
 
   if (creationStatus === "error") {
     return (
-      <div className="max-w-4xl mx-auto space-y-8">
-        <header className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-100 to-pink-100 dark:from-red-900/30 dark:to-pink-900/30 rounded-full text-red-700 dark:text-red-300 text-sm font-medium mb-6">
-            <Target className="h-4 w-4" />
-            Goal Creation Failed
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-red-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-4">
-            Something Went Wrong
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            We encountered an issue while creating your learning goal
-          </p>
-        </header>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-12 pt-8">
+          {/* Clean Header Design */}
+          <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+            <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-red-400/20 to-pink-400/20 backdrop-blur-sm border border-red-300/30 hover:from-red-400/30 hover:to-pink-400/30 transition-all duration-300">
+                  <Target className="w-5 h-5 text-red-300 animate-pulse" />
+                  <span className="text-sm font-bold text-red-100 drop-shadow-sm">Goal Creation Failed</span>
+                </div>
+                
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+                  Something Went Wrong ❌
+                </h1>
+                <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
+                  We encountered an issue while creating your learning goal
+                </p>
+              </div>
+            </div>
+            </header>
+          </section>
 
         <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20 rounded-2xl p-12 border-0 shadow-lg text-center">
           <div className="w-24 h-24 mx-auto bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-8">
@@ -266,25 +299,36 @@ export default function CreateGoal() {
             </Button>
           </div>
         </div>
+        </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Header */}
-      <header className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full text-blue-700 dark:text-blue-300 text-sm font-medium mb-6">
-          <Target className="h-4 w-4" />
-          Create Your Learning Journey
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-          Create Learning Goal
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Set up a personalized learning path tailored to your needs and preferences
-        </p>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="space-y-12 pt-8">
+        {/* Clean Header Design */}
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 hover:from-yellow-400/30 hover:to-orange-400/30 transition-all duration-300">
+                <Target className="w-5 h-5 text-yellow-300 animate-pulse" />
+                <span className="text-sm font-bold text-yellow-100 drop-shadow-sm">Create Learning Goal</span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+                Create Learning Goal 🎯
+              </h1>
+              <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
+                Set up a personalized learning path tailored to your needs and preferences
+              </p>
+            </div>
+          </div>
+          </header>
+        </section>
 
       {/* Progress Bar */}
       <section aria-labelledby="progress-heading" className="mb-12">
@@ -657,6 +701,8 @@ export default function CreateGoal() {
       {/* The error prop was removed from useCreateGoal, so this block is no longer relevant. */}
       {/* If you need to display an error, you'd need to manage it state-wise or pass it down differently. */}
       {/* For now, removing the unused variable and its usage. */}
+        </div>
+      </div>
     </div>
   );
 }

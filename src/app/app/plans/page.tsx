@@ -46,12 +46,16 @@ export default function Plans() {
   // Early return if still loading or if goals is not properly initialized
   if (isLoading || !goals || !Array.isArray(goals)) {
     return (
-      <div className="space-y-4 sm:space-y-6">
-        {/* Header skeleton */}
-        <div className="mb-6 sm:mb-8">
-          <div className="h-6 sm:h-8 w-36 sm:w-48 bg-muted rounded animate-pulse mb-2" />
-          <div className="h-4 sm:h-5 w-64 sm:w-80 bg-muted rounded animate-pulse" />
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-12 pt-8">
+          {/* Header skeleton */}
+          <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg">
+              <div className="h-6 sm:h-8 w-36 sm:w-48 bg-white/30 rounded animate-pulse mb-2" />
+              <div className="h-4 sm:h-5 w-64 sm:w-80 bg-white/30 rounded animate-pulse" />
+            </div>
+          </section>
 
         {/* Controls skeleton */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -90,17 +94,21 @@ export default function Plans() {
             </div>
           </div>
         </div>
+        </div>
+        </div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <ErrorState
-        title="Plans Error"
-        message={error?.message || "Failed to load learning plans"}
-        onRetry={() => window.location.reload()}
-      />
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 flex items-center justify-center">
+        <ErrorState
+          title="Plans Error"
+          message={error?.message || "Failed to load learning plans"}
+          onRetry={() => window.location.reload()}
+        />
+      </div>
     );
   }
 
@@ -108,11 +116,13 @@ export default function Plans() {
   if (!Array.isArray(goals)) {
     console.error("Goals is not an array:", goals);
     return (
-      <ErrorState
-        title="Data Error"
-        message="Invalid data format received from server"
-        onRetry={() => window.location.reload()}
-      />
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 flex items-center justify-center">
+        <ErrorState
+          title="Data Error"
+          message="Invalid data format received from server"
+          onRetry={() => window.location.reload()}
+        />
+      </div>
     );
   }
 
@@ -122,15 +132,30 @@ export default function Plans() {
     const completedGoals = 0; // TODO: Calculate from progress data
     const totalStreak = 0; // TODO: Calculate from progress data
 
-    return (
-      <div className="space-y-4 sm:space-y-6">
-        {/* Header */}
-        <header className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Learning Plans</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Track your progress and manage your learning goals
-          </p>
-        </header>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="space-y-12 pt-8">
+        {/* Clean Header Design */}
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 hover:from-yellow-400/30 hover:to-orange-400/30 transition-all duration-300">
+                <Target className="w-5 h-5 text-yellow-300 animate-pulse" />
+                <span className="text-sm font-bold text-yellow-100 drop-shadow-sm">Learning Plans</span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+                Your Learning Goals 🎯
+              </h1>
+              <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
+                Track your progress and manage your learning journey
+              </p>
+            </div>
+          </div>
+          </header>
+        </section>
 
         {/* Controls */}
         <section aria-labelledby="controls-heading">
@@ -308,15 +333,19 @@ export default function Plans() {
             return null;
           }
         })()}
+        </div>
       </div>
+    </div>
     );
   } catch (error) {
     console.error("Critical error in Plans component:", error);
     return (
-      <div className="text-center py-8">
-        <h3 className="text-lg font-semibold mb-2">Critical Error</h3>
-        <p className="text-muted-foreground mb-4">Something went wrong. Please refresh the page.</p>
-        <Button onClick={() => window.location.reload()}>Refresh</Button>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 flex items-center justify-center">
+        <div className="text-center py-8">
+          <h3 className="text-lg font-semibold mb-2">Critical Error</h3>
+          <p className="text-muted-foreground mb-4">Something went wrong. Please refresh the page.</p>
+          <Button onClick={() => window.location.reload()}>Refresh</Button>
+        </div>
       </div>
     );
   }

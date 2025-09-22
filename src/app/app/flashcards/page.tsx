@@ -213,7 +213,7 @@ export default function FlashcardsPage() {
 
   if (flashcardsLoading || categoriesLoading || goalsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto mb-4"></div>
           <p className="text-[var(--fg)]/70">Loading flashcards...</p>
@@ -223,40 +223,50 @@ export default function FlashcardsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
-      <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--fg)]">
-              Flashcards 🧠
-            </h1>
-            <p className="text-xl text-[var(--fg)]/70">
-              Master concepts with spaced repetition learning
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="space-y-12 pt-8">
+        {/* Clean Header Design */}
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 hover:from-yellow-400/30 hover:to-orange-400/30 transition-all duration-300">
+                <Brain className="w-5 h-5 text-yellow-300 animate-pulse" />
+                <span className="text-sm font-bold text-yellow-100 drop-shadow-sm">Flashcards</span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+                Flashcards 🧠
+              </h1>
+              <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
+                Master concepts with spaced repetition learning
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                asChild 
+                className="hover:bg-white/20 text-white border-white/30"
+              >
+                <Link href="/app">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Dashboard
+                </Link>
+              </Button>
+              <Button 
+                onClick={() => setShowCreateCard(true)}
+                className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl px-6 py-3"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Create Flashcard
+              </Button>
+            </div>
           </div>
-          
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              asChild 
-              className="hover:bg-[var(--bg)]/50"
-            >
-              <Link href="/app">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Link>
-            </Button>
-            <Button 
-              onClick={() => setShowCreateCard(true)}
-              className="bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl px-6 py-3"
-            >
-              <Plus className="h-5 w-5 mr-2" />
-              Create Flashcard
-            </Button>
-          </div>
-        </div>
+          </header>
+        </section>
 
         {/* Controls */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
@@ -699,6 +709,7 @@ export default function FlashcardsPage() {
             </div>
           </div>
         )}
+        </div>
       </div>
 
       {/* Create Card Modal */}
