@@ -269,193 +269,204 @@ export default function FlashcardsPage() {
         </section>
 
         {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-          <div className="flex items-center gap-3">
-            <Filter className="h-5 w-5 text-[var(--fg)]/70" />
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map(category => (
-                  <SelectItem key={category.id} value={category.id}>
-                    <div className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
-                        style={{ backgroundColor: category.color }}
-                      />
-                      {category.name}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <div className="flex items-center gap-3">
+              <Filter className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="h-12 w-48 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm z-50">
+                  <SelectItem value="all" className="text-lg py-3">All Categories</SelectItem>
+                  {categories.map(category => (
+                    <SelectItem key={category.id} value={category.id} className="text-lg py-3">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: category.color }}
+                        />
+                        {category.name}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <Button
-            variant={showDueTodayOnly ? "default" : "outline"}
-            size="sm"
-            onClick={() => setShowDueTodayOnly(!showDueTodayOnly)}
-            className="rounded-xl"
-          >
-            <Clock className="h-4 w-4 mr-2" />
-            Due Today ({dueTodayCount})
-          </Button>
+            <Button
+              variant={showDueTodayOnly ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowDueTodayOnly(!showDueTodayOnly)}
+              className={`h-12 px-6 text-lg font-semibold rounded-2xl transition-all duration-300 ${
+                showDueTodayOnly 
+                  ? 'bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl hover:scale-105' 
+                  : 'border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm'
+              }`}
+            >
+              <Clock className="h-5 w-5 mr-2" />
+              Due Today ({dueTodayCount})
+            </Button>
 
-          <div className="flex items-center gap-2 ml-auto">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowCreateCategory(true)}
-              className="rounded-xl"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Category
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowGenerateCards(true)}
-              className="rounded-xl"
-            >
-              <Sparkles className="h-4 w-4 mr-2" />
-              Generate
-            </Button>
+            <div className="flex items-center gap-3 ml-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowCreateCategory(true)}
+                className="h-12 px-6 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Category
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowGenerateCards(true)}
+                className="h-12 px-6 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+              >
+                <Sparkles className="h-5 w-5 mr-2" />
+                Generate
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center">
-                <BookOpen className="h-6 w-6 text-white" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="p-6 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-brand to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <BookOpen className="h-7 w-7 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-[var(--fg)]">{totalCards}</p>
-                <p className="text-sm text-[var(--fg)]/70">Total Cards</p>
+                <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{totalCards}</p>
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Cards</p>
               </div>
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
-                <CheckCircle className="h-6 w-6 text-white" />
+          <div className="p-6 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <CheckCircle className="h-7 w-7 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-[var(--fg)]">{reviewedTodayCount}</p>
-                <p className="text-sm text-[var(--fg)]/70">Reviewed Today</p>
+                <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{reviewedTodayCount}</p>
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Reviewed Today</p>
               </div>
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                <TrendingUp className="h-6 w-6 text-white" />
+          <div className="p-6 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <TrendingUp className="h-7 w-7 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-[var(--fg)]">{averageMastery}%</p>
-                <p className="text-sm text-[var(--fg)]/70">Average Mastery</p>
+                <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{averageMastery}%</p>
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Average Mastery</p>
               </div>
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center">
-                <Clock className="h-6 w-6 text-white" />
+          <div className="p-6 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Clock className="h-7 w-7 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-[var(--fg)]">{dueTodayCount}</p>
-                <p className="text-sm text-[var(--fg)]/70">Due Today</p>
+                <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{dueTodayCount}</p>
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Due Today</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Study Modes */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <Zap className="w-6 h-6 text-brand" />
-            <h2 className="text-2xl font-bold text-[var(--fg)]">Study Modes</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Button
-              onClick={() => setStudyMode('review')}
-              className={`h-20 text-lg font-semibold rounded-2xl transition-all duration-300 ${
-                studyMode === 'review'
-                  ? 'bg-gradient-to-r from-brand to-purple-600 text-white shadow-xl scale-105'
-                  : 'bg-[var(--bg)]/50 border border-[var(--border)]/40 text-[var(--fg)] hover:shadow-lg hover:scale-105'
-              }`}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <BookOpen className="h-6 w-6" />
-                <span>Review Mode</span>
-              </div>
-            </Button>
+        <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <Zap className="w-6 h-6 text-brand" />
+              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Study Modes</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <Button
+                onClick={() => setStudyMode('review')}
+                className={`h-24 text-lg font-semibold rounded-2xl transition-all duration-300 ${
+                  studyMode === 'review'
+                    ? 'bg-gradient-to-r from-brand to-purple-600 text-white shadow-xl scale-105'
+                    : 'bg-white/80 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:shadow-lg hover:scale-105 hover:border-brand hover:ring-4 hover:ring-brand/20'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-3">
+                  <BookOpen className="h-7 w-7" />
+                  <span>Review Mode</span>
+                </div>
+              </Button>
 
-            <Button
-              onClick={() => setStudyMode('practice')}
-              className={`h-20 text-lg font-semibold rounded-2xl transition-all duration-300 ${
-                studyMode === 'practice'
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-xl scale-105'
-                  : 'bg-[var(--bg)]/50 border border-[var(--border)]/40 text-[var(--fg)] hover:shadow-lg hover:scale-105'
-              }`}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <Brain className="h-6 w-6" />
-                <span>Practice Mode</span>
-              </div>
-            </Button>
+              <Button
+                onClick={() => setStudyMode('practice')}
+                className={`h-24 text-lg font-semibold rounded-2xl transition-all duration-300 ${
+                  studyMode === 'practice'
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-xl scale-105'
+                    : 'bg-white/80 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:shadow-lg hover:scale-105 hover:border-brand hover:ring-4 hover:ring-brand/20'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-3">
+                  <Brain className="h-7 w-7" />
+                  <span>Practice Mode</span>
+                </div>
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Empty State */}
         {totalCards === 0 && (
-          <div className="text-center py-16 space-y-6">
-            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center">
-              <BookOpen className="h-12 w-12 text-white" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-[var(--fg)]">No Flashcards Yet</h2>
-              <p className="text-[var(--fg)]/70 max-w-md mx-auto">
-                You don&apos;t have any flashcards yet. Create some manually or generate them from your lessons.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button
-                onClick={() => setShowCreateCard(true)}
-                className="bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Create First Card
-              </Button>
-              <Button
-                onClick={() => setShowGenerateCards(true)}
-                variant="outline"
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                Generate from Lessons
-              </Button>
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-12 border border-white/20 dark:border-slate-700/50 text-center">
+            <div className="space-y-6">
+              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center shadow-xl">
+                <BookOpen className="h-12 w-12 text-white" />
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">No Flashcards Yet</h2>
+                <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+                  You don&apos;t have any flashcards yet. Create some manually or generate them from your lessons.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  onClick={() => setShowCreateCard(true)}
+                  className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create First Card
+                </Button>
+                <Button
+                  onClick={() => setShowGenerateCards(true)}
+                  className="h-12 px-8 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                >
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  Generate from Lessons
+                </Button>
+              </div>
             </div>
           </div>
         )}
 
         {/* Main Flashcard */}
         {totalCards > 0 && currentCard ? (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-[var(--fg)]">
-                {studyMode === 'review' ? 'Review Cards' : 'Practice Session'}
-              </h2>
-              <div className="flex items-center gap-2 text-sm text-[var(--fg)]/70">
-                <span>{currentCardIndex + 1} of {totalCards}</span>
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
+                  {studyMode === 'review' ? 'Review Cards' : 'Practice Session'}
+                </h2>
+                <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                  <span>{currentCardIndex + 1} of {totalCards}</span>
+                </div>
               </div>
-            </div>
 
             {/* Flashcard */}
             <div className="flex justify-center">
@@ -575,56 +586,49 @@ export default function FlashcardsPage() {
               </div>
             </div>
 
-            {/* Navigation Controls */}
-            <div className="flex items-center justify-center gap-4">
-              <Button
-                onClick={handlePrevious}
-                disabled={currentCardIndex === 0}
-                variant="outline"
-                size="lg"
-                className="rounded-2xl px-6 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Previous
-              </Button>
+              {/* Navigation Controls */}
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  onClick={handlePrevious}
+                  disabled={currentCardIndex === 0}
+                  className="h-12 px-6 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  <ArrowLeft className="h-5 w-5 mr-2" />
+                  Previous
+                </Button>
 
-              <Button
-                onClick={handleFlip}
-                variant="outline"
-                size="lg"
-                className="rounded-2xl px-6 py-3 hover:bg-blue-50 dark:hover:bg-blue-900 border-blue-200 dark:border-blue-700"
-              >
-                <RotateCcw className="h-5 w-5 mr-2" />
-                {isFlipped ? 'Show Question' : 'Show Answer'}
-              </Button>
+                <Button
+                  onClick={handleFlip}
+                  className="h-12 px-6 text-lg font-semibold border-2 border-blue-200 dark:border-blue-700 hover:border-blue-400 hover:ring-4 hover:ring-blue-400/20 rounded-2xl transition-all duration-300 bg-blue-50/80 dark:bg-blue-900/80 backdrop-blur-sm hover:scale-105"
+                >
+                  <RotateCcw className="h-5 w-5 mr-2" />
+                  {isFlipped ? 'Show Question' : 'Show Answer'}
+                </Button>
 
-              <Button
-                onClick={handleShuffle}
-                variant="outline"
-                size="lg"
-                className="rounded-2xl px-6 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Shuffle className="h-5 w-5 mr-2" />
-                Shuffle
-              </Button>
+                <Button
+                  onClick={handleShuffle}
+                  className="h-12 px-6 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                >
+                  <Shuffle className="h-5 w-5 mr-2" />
+                  Shuffle
+                </Button>
 
-              <Button
-                onClick={handleNext}
-                disabled={currentCardIndex === totalCards - 1}
-                variant="outline"
-                size="lg"
-                className="rounded-2xl px-6 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                Next
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
+                <Button
+                  onClick={handleNext}
+                  disabled={currentCardIndex === totalCards - 1}
+                  className="h-12 px-6 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  Next
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="text-center py-12">
-            <BookOpen className="h-16 w-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">No flashcards found</h3>
-            <p className="text-gray-500 dark:text-gray-500 mb-4">
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-12 border border-white/20 dark:border-slate-700/50 text-center">
+            <BookOpen className="h-16 w-16 text-slate-400 dark:text-slate-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-400 mb-2">No flashcards found</h3>
+            <p className="text-slate-500 dark:text-slate-500 mb-6">
               {selectedCategory !== 'all' || showDueTodayOnly 
                 ? "Try adjusting your filters or create new flashcards"
                 : categories.length === 0
@@ -632,20 +636,29 @@ export default function FlashcardsPage() {
                 : "Create your first flashcard or generate them from your lessons"
               }
             </p>
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-4">
               {categories.length === 0 ? (
-                <Button onClick={() => setShowCreateCategory(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
+                <Button 
+                  onClick={() => setShowCreateCategory(true)}
+                  className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                >
+                  <Plus className="h-5 w-5 mr-2" />
                   Create Category
                 </Button>
               ) : (
                 <>
-                  <Button onClick={() => setShowCreateCard(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
+                  <Button 
+                    onClick={() => setShowCreateCard(true)}
+                    className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                  >
+                    <Plus className="h-5 w-5 mr-2" />
                     Create Flashcard
                   </Button>
-                  <Button variant="outline" onClick={() => setShowGenerateCards(true)}>
-                    <Sparkles className="h-4 w-4 mr-2" />
+                  <Button 
+                    onClick={() => setShowGenerateCards(true)}
+                    className="h-12 px-8 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                  >
+                    <Sparkles className="h-5 w-5 mr-2" />
                     Generate from Lessons
                   </Button>
                 </>
@@ -656,56 +669,58 @@ export default function FlashcardsPage() {
 
         {/* Recent Cards */}
         {totalCards > 0 && (
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <Bookmark className="w-6 h-6 text-brand" />
-              <h2 className="text-2xl font-bold text-[var(--fg)]">Recent Cards</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {flashcards.slice(0, 6).map((card) => (
-                <div
-                  key={card.id}
-                  className="p-6 rounded-2xl bg-[var(--bg)]/50 border border-[var(--border)]/40 backdrop-blur-sm hover:shadow-lg transition-all duration-300 cursor-pointer group"
-                  onClick={() => {
-                    const index = flashcards.findIndex(c => c.id === card.id);
-                    if (index !== -1) {
-                      setCurrentCardIndex(index);
-                      setIsFlipped(false);
-                    }
-                  }}
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Badge className={getDifficultyColor(card.difficulty)}>
-                        {card.difficulty}
-                      </Badge>
-                      <div className={`text-sm font-semibold ${getMasteryColor(card.mastery_score)}`}>
-                        {card.mastery_score}%
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <Bookmark className="w-6 h-6 text-brand" />
+                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Recent Cards</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {flashcards.slice(0, 6).map((card) => (
+                  <div
+                    key={card.id}
+                    className="p-6 rounded-2xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-105"
+                    onClick={() => {
+                      const index = flashcards.findIndex(c => c.id === card.id);
+                      if (index !== -1) {
+                        setCurrentCardIndex(index);
+                        setIsFlipped(false);
+                      }
+                    }}
+                  >
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Badge className={getDifficultyColor(card.difficulty)}>
+                          {card.difficulty}
+                        </Badge>
+                        <div className={`text-sm font-semibold ${getMasteryColor(card.mastery_score)}`}>
+                          {card.mastery_score}%
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 line-clamp-2">
+                          {card.front}
+                        </h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                          {card.back}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-500">
+                        <span>{card.category.name}</span>
+                        <span>
+                          {card.source === 'lesson' && card.lesson_day_index !== undefined
+                            ? `Day ${card.lesson_day_index + 1}`
+                            : card.source
+                          }
+                        </span>
                       </div>
                     </div>
-                    
-                    <div>
-                      <h3 className="font-semibold text-[var(--fg)] mb-2 line-clamp-2">
-                        {card.front}
-                      </h3>
-                      <p className="text-sm text-[var(--fg)]/70 line-clamp-2">
-                        {card.back}
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-xs text-[var(--fg)]/50">
-                      <span>{card.category.name}</span>
-                      <span>
-                        {card.source === 'lesson' && card.lesson_day_index !== undefined
-                          ? `Day ${card.lesson_day_index + 1}`
-                          : card.source
-                        }
-                      </span>
-                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -715,31 +730,32 @@ export default function FlashcardsPage() {
       {/* Create Card Modal */}
       {showCreateCard && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Create Flashcard</h3>
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 rounded-3xl p-8 w-full max-w-md shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Create Flashcard</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowCreateCard(false)}
+                className="h-10 w-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </Button>
             </div>
 
-            <form onSubmit={handleCreateCard} className="space-y-4">
+            <form onSubmit={handleCreateCard} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Category
                 </label>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory} required>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
+                  <SelectContent className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm z-50">
+                    <SelectItem value="all" className="text-lg py-3">All Categories</SelectItem>
                     {categories.map(category => (
-                      <SelectItem key={category.id} value={category.id}>
+                      <SelectItem key={category.id} value={category.id} className="text-lg py-3">
                         <div className="flex items-center gap-2">
                           <div 
                             className="w-3 h-3 rounded-full" 
@@ -754,7 +770,7 @@ export default function FlashcardsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Front (Question)
                 </label>
                 <Textarea
@@ -762,11 +778,12 @@ export default function FlashcardsPage() {
                   onChange={(e) => setNewCard({ ...newCard, front: e.target.value })}
                   placeholder="Enter the question or prompt..."
                   required
+                  className="h-24 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Back (Answer)
                 </label>
                 <Textarea
@@ -774,11 +791,12 @@ export default function FlashcardsPage() {
                   onChange={(e) => setNewCard({ ...newCard, back: e.target.value })}
                   placeholder="Enter the answer or explanation..."
                   required
+                  className="h-24 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Difficulty
                 </label>
                 <Select 
@@ -787,25 +805,29 @@ export default function FlashcardsPage() {
                     setNewCard({ ...newCard, difficulty: value })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="easy">Easy</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="hard">Hard</SelectItem>
+                  <SelectContent className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm z-50">
+                    <SelectItem value="easy" className="text-lg py-3">Easy</SelectItem>
+                    <SelectItem value="medium" className="text-lg py-3">Medium</SelectItem>
+                    <SelectItem value="hard" className="text-lg py-3">Hard</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button type="submit" disabled={createCardLoading} className="flex-1">
+              <div className="flex gap-4 pt-4">
+                <Button 
+                  type="submit" 
+                  disabled={createCardLoading} 
+                  className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                >
                   {createCardLoading ? "Creating..." : "Create Flashcard"}
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
                   onClick={() => setShowCreateCard(false)}
+                  className="h-12 px-6 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
                 >
                   Cancel
                 </Button>
@@ -818,21 +840,22 @@ export default function FlashcardsPage() {
       {/* Create Category Modal */}
       {showCreateCategory && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Create Category</h3>
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 rounded-3xl p-8 w-full max-w-md shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Create Category</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowCreateCategory(false)}
+                className="h-10 w-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </Button>
             </div>
 
-            <form onSubmit={handleCreateCategory} className="space-y-4">
+            <form onSubmit={handleCreateCategory} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Name
                 </label>
                 <Input
@@ -840,48 +863,54 @@ export default function FlashcardsPage() {
                   onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
                   placeholder="Category name..."
                   required
+                  className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Description
                 </label>
                 <Textarea
                   value={newCategory.description}
                   onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
                   placeholder="Optional description..."
+                  className="h-20 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Color
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <input
                     type="color"
                     value={newCategory.color}
                     onChange={(e) => setNewCategory({ ...newCategory, color: e.target.value })}
-                    className="w-12 h-10 rounded border border-[var(--border)]"
+                    className="w-16 h-12 rounded-2xl border-2 border-slate-200 dark:border-slate-600 cursor-pointer"
                   />
                   <Input
                     value={newCategory.color}
                     onChange={(e) => setNewCategory({ ...newCategory, color: e.target.value })}
                     placeholder="#6366f1"
-                    className="flex-1"
+                    className="flex-1 h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
                   />
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button type="submit" disabled={createCategoryLoading} className="flex-1">
+              <div className="flex gap-4 pt-4">
+                <Button 
+                  type="submit" 
+                  disabled={createCategoryLoading} 
+                  className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                >
                   {createCategoryLoading ? "Creating..." : "Create Category"}
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
                   onClick={() => setShowCreateCategory(false)}
+                  className="h-12 px-6 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
                 >
                   Cancel
                 </Button>
@@ -894,21 +923,22 @@ export default function FlashcardsPage() {
       {/* Generate Cards Modal */}
       {showGenerateCards && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Generate Flashcards</h3>
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 rounded-3xl p-8 w-full max-w-md shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Generate Flashcards</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowGenerateCards(false)}
+                className="h-10 w-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </Button>
             </div>
 
-            <form onSubmit={handleGenerateCards} className="space-y-4">
+            <form onSubmit={handleGenerateCards} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Learning Goal
                 </label>
                 <Select 
@@ -916,12 +946,12 @@ export default function FlashcardsPage() {
                   onValueChange={(value) => setGenerateForm({ ...generateForm, goal_id: value })}
                   required
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
                     <SelectValue placeholder="Select a goal" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm z-50">
                     {goals.map(goal => (
-                      <SelectItem key={goal.id} value={goal.id}>
+                      <SelectItem key={goal.id} value={goal.id} className="text-lg py-3">
                         {goal.topic}
                       </SelectItem>
                     ))}
@@ -930,7 +960,7 @@ export default function FlashcardsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Lesson Days (1-based)
                 </label>
                 <Input
@@ -943,11 +973,12 @@ export default function FlashcardsPage() {
                     setGenerateForm({ ...generateForm, lesson_days: days });
                   }}
                   required
+                  className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
                   Enter comma-separated day numbers (e.g., 1,2,3 for first 3 days)
                 </p>
-                <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div className="mt-3 p-4 bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl backdrop-blur-sm">
                   <p className="text-sm text-blue-800 dark:text-blue-200">
                     💡 <strong>Tip:</strong> Flashcards are automatically generated when you visit lesson pages. 
                     If you don&apos;t see flashcards for certain days, try visiting those lesson pages first.
@@ -955,14 +986,18 @@ export default function FlashcardsPage() {
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button type="submit" disabled={generateLoading} className="flex-1">
+              <div className="flex gap-4 pt-4">
+                <Button 
+                  type="submit" 
+                  disabled={generateLoading} 
+                  className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                >
                   {generateLoading ? "Generating..." : "Generate Flashcards"}
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
                   onClick={() => setShowGenerateCards(false)}
+                  className="h-12 px-6 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
                 >
                   Cancel
                 </Button>
