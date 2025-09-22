@@ -158,44 +158,49 @@ export default function Plans() {
         </section>
 
         {/* Controls */}
-        <section aria-labelledby="controls-heading">
+        <section aria-labelledby="controls-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
           <h2 id="controls-heading" className="sr-only">Search and Filter Controls</h2>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <Input
-                placeholder="Search goals..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-                aria-label="Search learning goals"
-              />
+          <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 flex-1">
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" aria-hidden="true" />
+                <Input
+                  placeholder="Search your learning goals..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-12 h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
+                  aria-label="Search learning goals"
+                />
+              </div>
+              <Select value={sortBy} onValueChange={(value) => setSortBy(value as "recent")}>
+                <SelectTrigger className="h-12 w-48 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm">
+                  <SelectItem value="recent" className="text-lg py-3">Most Recent</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as "recent")}>
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="recent">Most Recent</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
+            <Button 
+              className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-brand/20" 
+              asChild
+            >
               <Link href="/app/create">
-                <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
-                New Goal
+                <Plus className="h-5 w-5 mr-3" aria-hidden="true" />
+                Create New Goal
               </Link>
             </Button>
           </div>
         </section>
 
         {/* Goals Grid */}
-        <section aria-labelledby="goals-heading">
+        <section aria-labelledby="goals-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
           <h2 id="goals-heading" className="sr-only">Learning Goals</h2>
           {(() => {
             try {
               if (filteredGoals.length > 0) {
                 return (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredGoals.map((goal) => {
                       if (!goal || typeof goal !== 'object' || !goal.id) {
                         return null;
@@ -206,28 +211,39 @@ export default function Plans() {
                 );
               } else if (goals && goals.length > 0) {
                 return (
-                  <div className="text-center py-8 sm:py-12">
-                    <Search className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" aria-hidden="true" />
-                    <h3 className="text-lg font-semibold mb-2">No goals match your search</h3>
-                    <p className="text-muted-foreground mb-4 text-sm sm:text-base">
+                  <div className="text-center py-16">
+                    <div className="w-24 h-24 mx-auto bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 rounded-full flex items-center justify-center mb-6">
+                      <Search className="h-12 w-12 text-slate-400" aria-hidden="true" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">No goals match your search</h3>
+                    <p className="text-slate-600 dark:text-slate-400 mb-6 text-lg">
                       Try adjusting your search terms or filters
                     </p>
-                    <Button variant="outline" onClick={() => setSearchTerm("")}>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setSearchTerm("")}
+                      className="h-12 px-6 text-lg border-2 border-slate-300 dark:border-slate-600 hover:border-brand hover:bg-brand/5 rounded-2xl transition-all duration-300"
+                    >
                       Clear Search
                     </Button>
                   </div>
                 );
               } else {
                 return (
-                  <div className="text-center py-8 sm:py-12">
-                    <Target className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" aria-hidden="true" />
-                    <h3 className="text-lg font-semibold mb-2">No learning goals yet</h3>
-                    <p className="text-muted-foreground mb-4 text-sm sm:text-base">
+                  <div className="text-center py-16">
+                    <div className="w-24 h-24 mx-auto bg-gradient-to-br from-brand/20 to-purple-600/20 rounded-full flex items-center justify-center mb-6">
+                      <Target className="h-12 w-12 text-brand" aria-hidden="true" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">No learning goals yet</h3>
+                    <p className="text-slate-600 dark:text-slate-400 mb-6 text-lg">
                       Create your first learning goal to get started
                     </p>
-                    <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
+                    <Button 
+                      className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-brand/20" 
+                      asChild
+                    >
                       <Link href="/app/create">
-                        <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
+                        <Plus className="h-5 w-5 mr-3" aria-hidden="true" />
                         Create Your First Goal
                       </Link>
                     </Button>
@@ -237,10 +253,18 @@ export default function Plans() {
             } catch (error) {
               console.error("Error in goals rendering:", error);
               return (
-                <div className="text-center py-8">
-                  <h3 className="text-lg font-semibold mb-2">Error rendering goals</h3>
-                  <p className="text-muted-foreground mb-4">Please refresh the page</p>
-                  <Button onClick={() => window.location.reload()}>Refresh</Button>
+                <div className="text-center py-16">
+                  <div className="w-24 h-24 mx-auto bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/20 dark:to-red-800/20 rounded-full flex items-center justify-center mb-6">
+                    <Target className="h-12 w-12 text-red-500" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">Error rendering goals</h3>
+                  <p className="text-slate-600 dark:text-slate-400 mb-6 text-lg">Please refresh the page</p>
+                  <Button 
+                    onClick={() => window.location.reload()}
+                    className="h-12 px-6 text-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-2xl transition-all duration-300"
+                  >
+                    Refresh
+                  </Button>
                 </div>
               );
             }
