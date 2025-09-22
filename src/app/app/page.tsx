@@ -319,18 +319,18 @@ export default function Dashboard() {
             </div>
             
             {itemsLoading ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {Array.from({ length: 2 }).map((_, i) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 3 }).map((_, i) => (
                   <LoadingState key={i} type="lesson" />
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {dashboardItems.map((item) => (
                   <Link key={item.goalId} href={`/app/plans/${item.goalId}/lesson`} className="block group">
-                    <div className="group relative rounded-3xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-700">
+                    <div className="group relative h-full rounded-3xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-700 flex flex-col">
                       
-                      <div className="relative p-6 space-y-4">
+                      <div className="relative p-6 space-y-4 flex-1 flex flex-col">
                         {/* Header */}
                         <div className="flex items-start justify-between">
                           <div className="space-y-3">
@@ -360,41 +360,46 @@ export default function Dashboard() {
                         </div>
 
                         {/* Content */}
-                        {item.lessonSnippet && (
-                          <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl p-4">
-                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-3 text-sm">
-                              {item.lessonSnippet}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Status */}
-                        <div className="flex items-center justify-between pt-2">
-                          {!item.hasLesson ? (
-                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
-                              <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse" />
-                              <span>Lesson not generated yet</span>
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
-                              <CheckCircle className="w-4 h-4" />
-                              <span>Ready to start</span>
+                        <div className="flex-1">
+                          {item.lessonSnippet && (
+                            <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl p-4">
+                              <p className="text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-3 text-sm">
+                                {item.lessonSnippet}
+                              </p>
                             </div>
                           )}
-                          
-                          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors font-medium">
-                            <span>Start learning</span>
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                          </div>
                         </div>
-                        
-                        {/* Lesson variety note */}
-                        {item.hasLesson && (
-                          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded-xl">
-                            <Target className="w-3 h-3 text-slate-600 dark:text-slate-400" />
-                            <span>Planned curriculum • Progressive learning</span>
+
+                        {/* Footer with status and actions */}
+                        <div className="space-y-3 mt-auto">
+                          {/* Status */}
+                          <div className="flex items-center justify-between">
+                            {!item.hasLesson ? (
+                              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                                <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse" />
+                                <span>Lesson not generated yet</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                                <CheckCircle className="w-4 h-4" />
+                                <span>Ready to start</span>
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors font-medium">
+                              <span>Start learning</span>
+                              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </div>
                           </div>
-                        )}
+                          
+                          {/* Lesson variety note */}
+                          {item.hasLesson && (
+                            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded-xl">
+                              <Target className="w-3 h-3 text-slate-600 dark:text-slate-400" />
+                              <span>Planned curriculum • Progressive learning</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Link>
@@ -450,25 +455,33 @@ export default function Dashboard() {
         ) : null}
 
         {/* Active Goals */}
-        <section aria-labelledby="goals-heading" className="relative space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="space-y-2">
-              <h2 id="goals-heading" className="text-2xl font-bold text-[var(--fg)]">
-                Your Learning Goals 🎯
-              </h2>
-              <p className="text-[var(--fg)]/70">
-                Track your progress and achieve your learning objectives
-              </p>
+        <section aria-labelledby="goals-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50 space-y-6">
+          {/* Clean Header Design */}
+          <div className="relative rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 p-6 shadow-lg border-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-3xl flex items-center justify-center">
+                  <Target className="h-10 w-10 text-white" />
+                </div>
+                <div>
+                  <h2 id="goals-heading" className="text-4xl font-bold text-emerald-800 dark:text-emerald-200 mb-3">
+                    Your Learning Goals 🎯
+                  </h2>
+                  <p className="text-emerald-600 dark:text-emerald-300 text-xl font-medium">
+                    Track your progress and achieve your learning objectives
+                  </p>
+                </div>
+              </div>
+              <Button 
+                className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl px-6 py-3" 
+                asChild
+              >
+                <Link href="/app/create">
+                  <Plus className="h-5 w-5 mr-2" aria-hidden="true" />
+                  New Goal
+                </Link>
+              </Button>
             </div>
-            <Button 
-              className="bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl px-6 py-3" 
-              asChild
-            >
-              <Link href="/app/create">
-                <Plus className="h-5 w-5 mr-2" aria-hidden="true" />
-                New Goal
-              </Link>
-            </Button>
           </div>
           
           {safeGoals.length > 0 ? (
