@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { GoalCard } from "@/components/ui/goal-card";
 import { LoadingState } from "@/components/ui/loading-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Target, Search, Plus } from "lucide-react";
+import { Target, Search, Plus, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useGoals } from "@/app/lib/hooks";
 
@@ -14,6 +14,22 @@ export default function Plans() {
   const { goals, isLoading, isError, error } = useGoals();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"recent">("recent");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Use useMemo to compute filtered goals instead of useState + useEffect
   const filteredGoals = useMemo(() => {
@@ -171,19 +187,37 @@ export default function Plans() {
                   aria-label="Search learning goals"
                 />
               </div>
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as "recent")}
-                  className="h-12 w-48 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm appearance-none cursor-pointer px-4 pr-10"
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="h-12 w-48 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm cursor-pointer px-4 pr-10 flex items-center justify-between hover:bg-white/90 dark:hover:bg-slate-600/80"
                 >
-                  <option value="recent">Most Recent</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+                  <span className="text-slate-700 dark:text-slate-300">Most Recent</span>
+                  <ChevronDown 
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${
+                      isDropdownOpen ? 'rotate-180' : ''
+                    }`} 
+                  />
+                </button>
+                
+                {isDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-600 rounded-2xl shadow-xl z-50 overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSortBy("recent");
+                        setIsDropdownOpen(false);
+                      }}
+                      className="w-full px-4 py-3 text-left text-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors duration-200 flex items-center justify-between"
+                    >
+                      Most Recent
+                      {sortBy === "recent" && (
+                        <div className="w-2 h-2 bg-brand rounded-full"></div>
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             <Button 
