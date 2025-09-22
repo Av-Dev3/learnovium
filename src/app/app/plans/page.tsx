@@ -176,7 +176,11 @@ export default function Plans() {
                 <SelectTrigger className="h-12 w-48 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
-                <SelectContent className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm">
+                <SelectContent 
+                  className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm z-50"
+                  position="popper"
+                  sideOffset={4}
+                >
                   <SelectItem value="recent" className="text-lg py-3">Most Recent</SelectItem>
                 </SelectContent>
               </Select>
