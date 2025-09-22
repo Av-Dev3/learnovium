@@ -182,7 +182,7 @@ export default function Plans() {
               </Select>
             </div>
             <Button 
-              className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-brand/20" 
+              className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-emerald-500/20" 
               asChild
             >
               <Link href="/app/create">
@@ -239,7 +239,7 @@ export default function Plans() {
                       Create your first learning goal to get started
                     </p>
                     <Button 
-                      className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-brand/20" 
+                      className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-emerald-500/20" 
                       asChild
                     >
                       <Link href="/app/create">
