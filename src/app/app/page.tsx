@@ -319,31 +319,31 @@ export default function Dashboard() {
             </div>
             
             {itemsLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Array.from({ length: 3 }).map((_, i) => (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {Array.from({ length: 2 }).map((_, i) => (
                   <LoadingState key={i} type="lesson" />
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {dashboardItems.map((item) => (
                   <Link key={item.goalId} href={`/app/plans/${item.goalId}/lesson`} className="block group">
-                    <div className="group relative h-full rounded-3xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-700 flex flex-col">
+                    <div className="group relative h-full rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-200/50 dark:border-blue-700/50 flex flex-col">
                       
                       <div className="relative p-6 space-y-6 flex-1 flex flex-col">
                         {/* Header */}
                         <div className="space-y-4">
                           {/* Topic and Day Info */}
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-4 py-2 rounded-full">
-                              <Target className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                            <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 px-4 py-2 rounded-full">
+                              <Target className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               <span className="font-medium">{item.goalTopic}</span>
-                              <span className="text-slate-400 dark:text-slate-500">•</span>
-                              <span className="font-semibold text-slate-700 dark:text-slate-300">Day {item.dayIndex}</span>
+                              <span className="text-blue-400 dark:text-blue-500">•</span>
+                              <span className="font-semibold text-blue-800 dark:text-blue-200">Day {item.dayIndex}</span>
                               {item.estMinutes && (
                                 <>
-                                  <span className="text-slate-400 dark:text-slate-500">•</span>
-                                  <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                                  <span className="text-blue-400 dark:text-blue-500">•</span>
+                                  <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
                                     <Clock className="w-4 h-4" />
                                     {item.estMinutes} min
                                   </span>
@@ -351,14 +351,14 @@ export default function Dashboard() {
                               )}
                             </div>
                             
-                            <div className="w-16 h-16 bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                               <Play className="h-8 w-8 text-white" />
                             </div>
                           </div>
                           
                           {/* Lesson Title */}
                           <div>
-                            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors leading-tight">
+                            <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-200 group-hover:text-blue-700 dark:group-hover:text-blue-100 transition-colors leading-tight">
                               {item.lessonTitle}
                             </h3>
                           </div>
@@ -367,8 +367,8 @@ export default function Dashboard() {
                         {/* Content */}
                         <div className="flex-1">
                           {item.lessonSnippet && (
-                            <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl p-5">
-                              <p className="text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-3 text-sm">
+                            <div className="bg-blue-100 dark:bg-blue-900/30 rounded-2xl p-5">
+                              <p className="text-blue-700 dark:text-blue-300 leading-relaxed line-clamp-3 text-sm">
                                 {item.lessonSnippet}
                               </p>
                             </div>
@@ -380,18 +380,18 @@ export default function Dashboard() {
                           {/* Status */}
                           <div className="flex items-center justify-between">
                             {!item.hasLesson ? (
-                              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-4 py-2 rounded-full">
-                                <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse" />
+                              <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 px-4 py-2 rounded-full">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
                                 <span>Lesson not generated yet</span>
                               </div>
                             ) : (
-                              <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-4 py-2 rounded-full">
-                                <CheckCircle className="w-4 h-4" />
+                              <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/30 px-4 py-2 rounded-full">
+                                <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
                                 <span>Ready to start</span>
                               </div>
                             )}
                             
-                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+                            <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30">
                               <span>Start learning</span>
                               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </div>
@@ -399,8 +399,8 @@ export default function Dashboard() {
                           
                           {/* Lesson variety note */}
                           {item.hasLesson && (
-                            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-4 py-3 rounded-xl">
-                              <Target className="w-3 h-3 text-slate-600 dark:text-slate-400" />
+                            <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-4 py-3 rounded-xl">
+                              <Target className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                               <span>Planned curriculum • Progressive learning</span>
                             </div>
                           )}
@@ -490,7 +490,7 @@ export default function Dashboard() {
           </div>
           
           {safeGoals.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {safeGoals.map((goal) => {
                 if (!goal || typeof goal !== 'object' || !goal.id) {
                   console.warn("Invalid goal in dashboard:", goal);
