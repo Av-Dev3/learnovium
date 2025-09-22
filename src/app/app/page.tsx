@@ -293,71 +293,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <Zap className="w-6 h-6 text-brand" />
-            <h2 className="text-2xl font-bold text-[var(--fg)]">Quick Actions</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Create New Goal Card */}
-            <Link 
-              href="/app/create"
-              className="group relative rounded-3xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 hover:shadow-lg transition-all duration-300"
-            >
-              <div className="p-6">
-                <div className="w-16 h-16 bg-indigo-500 rounded-2xl flex items-center justify-center mb-4">
-                  <Plus className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2">Create New Goal</h3>
-                <p className="text-sm text-indigo-700 dark:text-indigo-200 leading-relaxed">Start learning a new skill with AI guidance</p>
-              </div>
-            </Link>
-
-            {/* View All Plans Card */}
-            <Link 
-              href="/app/plans"
-              className="group relative rounded-3xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300"
-            >
-              <div className="p-6">
-                <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mb-4">
-                  <Trophy className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-2">View All Plans</h3>
-                <p className="text-sm text-emerald-700 dark:text-emerald-200 leading-relaxed">See your learning progress and plans</p>
-              </div>
-            </Link>
-
-            {/* Flashcards Card */}
-            <Link 
-              href="/app/flashcards"
-              className="group relative rounded-3xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300"
-            >
-              <div className="p-6">
-                <div className="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center mb-4">
-                  <Brain className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2">Flashcards</h3>
-                <p className="text-sm text-purple-700 dark:text-purple-200 leading-relaxed">Master concepts with spaced repetition</p>
-              </div>
-            </Link>
-
-            {/* Learning History Card */}
-            <Link 
-              href="/app/history"
-              className="group relative rounded-3xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 hover:shadow-lg transition-all duration-300"
-            >
-              <div className="p-6">
-                <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mb-4">
-                  <TrendingUp className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2">Learning History</h3>
-                <p className="text-sm text-orange-700 dark:text-orange-200 leading-relaxed">Track your achievements and progress</p>
-              </div>
-            </Link>
-          </div>
-        </div>
 
         {/* Today's Lessons */}
         {dashboardItems.length > 0 ? (
@@ -569,6 +504,72 @@ export default function Dashboard() {
             </div>
           )}
         </section>
+
+        {/* Quick Actions */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3">
+            <Zap className="w-6 h-6 text-brand" />
+            <h2 className="text-2xl font-bold text-[var(--fg)]">Quick Actions</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Create New Goal Card */}
+            <Link 
+              href="/app/create"
+              className="group relative rounded-3xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="p-6">
+                <div className="w-16 h-16 bg-indigo-500 rounded-2xl flex items-center justify-center mb-4">
+                  <Plus className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2">Create New Goal</h3>
+                <p className="text-sm text-indigo-700 dark:text-indigo-200 leading-relaxed">Start learning a new skill with AI guidance</p>
+              </div>
+            </Link>
+
+            {/* View All Plans Card */}
+            <Link 
+              href="/app/plans"
+              className="group relative rounded-3xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="p-6">
+                <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                  <Trophy className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-2">View All Plans</h3>
+                <p className="text-sm text-emerald-700 dark:text-emerald-200 leading-relaxed">See your learning progress and plans</p>
+              </div>
+            </Link>
+
+            {/* Flashcards Card */}
+            <Link 
+              href="/app/flashcards"
+              className="group relative rounded-3xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="p-6">
+                <div className="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center mb-4">
+                  <Brain className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2">Flashcards</h3>
+                <p className="text-sm text-purple-700 dark:text-purple-200 leading-relaxed">Master concepts with spaced repetition</p>
+              </div>
+            </Link>
+
+            {/* Learning History Card */}
+            <Link 
+              href="/app/history"
+              className="group relative rounded-3xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="p-6">
+                <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mb-4">
+                  <TrendingUp className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2">Learning History</h3>
+                <p className="text-sm text-orange-700 dark:text-orange-200 leading-relaxed">Track your achievements and progress</p>
+              </div>
+            </Link>
+          </div>
+        </div>
 
         {/* Motivation Section */}
         <div className="relative rounded-3xl bg-slate-600 p-8 text-center text-white shadow-lg">
