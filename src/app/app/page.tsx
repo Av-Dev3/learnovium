@@ -597,38 +597,43 @@ export default function Dashboard() {
 
         {/* Motivation Section */}
         <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
-          <div className="relative rounded-2xl bg-slate-600 p-8 text-center text-white shadow-lg">
-          <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-bold">
-              Ready to crush today&apos;s goals? 🚀
-            </h2>
-            <p className="text-lg text-slate-200 max-w-2xl mx-auto">
-              Every lesson brings you closer to mastery. Keep up the great work and maintain your learning streak!
-            </p>
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-600 p-8 text-center text-white shadow-2xl">
+            {/* Animated background elements */}
+            <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse" />
+            <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full blur-lg animate-pulse" style={{animationDelay: '1s'}} />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/5 rounded-full blur-md animate-pulse" style={{animationDelay: '2s'}} />
             
-                          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+            <div className="relative z-10 space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Ready to crush today&apos;s goals? 🚀
+              </h2>
+              <p className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+                Every lesson brings you closer to mastery. Keep up the great work and maintain your learning streak!
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
                 <Link 
                   href="/app/plans"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-700 font-semibold rounded-2xl hover:bg-slate-50 hover:scale-105 transition-all duration-300 shadow-lg"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-purple-700 font-semibold rounded-2xl hover:bg-purple-50 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   View All Plans
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link 
                   href="/app/flashcards"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-700 font-semibold rounded-2xl hover:bg-slate-50 hover:scale-105 transition-all duration-300 shadow-lg"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-pink-700 font-semibold rounded-2xl hover:bg-pink-50 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Study Flashcards
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link 
                   href="/app/create"
-                  className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300"
+                  className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white/30 text-white font-semibold rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-300 backdrop-blur-sm"
                 >
                   Add New Goal
                 </Link>
               </div>
-          </div>
+            </div>
           </div>
         </section>
         </div>
