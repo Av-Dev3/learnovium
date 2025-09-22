@@ -330,11 +330,12 @@ export default function Dashboard() {
                   <Link key={item.goalId} href={`/app/plans/${item.goalId}/lesson`} className="block group">
                     <div className="group relative h-full rounded-3xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-700 flex flex-col">
                       
-                      <div className="relative p-6 space-y-4 flex-1 flex flex-col">
+                      <div className="relative p-6 space-y-6 flex-1 flex flex-col">
                         {/* Header */}
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                        <div className="space-y-4">
+                          {/* Topic and Day Info */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-4 py-2 rounded-full">
                               <Target className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                               <span className="font-medium">{item.goalTopic}</span>
                               <span className="text-slate-400 dark:text-slate-500">•</span>
@@ -349,20 +350,24 @@ export default function Dashboard() {
                                 </>
                               )}
                             </div>
+                            
+                            <div className="w-16 h-16 bg-gradient-to-br from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                              <Play className="h-8 w-8 text-white" />
+                            </div>
+                          </div>
+                          
+                          {/* Lesson Title */}
+                          <div>
                             <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors leading-tight">
                               {item.lessonTitle}
                             </h3>
-                          </div>
-                          
-                          <div className="w-14 h-14 bg-slate-600 rounded-2xl flex items-center justify-center">
-                            <Play className="h-7 w-7 text-white" />
                           </div>
                         </div>
 
                         {/* Content */}
                         <div className="flex-1">
                           {item.lessonSnippet && (
-                            <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl p-4">
+                            <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl p-5">
                               <p className="text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-3 text-sm">
                                 {item.lessonSnippet}
                               </p>
@@ -371,22 +376,22 @@ export default function Dashboard() {
                         </div>
 
                         {/* Footer with status and actions */}
-                        <div className="space-y-3 mt-auto">
+                        <div className="space-y-4 mt-auto">
                           {/* Status */}
                           <div className="flex items-center justify-between">
                             {!item.hasLesson ? (
-                              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-4 py-2 rounded-full">
                                 <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse" />
                                 <span>Lesson not generated yet</span>
                               </div>
                             ) : (
-                              <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                              <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-4 py-2 rounded-full">
                                 <CheckCircle className="w-4 h-4" />
                                 <span>Ready to start</span>
                               </div>
                             )}
                             
-                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors font-medium">
+                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
                               <span>Start learning</span>
                               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </div>
@@ -394,7 +399,7 @@ export default function Dashboard() {
                           
                           {/* Lesson variety note */}
                           {item.hasLesson && (
-                            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded-xl">
+                            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-4 py-3 rounded-xl">
                               <Target className="w-3 h-3 text-slate-600 dark:text-slate-400" />
                               <span>Planned curriculum • Progressive learning</span>
                             </div>
