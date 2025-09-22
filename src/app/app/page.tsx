@@ -198,13 +198,15 @@ export default function Dashboard() {
   const totalEstimatedTime = safeGoals.length * 15; // TODO: Calculate actual time
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
-      <div className="space-y-8 pt-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="space-y-12 pt-8">
         {/* Clean Header Design */}
-        <header className="relative overflow-hidden rounded-3xl bg-brand p-8 text-white shadow-lg">
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-white/20">
+              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-white/30 backdrop-blur-sm">
                 <Sparkles className="w-5 h-5 text-yellow-200" />
                 <span className="text-sm font-semibold">AI-Powered Learning</span>
               </div>
@@ -212,102 +214,104 @@ export default function Dashboard() {
               <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
                 Welcome back! 👋
               </h1>
-              <p className="text-xl text-blue-100 max-w-2xl leading-relaxed">
+              <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
                 Continue your learning journey with today&apos;s personalized lessons
               </p>
             </div>
             
             <div className="flex flex-col sm:flex-row items-center gap-6">
-              <div className="text-center p-4 rounded-2xl bg-white/20">
+              <div className="text-center p-4 rounded-2xl bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-bold text-yellow-200">{totalStreak}</div>
-                <div className="text-blue-200 text-sm font-medium">Day Streak</div>
+                <div className="text-white/80 text-sm font-medium">Day Streak</div>
               </div>
-              <div className="text-center p-4 rounded-2xl bg-white/20">
+              <div className="text-center p-4 rounded-2xl bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-bold text-green-200">{completedToday}</div>
-                <div className="text-blue-200 text-sm font-medium">Active Goals</div>
+                <div className="text-white/80 text-sm font-medium">Active Goals</div>
               </div>
             </div>
           </div>
-        </header>
+          </header>
+        </section>
 
         {/* Stats Cards - Compact Metric Design */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Active Goals Card */}
-          <div className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300">
+          <div className="group relative rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
                   <Target className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{safeGoals.length}</div>
-                  <div className="text-sm font-medium text-slate-600 dark:text-slate-400">Active Goals</div>
+                  <div className="text-2xl font-bold text-blue-800 dark:text-blue-200">{safeGoals.length}</div>
+                  <div className="text-sm font-medium text-blue-600 dark:text-blue-400">Active Goals</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Today's Lessons Card */}
-          <div className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300">
+          <div className="group relative rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
                   <BookOpen className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{completedToday}</div>
-                  <div className="text-sm font-medium text-slate-600 dark:text-slate-400">Today&apos;s Lessons</div>
+                  <div className="text-2xl font-bold text-emerald-800 dark:text-emerald-200">{completedToday}</div>
+                  <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Today&apos;s Lessons</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Time Today Card */}
-          <div className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300">
+          <div className="group relative rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center">
                   <Clock className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{totalEstimatedTime}</div>
-                  <div className="text-sm font-medium text-slate-600 dark:text-slate-400">Minutes Today</div>
+                  <div className="text-2xl font-bold text-purple-800 dark:text-purple-200">{totalEstimatedTime}</div>
+                  <div className="text-sm font-medium text-purple-600 dark:text-purple-400">Minutes Today</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Learning Streak Card */}
-          <div className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all duration-300">
+          <div className="group relative rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center">
                   <Flame className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">{totalStreak}</div>
-                  <div className="text-sm font-medium text-slate-600 dark:text-slate-400">Day Streak</div>
+                  <div className="text-2xl font-bold text-orange-800 dark:text-orange-200">{totalStreak}</div>
+                  <div className="text-sm font-medium text-orange-600 dark:text-orange-400">Day Streak</div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
+          </div>
+        </section>
 
         {/* Today's Lessons */}
         {dashboardItems.length > 0 ? (
-          <section aria-labelledby="lessons-heading" className="relative space-y-6">
+          <section aria-labelledby="lessons-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50 space-y-6">
             {/* Clean Header Design */}
-            <div className="relative rounded-3xl bg-slate-100 dark:bg-slate-800 p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+            <div className="relative rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 shadow-lg border-0">
               <div className="flex items-center gap-6">
-                <div className="w-20 h-20 bg-slate-600 rounded-3xl flex items-center justify-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center">
                   <BookOpen className="h-10 w-10 text-white" />
                 </div>
                 <div>
-                  <h2 id="lessons-heading" className="text-4xl font-bold text-slate-800 dark:text-slate-100 mb-3">
+                  <h2 id="lessons-heading" className="text-4xl font-bold text-indigo-800 dark:text-indigo-200 mb-3">
                     Today&apos;s Lessons ✨
                   </h2>
-                  <p className="text-slate-600 dark:text-slate-300 text-xl font-medium">
+                  <p className="text-indigo-600 dark:text-indigo-300 text-xl font-medium">
                     Your personalized learning path for today
                   </p>
                 </div>
@@ -506,7 +510,8 @@ export default function Dashboard() {
         </section>
 
         {/* Quick Actions */}
-        <div className="space-y-6">
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <div className="space-y-6">
           <div className="flex items-center gap-3">
             <Zap className="w-6 h-6 text-brand" />
             <h2 className="text-2xl font-bold text-[var(--fg)]">Quick Actions</h2>
@@ -569,10 +574,12 @@ export default function Dashboard() {
               </div>
             </Link>
           </div>
-        </div>
+          </div>
+        </section>
 
         {/* Motivation Section */}
-        <div className="relative rounded-3xl bg-slate-600 p-8 text-center text-white shadow-lg">
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <div className="relative rounded-2xl bg-slate-600 p-8 text-center text-white shadow-lg">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold">
               Ready to crush today&apos;s goals? 🚀
@@ -604,6 +611,8 @@ export default function Dashboard() {
                 </Link>
               </div>
           </div>
+          </div>
+        </section>
         </div>
       </div>
     </div>

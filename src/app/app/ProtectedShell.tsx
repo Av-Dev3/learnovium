@@ -343,10 +343,10 @@ function UserMenu() {
           >
             <div className="relative">
               {/* Arrow pointer */}
-              <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50" />
+              <div className="absolute -top-2 right-6 w-4 h-4 bg-white dark:bg-slate-800 rotate-45 border-l border-t border-gray-200/50 dark:border-slate-700/50" />
               
               {/* Main menu container */}
-              <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 border border-gray-200/50 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl shadow-black/10 dark:shadow-black/20 border border-gray-200/50 dark:border-slate-700/50 overflow-hidden">
                 {/* Header with gradient */}
                 <div className="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
                   {/* Background pattern */}
@@ -380,71 +380,71 @@ function UserMenu() {
 
                 {/* Menu Items */}
                 <div className="p-3 space-y-1">
-                  <Link href="/app" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-3">
-                      <Home className="h-5 w-5 text-blue-600" />
+                  <Link href="/app" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 group-hover:from-blue-100 group-hover:to-indigo-200 dark:group-hover:from-blue-800/30 dark:group-hover:to-indigo-800/30 transition-all duration-200 mr-3">
+                      <Home className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm">Dashboard</div>
-                      <div className="text-xs text-gray-500">View your progress</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">View your progress</div>
                     </div>
-                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                    <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
                       <ChevronRight className="h-4 w-4" />
                     </div>
                   </Link>
                   
-                  <Link href="/app/plans" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 group-hover:from-purple-100 group-hover:to-pink-200 transition-all duration-200 mr-3">
-                      <Target className="h-5 w-5 text-purple-600" />
+                  <Link href="/app/plans" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 group-hover:from-purple-100 group-hover:to-pink-200 dark:group-hover:from-purple-800/30 dark:group-hover:to-pink-800/30 transition-all duration-200 mr-3">
+                      <Target className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm">Plans</div>
-                      <div className="text-xs text-gray-500">Manage your plans</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">Manage your plans</div>
                     </div>
-                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                    <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
                       <ChevronRight className="h-4 w-4" />
                     </div>
                   </Link>
                   
-                  <Link href="/app/plans" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 group-hover:from-emerald-100 group-hover:to-teal-200 transition-all duration-200 mr-3">
-                      <Target className="h-5 w-5 text-emerald-600" />
+                  <Link href="/app/plans" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 group-hover:from-emerald-100 group-hover:to-teal-200 dark:group-hover:from-emerald-800/30 dark:group-hover:to-teal-800/30 transition-all duration-200 mr-3">
+                      <Target className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm">Plans</div>
-                      <div className="text-xs text-gray-500">Track your learning plans</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">Track your learning plans</div>
                     </div>
-                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                    <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
                       <ChevronRight className="h-4 w-4" />
                     </div>
                   </Link>
                   
-                  <Link href="/app/settings" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-red-100 group-hover:from-orange-100 group-hover:to-red-200 transition-all duration-200 mr-3">
-                      <Settings className="h-5 w-5 text-orange-600" />
+                  <Link href="/app/settings" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-red-100 dark:from-orange-900/20 dark:to-red-900/20 group-hover:from-orange-100 group-hover:to-red-200 dark:group-hover:from-orange-800/30 dark:group-hover:to-red-800/30 transition-all duration-200 mr-3">
+                      <Settings className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm">Settings</div>
-                      <div className="text-xs text-gray-500">Customize your experience</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">Customize your experience</div>
                     </div>
-                    <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                    <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
                       <ChevronRight className="h-4 w-4" />
                     </div>
                   </Link>
                 </div>
 
                 {/* Footer with sign out */}
-                <div className="p-3 border-t border-gray-100">
+                <div className="p-3 border-t border-gray-100 dark:border-slate-700/50">
                   <button
                     onClick={handleSignOut}
-                    className="group w-full flex items-center px-4 py-3 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
+                    className="group w-full flex items-center px-4 py-3 text-left text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
                   >
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 group-hover:bg-red-100 transition-all duration-200 mr-3">
-                      <LogOut className="h-5 w-5 text-red-600" />
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-all duration-200 mr-3">
+                      <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm">Sign Out</div>
-                      <div className="text-xs text-red-500">End your session</div>
+                      <div className="text-xs text-red-500 dark:text-red-400">End your session</div>
                     </div>
                   </button>
                 </div>

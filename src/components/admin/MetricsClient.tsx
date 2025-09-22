@@ -194,11 +194,11 @@ export default function MetricsClient() {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-3 sm:p-6 space-y-4 sm:space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 p-3 sm:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">Admin Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gradient-purple">Admin Dashboard</h1>
           <p className="text-slate-600 dark:text-slate-400 mt-1 text-sm sm:text-base">Monitor AI usage, budgets, and system performance</p>
           <div className="mt-2">
             <a 
@@ -236,69 +236,69 @@ export default function MetricsClient() {
 
       {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center">
-              <DollarSign className="h-4 w-4 mr-2 text-green-500" />
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-300 flex items-center">
+              <DollarSign className="h-4 w-4 mr-2 text-emerald-600" />
               Today&apos;s Global Spend
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+            <div className="text-3xl font-bold text-emerald-800 dark:text-emerald-200">
               ${Number(summary?.total_cost_usd || 0).toFixed(4)}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
               Across all users and endpoints
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center">
-              <CheckCircle className="h-4 w-4 mr-2 text-blue-500" />
+            <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300 flex items-center">
+              <CheckCircle className="h-4 w-4 mr-2 text-blue-600" />
               Successful Calls
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+            <div className="text-3xl font-bold text-blue-800 dark:text-blue-200">
               {summary?.success_calls ?? 0}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
               AI requests completed successfully
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center">
-              <AlertTriangle className="h-4 w-4 mr-2 text-red-500" />
+            <CardTitle className="text-sm font-medium text-red-700 dark:text-red-300 flex items-center">
+              <AlertTriangle className="h-4 w-4 mr-2 text-red-600" />
               Error Calls
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+            <div className="text-3xl font-bold text-red-800 dark:text-red-200">
               {summary?.error_calls ?? 0}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-red-600 dark:text-red-400 mt-1">
               Failed AI requests
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center">
-              <Database className="h-4 w-4 mr-2 text-purple-500" />
+            <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300 flex items-center">
+              <Database className="h-4 w-4 mr-2 text-purple-600" />
               Plan Templates
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+            <div className="text-3xl font-bold text-purple-800 dark:text-purple-200">
               {planMetrics?.total_templates ?? 0}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
               Cached for reuse
             </p>
           </CardContent>
@@ -307,13 +307,13 @@ export default function MetricsClient() {
 
       {/* Plan Metrics Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center">
-              <Target className="h-5 w-5 mr-2 text-blue-500" />
+            <CardTitle className="text-lg font-semibold text-amber-800 dark:text-amber-200 flex items-center">
+              <Target className="h-5 w-5 mr-2 text-amber-600" />
               Learning Plans Overview
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">
+            <CardDescription className="text-amber-700 dark:text-amber-300">
               Plan creation and reuse statistics
             </CardDescription>
           </CardHeader>
@@ -349,13 +349,13 @@ export default function MetricsClient() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center">
-              <Activity className="h-5 w-5 mr-2 text-green-500" />
+            <CardTitle className="text-lg font-semibold text-cyan-800 dark:text-cyan-200 flex items-center">
+              <Activity className="h-5 w-5 mr-2 text-cyan-600" />
               Endpoint Performance
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">
+            <CardDescription className="text-cyan-700 dark:text-cyan-300">
               Today&apos;s usage by endpoint
             </CardDescription>
           </CardHeader>
@@ -385,10 +385,10 @@ export default function MetricsClient() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">Live Spend & Errors</CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">Per-minute breakdown</CardDescription>
+            <CardTitle className="text-lg font-semibold text-indigo-800 dark:text-indigo-200">Live Spend & Errors</CardTitle>
+            <CardDescription className="text-indigo-700 dark:text-indigo-300">Per-minute breakdown</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -426,10 +426,10 @@ export default function MetricsClient() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">Endpoint Breakdown</CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">Today&apos;s usage by endpoint</CardDescription>
+            <CardTitle className="text-lg font-semibold text-pink-800 dark:text-pink-200">Endpoint Breakdown</CardTitle>
+            <CardDescription className="text-pink-700 dark:text-pink-300">Today&apos;s usage by endpoint</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -454,13 +454,13 @@ export default function MetricsClient() {
       </div>
 
       {/* Configuration Section */}
-      <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+      <Card className="bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-800/50 dark:to-gray-800/50 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center">
-            <Settings className="h-5 w-5 mr-2 text-amber-500" />
+          <CardTitle className="text-lg font-semibold text-slate-800 dark:text-slate-200 flex items-center">
+            <Settings className="h-5 w-5 mr-2 text-slate-600" />
             System Configuration
           </CardTitle>
-          <CardDescription className="text-slate-600 dark:text-slate-400">
+          <CardDescription className="text-slate-700 dark:text-slate-300">
             Manage budgets and endpoint availability
           </CardDescription>
         </CardHeader>
@@ -562,12 +562,12 @@ export default function MetricsClient() {
 
       {/* Data Tables Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">Top Users Today</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
+                <CardTitle className="text-lg font-semibold text-violet-800 dark:text-violet-200">Top Users Today</CardTitle>
+                <CardDescription className="text-violet-700 dark:text-violet-300">
                   Highest spenders in the last 24 hours
                 </CardDescription>
               </div>
@@ -620,12 +620,12 @@ export default function MetricsClient() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg">
+        <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">Recent Activity Logs</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
+                <CardTitle className="text-lg font-semibold text-emerald-800 dark:text-emerald-200">Recent Activity Logs</CardTitle>
+                <CardDescription className="text-emerald-700 dark:text-emerald-300">
                   Latest AI call attempts and results
                 </CardDescription>
               </div>

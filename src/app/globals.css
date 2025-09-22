@@ -4,33 +4,33 @@
 
 /* ---------- Tokens (HSL unless noted) ---------- */
 :root{
-  /* Surfaces */
+  /* Surfaces - Fresh, clean whites with subtle warmth */
   --bg: 0 0% 100%;
   --card: 0 0% 100%;
-  --muted: 0 0% 98%;
-  --muted-foreground: 220 13% 25%;
-  --border: 220 13% 88%;
+  --muted: 240 5% 96%;
+  --muted-foreground: 240 4% 30%;
+  --border: 240 6% 90%;
 
-  /* Brand & text - Balanced, learning-friendly colors */
-  --primary: 220 60% 55%;
+  /* Brand & text - Vibrant, modern colors */
+  --primary: 262 83% 58%;
   --primary-foreground: 0 0% 100%;
-  --accent: 200 65% 60%;
+  --accent: 142 76% 36%;
   --accent-foreground: 0 0% 100%;
 
   /* Missing vars used by tailwind.config.ts */
-  --brand: hsl(220 60% 55%);
-  --fg: hsl(220 15% 20%);      /* default text color in light mode */
-  --ring: 220 60% 60%;
+  --brand: hsl(262 83% 58%);
+  --fg: hsl(240 4% 20%);      /* default text color in light mode */
+  --ring: 262 83% 58%;
   --radius: 12px;              /* for rounded-lg/md/sm extensions */
 }
 
 .dark:root{
-  --bg: 220 15% 6%;
-  --card: 220 12% 10%;
-  --muted: 220 10% 14%;
-  --muted-foreground: 220 9% 65%;
-  --border: 220 10% 20%;
-  --fg: hsl(220 5% 95%);         /* readable on dark */
+  --bg: 240 10% 3%;
+  --card: 240 10% 6%;
+  --muted: 240 4% 16%;
+  --muted-foreground: 240 5% 70%;
+  --border: 240 4% 20%;
+  --fg: hsl(240 5% 95%);         /* readable on dark */
 }
 
 /* Base */
@@ -95,10 +95,37 @@ body {
 }
 
 .gradient-text {
-  background-image: linear-gradient(90deg,hsl(220 25% 45%),hsl(200 30% 50%));
-  -webkit-background-clip: text; 
-  background-clip: text; 
-  color: transparent;
+  background-image: linear-gradient(90deg,hsl(262 83% 58%),hsl(142 76% 36%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Fresh color utilities */
+.text-gradient-purple {
+  background-image: linear-gradient(135deg,hsl(262 83% 58%),hsl(280 100% 70%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-green {
+  background-image: linear-gradient(135deg,hsl(142 76% 36%),hsl(160 84% 39%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-fresh {
+  background: linear-gradient(135deg,hsl(262 83% 58%),hsl(142 76% 36%));
+}
+
+.bg-gradient-warm {
+  background: linear-gradient(135deg,hsl(24 100% 50%),hsl(45 100% 50%));
+}
+
+.bg-gradient-cool {
+  background: linear-gradient(135deg,hsl(200 100% 50%),hsl(262 83% 58%));
 }
 
 /* Glass morphism effect */

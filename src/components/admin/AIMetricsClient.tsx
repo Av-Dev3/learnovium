@@ -237,11 +237,11 @@ export default function AIMetricsClient() {
   }
 
   return (
-    <div className="p-3 sm:p-8 space-y-4 sm:space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 p-3 sm:p-8 space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3">
-            <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3 text-gradient-purple">
+            <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
             AI Metrics Dashboard
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base">
@@ -262,53 +262,53 @@ export default function AIMetricsClient() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <Card>
+        <Card className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Cost</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-emerald-700 dark:text-emerald-300">Total Cost</CardTitle>
+            <DollarSign className="h-4 w-4 text-emerald-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${(metrics.summary?.total_cost_usd || 0).toFixed(4)}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-emerald-800 dark:text-emerald-200">${(metrics.summary?.total_cost_usd || 0).toFixed(4)}</div>
+            <p className="text-xs text-emerald-600 dark:text-emerald-400">
               Last 24h: ${(metrics.summary?.recent_24h_cost || 0).toFixed(4)}
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Calls</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">Total Calls</CardTitle>
+            <Activity className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{(metrics.summary?.total_calls || 0).toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-blue-800 dark:text-blue-200">{(metrics.summary?.total_calls || 0).toLocaleString()}</div>
+            <p className="text-xs text-blue-600 dark:text-blue-400">
               Last 24h: {metrics.summary?.recent_24h_calls || 0}
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">Success Rate</CardTitle>
+            <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.summary?.success_rate || 0}%</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-green-800 dark:text-green-200">{metrics.summary?.success_rate || 0}%</div>
+            <p className="text-xs text-green-600 dark:text-green-400">
               {metrics.summary?.success_calls || 0} / {metrics.summary?.total_calls || 0}
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Tokens</CardTitle>
-            <Zap className="h-4 w-4 text-yellow-500" />
+            <CardTitle className="text-sm font-medium text-amber-700 dark:text-amber-300">Total Tokens</CardTitle>
+            <Zap className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.summary.total_tokens.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-amber-800 dark:text-amber-200">{metrics.summary.total_tokens.toLocaleString()}</div>
+            <p className="text-xs text-amber-600 dark:text-amber-400">
               {metrics.summary.total_prompt_tokens.toLocaleString()} input + {metrics.summary.total_completion_tokens.toLocaleString()} output
             </p>
           </CardContent>
@@ -316,10 +316,10 @@ export default function AIMetricsClient() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-800/50 dark:to-gray-800/50 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-slate-800 dark:text-slate-200">
+            <Filter className="h-5 w-5 text-slate-600" />
             Filters
           </CardTitle>
         </CardHeader>
@@ -387,10 +387,10 @@ export default function AIMetricsClient() {
 
       {/* Detailed Breakdown */}
       {metrics.detailed_breakdown && (
-        <Card>
+        <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader>
-            <CardTitle>Detailed Breakdown</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-indigo-800 dark:text-indigo-200">Detailed Breakdown</CardTitle>
+            <CardDescription className="text-indigo-700 dark:text-indigo-300">
               Breakdown of embeddings and chat completions
             </CardDescription>
           </CardHeader>
@@ -416,10 +416,10 @@ export default function AIMetricsClient() {
       )}
 
       {/* Endpoint Stats */}
-      <Card>
+      <Card className="bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle>Endpoint Performance</CardTitle>
-          <CardDescription>AI calls grouped by endpoint</CardDescription>
+          <CardTitle className="text-cyan-800 dark:text-cyan-200">Endpoint Performance</CardTitle>
+          <CardDescription className="text-cyan-700 dark:text-cyan-300">AI calls grouped by endpoint</CardDescription>
         </CardHeader>
         <CardContent>
           {Object.keys(metrics.endpoint_stats || {}).length === 0 ? (
@@ -456,10 +456,10 @@ export default function AIMetricsClient() {
       </Card>
 
       {/* Model Stats */}
-      <Card>
+      <Card className="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle>Model Usage</CardTitle>
-          <CardDescription>AI calls grouped by model</CardDescription>
+          <CardTitle className="text-pink-800 dark:text-pink-200">Model Usage</CardTitle>
+          <CardDescription className="text-pink-700 dark:text-pink-300">AI calls grouped by model</CardDescription>
         </CardHeader>
         <CardContent>
           {Object.keys(metrics.model_stats || {}).length === 0 ? (
@@ -494,10 +494,10 @@ export default function AIMetricsClient() {
       </Card>
 
       {/* Recent Calls Table */}
-      <Card>
+      <Card className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle>Recent AI Calls</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-violet-800 dark:text-violet-200">Recent AI Calls</CardTitle>
+          <CardDescription className="text-violet-700 dark:text-violet-300">
             Detailed log of AI API calls with token usage and performance metrics
           </CardDescription>
         </CardHeader>

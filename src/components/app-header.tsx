@@ -137,10 +137,10 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                     >
                       <div className="relative">
                         {/* Arrow pointer */}
-                        <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200/50 shadow-lg" />
+                        <div className="absolute -top-2 right-6 w-4 h-4 bg-white dark:bg-slate-800 rotate-45 border-l border-t border-gray-200/50 dark:border-slate-700/50 shadow-lg" />
                         
                         {/* Main menu container */}
-                        <div className="bg-white rounded-3xl shadow-2xl shadow-black/10 border border-gray-200/50 overflow-hidden">
+                        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl shadow-black/10 dark:shadow-black/20 border border-gray-200/50 dark:border-slate-700/50 overflow-hidden">
                           {/* Header with gradient */}
                           <div className="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
                             {/* Background pattern */}
@@ -178,17 +178,17 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                               <Link
                                 key={item.href}
                                 href={item.href}
-                                className="group w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
+                                className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
                                 onClick={() => setUserMenuOpen(false)}
                               >
-                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-3">
-                                  <div className="w-2 h-2 rounded-full bg-blue-600" />
+                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 group-hover:from-blue-100 group-hover:to-indigo-200 dark:group-hover:from-blue-800/30 dark:group-hover:to-indigo-800/30 transition-all duration-200 mr-3">
+                                  <div className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400" />
                                 </div>
                                 <div className="flex-1">
                                   <div className="font-semibold text-sm">{item.label}</div>
-                                  <div className="text-xs text-gray-500">Navigate to {item.label.toLowerCase()}</div>
+                                  <div className="text-xs text-gray-500 dark:text-slate-400">Navigate to {item.label.toLowerCase()}</div>
                                 </div>
-                                <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
+                                <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
                                   <ChevronRight className="h-4 w-4" />
                                 </div>
                               </Link>
@@ -196,17 +196,17 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                           </div>
 
                           {/* Footer with sign out */}
-                          <div className="p-3 border-t border-gray-100">
+                          <div className="p-3 border-t border-gray-100 dark:border-slate-700/50">
                             <button
                               onClick={handleSignOut}
-                              className="group w-full flex items-center px-4 py-3 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
+                              className="group w-full flex items-center px-4 py-3 text-left text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
                             >
-                              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 group-hover:bg-red-100 transition-all duration-200 mr-3">
-                                <LogOut className="h-5 w-5 text-red-600" />
+                              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-all duration-200 mr-3">
+                                <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" />
                               </div>
                               <div className="flex-1">
                                 <div className="font-semibold text-sm">Sign Out</div>
-                                <div className="text-xs text-red-500">End your session</div>
+                                <div className="text-xs text-red-500 dark:text-red-400">End your session</div>
                               </div>
                             </button>
                           </div>
