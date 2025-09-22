@@ -628,7 +628,7 @@ export default function Dashboard() {
                 </Link>
                 <Link 
                   href="/app/create"
-                  className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white/30 text-white font-semibold rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-300 backdrop-blur-sm"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-indigo-600 hover:to-purple-700 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Add New Goal
                 </Link>
