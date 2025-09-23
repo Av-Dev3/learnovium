@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireUser } from "@/lib/api/utils";
+import { requireUser, calculateStreak } from "@/lib/api/utils";
 import { buildPlannerPromptWithRAG } from "@/lib/prompts";
 import { generatePlan } from "@/lib/aiCall";
 import { canonicalizeSignature } from "@/lib/goalSignature";
@@ -135,7 +135,7 @@ export async function GET(req: NextRequest) {
     
     console.log("GET /api/goals - table check:", { tableCheck, tableError });
     
-    const { data, error } = await supabase
+    const { data: goals, error } = await supabase
       .from("learning_goals")
       .select("id, topic, focus, plan_version, created_at, plan_json, plan_template_id")
       .eq("user_id", user.id)
@@ -146,12 +146,39 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
     
-    console.log("GET /api/goals - data:", data);
-    console.log("GET /api/goals - data type:", typeof data);
-    console.log("GET /api/goals - is array:", Array.isArray(data));
-    console.log("GET /api/goals - data length:", data?.length);
+    console.log("GET /api/goals - data:", goals);
+    console.log("GET /api/goals - data type:", typeof goals);
+    console.log("GET /api/goals - is array:", Array.isArray(goals));
+    console.log("GET /api/goals - data length:", goals?.length);
     
-    return NextResponse.json(data ?? []);
+    // Calculate streaks for each goal
+    const goalsWithStreaks = await Promise.all((goals || []).map(async (goal) => {
+      try {
+        // Fetch progress data for this goal
+        const { data: progress } = await supabase
+          .from("lesson_progress")
+          .select("completed_at, day_index")
+          .eq("goal_id", goal.id)
+          .eq("user_id", user.id)
+          .not("completed_at", "is", null)
+          .order("completed_at", { ascending: false });
+
+        const currentStreak = calculateStreak(progress || []);
+        
+        return {
+          ...goal,
+          currentStreak
+        };
+      } catch (error) {
+        console.warn(`Failed to calculate streak for goal ${goal.id}:`, error);
+        return {
+          ...goal,
+          currentStreak: 0
+        };
+      }
+    }));
+    
+    return NextResponse.json(goalsWithStreaks);
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : "Unknown error in GET /api/goals";
     console.error("GET /api/goals - caught error:", e);

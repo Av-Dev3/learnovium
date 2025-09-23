@@ -197,7 +197,8 @@ export default function Dashboard() {
     );
   }
 
-  const totalStreak = 7; // TODO: Calculate from progress data
+  // Calculate total streak from all goals
+  const totalStreak = safeGoals.reduce((sum, goal) => sum + (goal.currentStreak || 0), 0);
   const completedToday = safeGoals.length; // TODO: Calculate from progress data
   const totalEstimatedTime = safeGoals.length * 15; // TODO: Calculate actual time
 

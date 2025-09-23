@@ -8,6 +8,7 @@ export interface Goal {
   plan_template_id?: string;
   plan_json?: Record<string, unknown>; // Using Record for flexibility
   progress_pct?: number;
+  currentStreak?: number;
 }
 
 export interface Lesson {
