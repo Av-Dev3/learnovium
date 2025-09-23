@@ -56,8 +56,12 @@ export default function Dashboard() {
   const computeDayIndex = (createdAt: string) => {
     const createdDate = new Date(createdAt);
     const now = new Date();
-    const ms = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) -
-               Date.UTC(createdDate.getUTCFullYear(), createdDate.getUTCMonth(), createdDate.getUTCDate());
+    
+    // Use local time instead of UTC to ensure day changes at local midnight
+    const startLocal = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+    const nowLocal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const ms = nowLocal.getTime() - startLocal.getTime();
     return Math.max(1, Math.floor(ms / 86400000) + 1);
   };
 
