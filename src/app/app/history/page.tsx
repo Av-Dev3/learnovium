@@ -180,34 +180,45 @@ export default function History() {
       {/* Overall Stats */}
       {overallStats && (
         <section aria-labelledby="stats-heading">
-          <h2 id="stats-heading" className="sr-only">Overall Learning Statistics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-            <div className="bg-card border rounded-lg p-3 sm:p-4">
-              <div className="flex items-center gap-3">
-                <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" aria-hidden="true" />
-                <div>
-                  <p className="text-xl sm:text-2xl font-bold">{overallStats.totalProgress}</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Total Lessons</p>
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50 mb-8">
+            <h2 id="stats-heading" className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-3">
+              <BarChart3 className="h-6 w-6 text-brand" aria-hidden="true" />
+              Overall Learning Statistics
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <BarChart3 className="h-7 w-7 text-white" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{overallStats.totalProgress}</p>
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Lessons</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="bg-card border rounded-lg p-3 sm:p-4">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" aria-hidden="true" />
-                <div>
-                  <p className="text-xl sm:text-2xl font-bold">{overallStats.completedProgress}</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Completed</p>
+              
+              <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <CheckCircle className="h-7 w-7 text-white" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{overallStats.completedProgress}</p>
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Completed</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="bg-card border rounded-lg p-3 sm:p-4">
-              <div className="flex items-center gap-3">
-                <Award className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" aria-hidden="true" />
-                <div>
-                  <p className="text-xl sm:text-2xl font-bold">{overallStats.averageScore}%</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Avg Score</p>
+              
+              <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Award className="h-7 w-7 text-white" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{overallStats.averageScore}%</p>
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Avg Score</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -217,77 +228,90 @@ export default function History() {
 
       {/* Goals History */}
       <section aria-labelledby="history-heading">
-        <h2 id="history-heading" className="sr-only">Learning Goals History</h2>
-        {hasProgress ? (
-          <div className="space-y-4 sm:space-y-6">
-            {Object.entries(progressByGoal).map(([goalId, data]: [string, GoalProgress]) => (
-              <article key={goalId} className="bg-card border rounded-lg p-4 sm:p-6">
-                <div className="flex items-start justify-between mb-3 sm:mb-4">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-semibold mb-1">{data.goal.topic}</h3>
-                    <p className="text-muted-foreground mb-2 text-sm">{data.goal.focus}</p>
-                    <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm">
-                      <span className="flex items-center gap-1">
-                        <Target className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                        {data.completedLessons}/{data.totalLessons} lessons
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Award className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
-                        {Math.round(data.averageScore)}% avg
-                      </span>
+        <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+          <h2 id="history-heading" className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-3">
+            <HistoryIcon className="h-6 w-6 text-brand" aria-hidden="true" />
+            Learning Goals History
+          </h2>
+          {hasProgress ? (
+            <div className="space-y-6">
+              {Object.entries(progressByGoal).map(([goalId, data]: [string, GoalProgress]) => (
+                <article key={goalId} className="p-6 rounded-2xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200">{data.goal.topic}</h3>
+                      <p className="text-slate-600 dark:text-slate-400 text-sm">{data.goal.focus}</p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                          <Target className="h-4 w-4" aria-hidden="true" />
+                          {data.completedLessons}/{data.totalLessons} lessons
+                        </span>
+                        <span className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                          <Award className="h-4 w-4" aria-hidden="true" />
+                          {Math.round(data.averageScore)}% avg
+                        </span>
+                      </div>
+                    </div>
+                    <Badge 
+                      variant="outline" 
+                      className="px-4 py-2 text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
+                    >
+                      {Math.round((data.completedLessons / data.totalLessons) * 100)}% complete
+                    </Badge>
+                  </div>
+
+                  {/* Recent Progress */}
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Recent Activity</h4>
+                    <div className="space-y-2">
+                      {data.progress
+                        .filter((p) => p.completed_at)
+                        .sort((a, b) => new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime())
+                        .slice(0, 3)
+                        .map((p, index: number) => (
+                          <div key={p.id} className="flex items-center justify-between text-sm p-3 bg-slate-50/80 dark:bg-slate-600/50 rounded-xl backdrop-blur-sm">
+                            <div className="flex items-center gap-3">
+                              <CheckCircle className="h-4 w-4 text-green-600" aria-hidden="true" />
+                              <span className="font-medium text-slate-700 dark:text-slate-300">Lesson {index + 1}</span>
+                            </div>
+                            <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400">
+                              <span className="flex items-center gap-1">
+                                <Award className="h-3 w-3" aria-hidden="true" />
+                                {p.score || 0}%
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" aria-hidden="true" />
+                                {new Date(p.completed_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
                     </div>
                   </div>
-                  <Badge variant="outline">
-                    {Math.round((data.completedLessons / data.totalLessons) * 100)}% complete
-                  </Badge>
-                </div>
-
-                {/* Recent Progress */}
-                <div className="space-y-2 sm:space-y-3">
-                  <h4 className="text-xs sm:text-sm font-medium text-muted-foreground">Recent Activity</h4>
-                  <div className="space-y-2">
-                    {data.progress
-                      .filter((p) => p.completed_at)
-                      .sort((a, b) => new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime())
-                      .slice(0, 3)
-                      .map((p, index: number) => (
-                        <div key={p.id} className="flex items-center justify-between text-xs sm:text-sm p-2 bg-muted/50 rounded">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" aria-hidden="true" />
-                            <span>Lesson {index + 1}</span>
-                          </div>
-                          <div className="flex items-center gap-3 sm:gap-4 text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Award className="h-2 w-2 sm:h-3 sm:w-3" aria-hidden="true" />
-                              {p.score || 0}%
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="h-2 w-2 sm:h-3 sm:w-3" aria-hidden="true" />
-                              {new Date(p.completed_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 sm:py-12">
-            <HistoryIcon className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" aria-hidden="true" />
-            <h3 className="text-lg font-semibold mb-2">No learning history yet</h3>
-            <p className="text-muted-foreground mb-4 text-sm sm:text-base">
-              Complete your first lesson to start building your history
-            </p>
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" asChild>
-              <a href="/app">
-                <Target className="h-4 w-4 mr-2" aria-hidden="true" />
-                Start Learning
-              </a>
-            </Button>
-          </div>
-        )}
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center shadow-xl mb-6">
+                <HistoryIcon className="h-12 w-12 text-white" aria-hidden="true" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">No learning history yet</h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
+                Complete your first lesson to start building your history
+              </p>
+              <Button 
+                className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl" 
+                asChild
+              >
+                <a href="/app">
+                  <Target className="h-5 w-5 mr-2" aria-hidden="true" />
+                  Start Learning
+                </a>
+              </Button>
+            </div>
+          )}
+        </div>
       </section>
         </div>
       </div>
