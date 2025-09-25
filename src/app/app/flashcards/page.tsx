@@ -589,45 +589,44 @@ export default function FlashcardsPage() {
             </div>
 
               {/* Navigation Controls */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-full">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                   <Button
                     onClick={handlePrevious}
                     disabled={currentCardIndex === 0}
-                    className="h-10 sm:h-12 px-3 sm:px-6 text-sm sm:text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl sm:rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="h-10 sm:h-12 px-2 sm:px-4 text-xs sm:text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-lg sm:rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
+                    <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">Previous</span>
                     <span className="sm:hidden">Prev</span>
                   </Button>
 
                   <Button
                     onClick={handleFlip}
-                    className="h-10 sm:h-12 px-3 sm:px-6 text-sm sm:text-lg font-semibold border-2 border-blue-200 dark:border-blue-700 hover:border-blue-400 hover:ring-4 hover:ring-blue-400/20 rounded-xl sm:rounded-2xl transition-all duration-300 bg-blue-50/80 dark:bg-blue-900/80 backdrop-blur-sm hover:scale-105"
+                    className="h-10 sm:h-12 px-2 sm:px-4 text-xs sm:text-sm font-semibold border-2 border-blue-200 dark:border-blue-700 hover:border-blue-400 hover:ring-4 hover:ring-blue-400/20 rounded-lg sm:rounded-xl transition-all duration-300 bg-blue-50/80 dark:bg-blue-900/80 backdrop-blur-sm hover:scale-105"
                   >
-                    <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
+                    <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">{isFlipped ? 'Show Question' : 'Show Answer'}</span>
                     <span className="sm:hidden">{isFlipped ? 'Question' : 'Answer'}</span>
                   </Button>
-                </div>
 
-                <div className="flex items-center gap-2 sm:gap-3">
                   <Button
                     onClick={handleShuffle}
-                    className="h-10 sm:h-12 px-3 sm:px-6 text-sm sm:text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl sm:rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                    className="h-10 sm:h-12 px-2 sm:px-4 text-xs sm:text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-lg sm:rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
                   >
-                    <Shuffle className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
-                    Shuffle
+                    <Shuffle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Shuffle</span>
+                    <span className="sm:hidden">Shuffle</span>
                   </Button>
 
                   <Button
                     onClick={handleNext}
                     disabled={currentCardIndex === totalCards - 1}
-                    className="h-10 sm:h-12 px-3 sm:px-6 text-sm sm:text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl sm:rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="h-10 sm:h-12 px-2 sm:px-4 text-xs sm:text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-lg sm:rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     <span className="hidden sm:inline">Next</span>
                     <span className="sm:hidden">Next</span>
-                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-1 sm:ml-2" />
+                    <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1 sm:ml-2" />
                   </Button>
                 </div>
               </div>
