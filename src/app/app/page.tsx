@@ -205,33 +205,33 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="space-y-12 pt-8">
+        <div className="space-y-6 sm:space-y-8 lg:space-y-12 pt-4 sm:pt-6 lg:pt-8">
         {/* Clean Header Design */}
-        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
-          <header className="relative overflow-hidden rounded-2xl bg-gradient-fresh p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 hover:from-yellow-400/30 hover:to-orange-400/30 transition-all duration-300">
-                <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
-                <span className="text-sm font-bold text-yellow-100 drop-shadow-sm">AI-Powered Learning</span>
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
+          <header className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-fresh p-4 sm:p-6 lg:p-8 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 hover:from-yellow-400/30 hover:to-orange-400/30 transition-all duration-300">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-300 animate-pulse" />
+                <span className="text-xs sm:text-sm font-bold text-yellow-100 drop-shadow-sm">AI-Powered Learning</span>
               </div>
               
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
                 Welcome back! 👋
               </h1>
-              <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl leading-relaxed">
                 Continue your learning journey with today&apos;s personalized lessons
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-center gap-6">
-              <div className="text-center p-4 rounded-2xl bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all duration-300">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-200">{totalStreak}</div>
-                <div className="text-white/80 text-sm font-medium">Day Streak</div>
+            <div className="flex flex-row sm:flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6">
+              <div className="text-center p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all duration-300 min-w-[80px]">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-yellow-200">{totalStreak}</div>
+                <div className="text-white/80 text-xs sm:text-sm font-medium">Day Streak</div>
               </div>
-              <div className="text-center p-4 rounded-2xl bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all duration-300">
-                <div className="text-3xl md:text-4xl font-bold text-green-200">{completedToday}</div>
-                <div className="text-white/80 text-sm font-medium">Active Goals</div>
+              <div className="text-center p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all duration-300 min-w-[80px]">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-200">{completedToday}</div>
+                <div className="text-white/80 text-xs sm:text-sm font-medium">Active Goals</div>
               </div>
             </div>
           </div>
@@ -239,63 +239,63 @@ export default function Dashboard() {
         </section>
 
         {/* Stats Cards - Compact Metric Design */}
-        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Active Goals Card */}
-          <div className="group relative rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                  <Target className="h-6 w-6 text-white" />
+          <div className="group relative rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Target className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
                 </div>
-                <div className="flex-1">
-                  <div className="text-2xl font-bold text-blue-800 dark:text-blue-200">{safeGoals.length}</div>
-                  <div className="text-sm font-medium text-blue-600 dark:text-blue-400">Active Goals</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-800 dark:text-blue-200">{safeGoals.length}</div>
+                  <div className="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 truncate">Active Goals</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Today's Lessons Card */}
-          <div className="group relative rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
-                  <BookOpen className="h-6 w-6 text-white" />
+          <div className="group relative rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
                 </div>
-                <div className="flex-1">
-                  <div className="text-2xl font-bold text-emerald-800 dark:text-emerald-200">{completedToday}</div>
-                  <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Today&apos;s Lessons</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-emerald-800 dark:text-emerald-200">{completedToday}</div>
+                  <div className="text-xs sm:text-sm font-medium text-emerald-600 dark:text-emerald-400 truncate">Today&apos;s Lessons</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Time Today Card */}
-          <div className="group relative rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl flex items-center justify-center">
-                  <Clock className="h-6 w-6 text-white" />
+          <div className="group relative rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Clock className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
                 </div>
-                <div className="flex-1">
-                  <div className="text-2xl font-bold text-purple-800 dark:text-purple-200">{totalEstimatedTime}</div>
-                  <div className="text-sm font-medium text-purple-600 dark:text-purple-400">Minutes Today</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-800 dark:text-purple-200">{totalEstimatedTime}</div>
+                  <div className="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400 truncate">Minutes Today</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Learning Streak Card */}
-          <div className="group relative rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center">
-                  <Flame className="h-6 w-6 text-white" />
+          <div className="group relative rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Flame className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
                 </div>
-                <div className="flex-1">
-                  <div className="text-2xl font-bold text-orange-800 dark:text-orange-200">{totalStreak}</div>
-                  <div className="text-sm font-medium text-orange-600 dark:text-orange-400">Day Streak</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-orange-800 dark:text-orange-200">{totalStreak}</div>
+                  <div className="text-xs sm:text-sm font-medium text-orange-600 dark:text-orange-400 truncate">Day Streak</div>
                 </div>
               </div>
             </div>
@@ -305,18 +305,18 @@ export default function Dashboard() {
 
         {/* Today's Lessons */}
         {dashboardItems.length > 0 ? (
-          <section aria-labelledby="lessons-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50 space-y-6">
+          <section aria-labelledby="lessons-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50 space-y-4 sm:space-y-6">
             {/* Clean Header Design */}
-            <div className="relative rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 shadow-lg border-0">
-              <div className="flex items-center gap-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center">
-                  <BookOpen className="h-10 w-10 text-white" />
+            <div className="relative rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-4 sm:p-6 shadow-lg border-0">
+              <div className="flex items-center gap-4 sm:gap-6">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl sm:rounded-3xl flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
                 </div>
-                <div>
-                  <h2 id="lessons-heading" className="text-4xl font-bold text-indigo-800 dark:text-indigo-200 mb-3">
+                <div className="min-w-0 flex-1">
+                  <h2 id="lessons-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-indigo-800 dark:text-indigo-200 mb-2 sm:mb-3">
                     Today&apos;s Lessons ✨
                   </h2>
-                  <p className="text-indigo-600 dark:text-indigo-300 text-xl font-medium">
+                  <p className="text-indigo-600 dark:text-indigo-300 text-base sm:text-lg lg:text-xl font-medium">
                     Your personalized learning path for today
                   </p>
                 </div>
@@ -330,40 +330,40 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {dashboardItems.map((item) => (
                   <Link key={item.goalId} href={`/app/plans/${item.goalId}/lesson`} className="block group">
-                    <div className="group relative h-full rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-200/50 dark:border-blue-700/50 flex flex-col">
+                    <div className="group relative h-full rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-200/50 dark:border-blue-700/50 flex flex-col">
                       
-                      <div className="relative p-6 space-y-6 flex-1 flex flex-col">
+                      <div className="relative p-4 sm:p-6 space-y-4 sm:space-y-6 flex-1 flex flex-col">
                         {/* Header */}
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                           {/* Topic and Day Info */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 px-4 py-2 rounded-full">
-                              <Target className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                              <span className="font-medium">{item.goalTopic}</span>
-                              <span className="text-blue-400 dark:text-blue-500">•</span>
+                          <div className="flex items-start sm:items-center justify-between gap-3">
+                            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 px-2 sm:px-4 py-1 sm:py-2 rounded-full flex-wrap">
+                              <Target className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                              <span className="font-medium truncate max-w-[120px] sm:max-w-none">{item.goalTopic}</span>
+                              <span className="text-blue-400 dark:text-blue-500 hidden sm:inline">•</span>
                               <span className="font-semibold text-blue-800 dark:text-blue-200">Day {item.dayIndex}</span>
                               {item.estMinutes && (
                                 <>
-                                  <span className="text-blue-400 dark:text-blue-500">•</span>
+                                  <span className="text-blue-400 dark:text-blue-500 hidden sm:inline">•</span>
                                   <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
-                                    <Clock className="w-4 h-4" />
+                                    <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                                     {item.estMinutes} min
                                   </span>
                                 </>
                               )}
                             </div>
                             
-                            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                              <Play className="h-8 w-8 text-white" />
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 flex-shrink-0">
+                              <Play className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-white" />
                             </div>
                           </div>
                           
                           {/* Lesson Title */}
                           <div>
-                            <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-200 group-hover:text-blue-700 dark:group-hover:text-blue-100 transition-colors leading-tight">
+                            <h3 className="text-lg sm:text-xl font-semibold text-blue-800 dark:text-blue-200 group-hover:text-blue-700 dark:group-hover:text-blue-100 transition-colors leading-tight">
                               {item.lessonTitle}
                             </h3>
                           </div>
@@ -372,8 +372,8 @@ export default function Dashboard() {
                         {/* Content */}
                         <div className="flex-1">
                           {item.lessonSnippet && (
-                            <div className="bg-blue-100 dark:bg-blue-900/30 rounded-2xl p-5">
-                              <p className="text-blue-700 dark:text-blue-300 leading-relaxed line-clamp-3 text-sm">
+                            <div className="bg-blue-100 dark:bg-blue-900/30 rounded-xl sm:rounded-2xl p-3 sm:p-5">
+                              <p className="text-blue-700 dark:text-blue-300 leading-relaxed line-clamp-3 text-xs sm:text-sm">
                                 {item.lessonSnippet}
                               </p>
                             </div>
@@ -381,30 +381,30 @@ export default function Dashboard() {
                         </div>
 
                         {/* Footer with status and actions */}
-                        <div className="space-y-4 mt-auto">
+                        <div className="space-y-3 sm:space-y-4 mt-auto">
                           {/* Status */}
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
                             {!item.hasLesson ? (
-                              <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 px-4 py-2 rounded-full">
+                              <div className="flex items-center gap-2 text-xs sm:text-sm text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 px-3 sm:px-4 py-1 sm:py-2 rounded-full">
                                 <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
                                 <span>Lesson not generated yet</span>
                               </div>
                             ) : (
-                              <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/30 px-4 py-2 rounded-full">
-                                <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              <div className="flex items-center gap-2 text-xs sm:text-sm text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/30 px-3 sm:px-4 py-1 sm:py-2 rounded-full">
+                                <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 dark:text-green-400" />
                                 <span>Ready to start</span>
                               </div>
                             )}
                             
-                            <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors font-medium px-2 sm:px-3 py-1 sm:py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 self-start sm:self-auto">
                               <span>Start learning</span>
-                              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                             </div>
                           </div>
                           
                           {/* Lesson variety note */}
                           {item.hasLesson && (
-                            <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-4 py-3 rounded-xl">
+                            <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl">
                               <Target className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                               <span>Planned curriculum • Progressive learning</span>
                             </div>
@@ -465,29 +465,29 @@ export default function Dashboard() {
         ) : null}
 
         {/* Active Goals */}
-        <section aria-labelledby="goals-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50 space-y-6">
+        <section aria-labelledby="goals-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50 space-y-4 sm:space-y-6">
           {/* Clean Header Design */}
-          <div className="relative rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 p-6 shadow-lg border-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-3xl flex items-center justify-center">
-                  <Target className="h-10 w-10 text-white" />
+          <div className="relative rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 p-4 sm:p-6 shadow-lg border-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
+              <div className="flex items-center gap-4 sm:gap-6">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl sm:rounded-3xl flex items-center justify-center flex-shrink-0">
+                  <Target className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
                 </div>
-                <div>
-                  <h2 id="goals-heading" className="text-4xl font-bold text-emerald-800 dark:text-emerald-200 mb-3">
+                <div className="min-w-0 flex-1">
+                  <h2 id="goals-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald-800 dark:text-emerald-200 mb-2 sm:mb-3">
                     Your Learning Goals 🎯
                   </h2>
-                  <p className="text-emerald-600 dark:text-emerald-300 text-xl font-medium">
+                  <p className="text-emerald-600 dark:text-emerald-300 text-base sm:text-lg lg:text-xl font-medium">
                     Track your progress and achieve your learning objectives
                   </p>
                 </div>
               </div>
               <Button 
-                className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl px-6 py-3" 
+                className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl sm:rounded-2xl px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base self-start sm:self-auto" 
                 asChild
               >
                 <Link href="/app/create">
-                  <Plus className="h-5 w-5 mr-2" aria-hidden="true" />
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" aria-hidden="true" />
                   New Goal
                 </Link>
               </Button>
@@ -495,7 +495,7 @@ export default function Dashboard() {
           </div>
           
           {safeGoals.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {safeGoals.map((goal) => {
                 if (!goal || typeof goal !== 'object' || !goal.id) {
                   console.warn("Invalid goal in dashboard:", goal);
@@ -533,67 +533,67 @@ export default function Dashboard() {
         </section>
 
         {/* Quick Actions */}
-        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
-          <div className="space-y-6">
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
+          <div className="space-y-4 sm:space-y-6">
           <div className="flex items-center gap-3">
-            <Zap className="w-6 h-6 text-brand" />
-            <h2 className="text-2xl font-bold text-[var(--fg)]">Quick Actions</h2>
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-brand" />
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--fg)]">Quick Actions</h2>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {/* Create New Goal Card */}
             <Link 
               href="/app/create"
-              className="group relative rounded-3xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 hover:shadow-lg transition-all duration-300"
+              className="group relative rounded-2xl sm:rounded-3xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 hover:shadow-lg transition-all duration-300"
             >
-              <div className="p-6">
-                <div className="w-16 h-16 bg-indigo-500 rounded-2xl flex items-center justify-center mb-4">
-                  <Plus className="h-8 w-8 text-white" />
+              <div className="p-4 sm:p-6">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-indigo-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4">
+                  <Plus className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2">Create New Goal</h3>
-                <p className="text-sm text-indigo-700 dark:text-indigo-200 leading-relaxed">Start learning a new skill with AI guidance</p>
+                <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-1 sm:mb-2">Create New Goal</h3>
+                <p className="text-xs sm:text-sm text-indigo-700 dark:text-indigo-200 leading-relaxed">Start learning a new skill with AI guidance</p>
               </div>
             </Link>
 
             {/* View All Plans Card */}
             <Link 
               href="/app/plans"
-              className="group relative rounded-3xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300"
+              className="group relative rounded-2xl sm:rounded-3xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300"
             >
-              <div className="p-6">
-                <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mb-4">
-                  <Trophy className="h-8 w-8 text-white" />
+              <div className="p-4 sm:p-6">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-emerald-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4">
+                  <Trophy className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-2">View All Plans</h3>
-                <p className="text-sm text-emerald-700 dark:text-emerald-200 leading-relaxed">See your learning progress and plans</p>
+                <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-1 sm:mb-2">View All Plans</h3>
+                <p className="text-xs sm:text-sm text-emerald-700 dark:text-emerald-200 leading-relaxed">See your learning progress and plans</p>
               </div>
             </Link>
 
             {/* Flashcards Card */}
             <Link 
               href="/app/flashcards"
-              className="group relative rounded-3xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300"
+              className="group relative rounded-2xl sm:rounded-3xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300"
             >
-              <div className="p-6">
-                <div className="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center mb-4">
-                  <Brain className="h-8 w-8 text-white" />
+              <div className="p-4 sm:p-6">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-purple-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4">
+                  <Brain className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-2">Flashcards</h3>
-                <p className="text-sm text-purple-700 dark:text-purple-200 leading-relaxed">Master concepts with spaced repetition</p>
+                <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-purple-900 dark:text-purple-100 mb-1 sm:mb-2">Flashcards</h3>
+                <p className="text-xs sm:text-sm text-purple-700 dark:text-purple-200 leading-relaxed">Master concepts with spaced repetition</p>
               </div>
             </Link>
 
             {/* Learning History Card */}
             <Link 
               href="/app/history"
-              className="group relative rounded-3xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 hover:shadow-lg transition-all duration-300"
+              className="group relative rounded-2xl sm:rounded-3xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 hover:shadow-lg transition-all duration-300"
             >
-              <div className="p-6">
-                <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mb-4">
-                  <TrendingUp className="h-8 w-8 text-white" />
+              <div className="p-4 sm:p-6">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-orange-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4">
+                  <TrendingUp className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2">Learning History</h3>
-                <p className="text-sm text-orange-700 dark:text-orange-200 leading-relaxed">Track your achievements and progress</p>
+                <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-orange-900 dark:text-orange-100 mb-1 sm:mb-2">Learning History</h3>
+                <p className="text-xs sm:text-sm text-orange-700 dark:text-orange-200 leading-relaxed">Track your achievements and progress</p>
               </div>
             </Link>
           </div>
@@ -601,39 +601,39 @@ export default function Dashboard() {
         </section>
 
         {/* Motivation Section */}
-        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-600 p-8 text-center text-white shadow-2xl">
+        <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
+          <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-600 p-6 sm:p-8 text-center text-white shadow-2xl">
             {/* Animated background elements */}
             <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse" />
             <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full blur-lg animate-pulse" style={{animationDelay: '1s'}} />
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/5 rounded-full blur-md animate-pulse" style={{animationDelay: '2s'}} />
             
-            <div className="relative z-10 space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold">
+            <div className="relative z-10 space-y-4 sm:space-y-6">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
                 Ready to crush today&apos;s goals? 🚀
               </h2>
-              <p className="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
                 Every lesson brings you closer to mastery. Keep up the great work and maintain your learning streak!
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center pt-2 sm:pt-4">
                 <Link 
                   href="/app/plans"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-purple-700 font-semibold rounded-2xl hover:bg-purple-50 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-white text-purple-700 font-semibold rounded-xl sm:rounded-2xl hover:bg-purple-50 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base"
                 >
                   View All Plans
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Link>
                 <Link 
                   href="/app/flashcards"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-pink-700 font-semibold rounded-2xl hover:bg-pink-50 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-white text-pink-700 font-semibold rounded-xl sm:rounded-2xl hover:bg-pink-50 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base"
                 >
                   Study Flashcards
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Link>
                 <Link 
                   href="/app/create"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-indigo-600 hover:to-purple-700 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl sm:rounded-2xl hover:from-indigo-600 hover:to-purple-700 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base"
                 >
                   Add New Goal
                 </Link>
