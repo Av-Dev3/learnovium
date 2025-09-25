@@ -426,30 +426,30 @@ export default function FlashcardsPage() {
 
         {/* Empty State */}
         {totalCards === 0 && (
-          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-12 border border-white/20 dark:border-slate-700/50 text-center">
-            <div className="space-y-6">
-              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center shadow-xl">
-                <BookOpen className="h-12 w-12 text-white" />
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 border border-white/20 dark:border-slate-700/50 text-center">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto bg-gradient-to-br from-brand to-purple-600 rounded-full flex items-center justify-center shadow-xl">
+                <BookOpen className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-white" />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">No Flashcards Yet</h2>
-                <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">No Flashcards Yet</h2>
+                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-md mx-auto px-4">
                   You don&apos;t have any flashcards yet. Create some manually or generate them from your lessons.
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
                 <Button
                   onClick={() => setShowCreateCard(true)}
-                  className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                  className="h-10 sm:h-12 px-4 sm:px-6 lg:px-8 text-sm sm:text-base lg:text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-xl sm:rounded-2xl"
                 >
-                  <Plus className="h-5 w-5 mr-2" />
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Create First Card
                 </Button>
                 <Button
                   onClick={() => setShowGenerateCards(true)}
-                  className="h-12 px-8 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                  className="h-10 sm:h-12 px-4 sm:px-6 lg:px-8 text-sm sm:text-base lg:text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl sm:rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
                 >
-                  <Sparkles className="h-5 w-5 mr-2" />
+                  <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Generate from Lessons
                 </Button>
               </div>
@@ -633,10 +633,10 @@ export default function FlashcardsPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-12 border border-white/20 dark:border-slate-700/50 text-center">
-            <BookOpen className="h-16 w-16 text-slate-400 dark:text-slate-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-400 mb-2">No flashcards found</h3>
-            <p className="text-slate-500 dark:text-slate-500 mb-6">
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 border border-white/20 dark:border-slate-700/50 text-center">
+            <BookOpen className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-slate-400 dark:text-slate-600 mx-auto mb-3 sm:mb-4" />
+            <h3 className="text-lg sm:text-xl font-semibold text-slate-600 dark:text-slate-400 mb-2">No flashcards found</h3>
+            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-500 mb-4 sm:mb-6 px-4">
               {selectedCategory !== 'all' || showDueTodayOnly 
                 ? "Try adjusting your filters or create new flashcards"
                 : categories.length === 0
@@ -644,29 +644,29 @@ export default function FlashcardsPage() {
                 : "Create your first flashcard or generate them from your lessons"
               }
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-4">
               {categories.length === 0 ? (
                 <Button 
                   onClick={() => setShowCreateCategory(true)}
-                  className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                  className="h-10 sm:h-12 px-4 sm:px-6 lg:px-8 text-sm sm:text-base lg:text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-xl sm:rounded-2xl"
                 >
-                  <Plus className="h-5 w-5 mr-2" />
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Create Category
                 </Button>
               ) : (
                 <>
                   <Button 
                     onClick={() => setShowCreateCard(true)}
-                    className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl"
+                    className="h-10 sm:h-12 px-4 sm:px-6 lg:px-8 text-sm sm:text-base lg:text-lg font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-xl sm:rounded-2xl"
                   >
-                    <Plus className="h-5 w-5 mr-2" />
+                    <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     Create Flashcard
                   </Button>
                   <Button 
                     onClick={() => setShowGenerateCards(true)}
-                    className="h-12 px-8 text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                    className="h-10 sm:h-12 px-4 sm:px-6 lg:px-8 text-sm sm:text-base lg:text-lg font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl sm:rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
                   >
-                    <Sparkles className="h-5 w-5 mr-2" />
+                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     Generate from Lessons
                   </Button>
                 </>
