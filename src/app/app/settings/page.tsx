@@ -544,10 +544,21 @@ export default function Settings() {
 
       {/* Profile Picture Upload Modal */}
       {profilePicture.showUploadModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-indigo-900/20 to-cyan-900/20 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          {/* Animated background elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-full blur-3xl animate-pulse" />
+          </div>
+          
+          <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-6 max-w-md w-full shadow-2xl border border-white/20 dark:border-slate-700/50">
             <div className="space-y-6">
               <div className="text-center">
+                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 backdrop-blur-sm border border-purple-200/30 dark:border-purple-700/30 mb-4">
+                  <Camera className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  <span className="text-sm font-semibold text-purple-700 dark:text-purple-300">Profile Picture</span>
+                </div>
                 <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">
                   Confirm New Profile Picture
                 </h3>
@@ -568,9 +579,9 @@ export default function Settings() {
               
               {/* File Info */}
               {profilePicture.file && (
-                <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4">
+                <div className="bg-gradient-to-r from-slate-50/80 to-slate-100/80 dark:from-slate-700/80 dark:to-slate-600/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/50">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-brand/20 to-purple-500/20 rounded-lg flex items-center justify-center shadow-sm">
                       <Camera className="h-5 w-5 text-brand" />
                     </div>
                     <div className="flex-1 min-w-0">
