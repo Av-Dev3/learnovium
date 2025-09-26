@@ -15,9 +15,14 @@ import {
   Save,
   Clock,
   Mail,
-  Smartphone
+  Smartphone,
+  Camera,
+  Upload,
+  X,
+  Check
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useReminders } from "@/app/lib/hooks";
 import { success as showSuccess, error as showError } from "@/app/lib/toast";
 
@@ -36,7 +41,15 @@ export default function Settings() {
     name: "John Doe",
     email: "john@example.com",
     level: "intermediate" as "beginner" | "intermediate" | "advanced",
-    timezone: "UTC-5"
+    timezone: "UTC-5",
+    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+  });
+
+  const [profilePicture, setProfilePicture] = useState({
+    preview: null as string | null,
+    file: null as File | null,
+    isUploading: false,
+    showUploadModal: false
   });
 
   const [reminderSettings, setReminderSettings] = useState({
@@ -54,6 +67,88 @@ export default function Settings() {
       showSuccess("Profile updated successfully!");
     } catch {
       showError("Failed to save profile");
+    }
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        showError("Please select an image file");
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showError("Image size must be less than 5MB");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfilePicture(prev => ({
+          ...prev,
+          file,
+          preview: e.target?.result as string,
+          showUploadModal: true
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveProfilePicture = async () => {
+    if (!profilePicture.file) return;
+
+    setProfilePicture(prev => ({ ...prev, isUploading: true }));
+    
+    try {
+      // Mock API call for image upload
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Update profile with new avatar URL
+      setProfile(prev => ({
+        ...prev,
+        avatarUrl: profilePicture.preview || prev.avatarUrl
+      }));
+      
+      setProfilePicture({
+        preview: null,
+        file: null,
+        isUploading: false,
+        showUploadModal: false
+      });
+      
+      showSuccess("Profile picture updated successfully!");
+    } catch {
+      showError("Failed to upload profile picture");
+      setProfilePicture(prev => ({ ...prev, isUploading: false }));
+    }
+  };
+
+  const handleCancelProfilePicture = () => {
+    setProfilePicture({
+      preview: null,
+      file: null,
+      isUploading: false,
+      showUploadModal: false
+    });
+  };
+
+  const handleRemoveProfilePicture = async () => {
+    try {
+      // Mock API call to remove profile picture
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setProfile(prev => ({
+        ...prev,
+        avatarUrl: ""
+      }));
+      
+      showSuccess("Profile picture removed successfully!");
+    } catch {
+      showError("Failed to remove profile picture");
     }
   };
 
@@ -167,7 +262,67 @@ export default function Settings() {
             Profile Settings
           </h2>
           
-          <div className="space-y-6 max-w-2xl">
+          <div className="space-y-8 max-w-2xl">
+            {/* Profile Picture Section */}
+            <div className="space-y-4">
+              <Label className="text-lg font-semibold text-slate-700 dark:text-slate-300">Profile Picture</Label>
+              
+              <div className="flex items-center gap-6">
+                {/* Current Avatar */}
+                <div className="relative group">
+                  <Avatar className="h-24 w-24 ring-4 ring-slate-200 dark:ring-slate-600 shadow-lg">
+                    <AvatarImage src={profile.avatarUrl} alt={profile.name} />
+                    <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-2xl font-bold">
+                      {profile.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  {/* Upload Overlay */}
+                  <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Camera className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+                
+                {/* Upload Controls */}
+                <div className="flex-1 space-y-3">
+                  <div className="flex gap-3">
+                    <label htmlFor="avatar-upload" className="flex-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full h-10 text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                      >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Upload New Photo
+                      </Button>
+                      <input
+                        id="avatar-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                    
+                    {profile.avatarUrl && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleRemoveProfilePicture}
+                        className="h-10 px-4 text-sm font-semibold border-2 border-red-200 dark:border-red-800 hover:border-red-400 hover:ring-4 hover:ring-red-400/20 rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 text-red-600 dark:text-red-400"
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    JPG, PNG or GIF. Max size 5MB. Recommended: 200x200px
+                  </p>
+                </div>
+              </div>
+            </div>
             <div className="space-y-3">
               <Label htmlFor="name" className="text-sm font-semibold text-slate-700 dark:text-slate-300">Full Name</Label>
               <Input
@@ -386,6 +541,83 @@ export default function Settings() {
       </section>
         </div>
       </div>
+
+      {/* Profile Picture Upload Modal */}
+      {profilePicture.showUploadModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-700">
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">
+                  Confirm New Profile Picture
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Preview your new profile picture before saving
+                </p>
+              </div>
+              
+              {/* Preview */}
+              <div className="flex justify-center">
+                <Avatar className="h-32 w-32 ring-4 ring-slate-200 dark:ring-slate-600 shadow-lg">
+                  <AvatarImage src={profilePicture.preview || ""} alt="Preview" />
+                  <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-3xl font-bold">
+                    {profile.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              
+              {/* File Info */}
+              {profilePicture.file && (
+                <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center">
+                      <Camera className="h-5 w-5 text-brand" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
+                        {profilePicture.file.name}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {(profilePicture.file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Actions */}
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={handleCancelProfilePicture}
+                  disabled={profilePicture.isUploading}
+                  className="flex-1 h-11 text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-slate-300 hover:ring-4 hover:ring-slate-300/20 rounded-xl transition-all duration-300"
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveProfilePicture}
+                  disabled={profilePicture.isUploading}
+                  className="flex-1 h-11 text-sm font-semibold bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:transform-none rounded-xl"
+                >
+                  {profilePicture.isUploading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="h-4 w-4 mr-2" />
+                      Save Picture
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
