@@ -47,7 +47,7 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen relative bg-[var(--bg)]">
+    <div className="min-h-screen relative bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,rgba(99,102,241,0.08),transparent),radial-gradient(800px_400px_at_100%_20%,rgba(147,51,234,0.08),transparent)]" />
         <div className="absolute inset-0 [mask-image:radial-gradient(closest-side,white,transparent)] opacity-[0.06]" style={{backgroundImage:"linear-gradient(to_right,rgba(0,0,0,.6)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,.6)_1px,transparent_1px)",backgroundSize:"56px_56px"}} />
