@@ -217,15 +217,15 @@ export function GoalCard({ goal }: GoalCardProps) {
               </div>
             )}
             
-            {/* Streak Section - Only show if there's an active streak */}
-            {goal.currentStreak && goal.currentStreak > 0 && (
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-md flex items-center justify-center">
-                  <TrendingUp className="h-3 w-3 text-white" />
-                </div>
-                <span className="font-medium text-slate-600 dark:text-slate-400">
-                  {goal.currentStreak} day streak
-                </span>
+            {/* Streak Section */}
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-md flex items-center justify-center">
+                <TrendingUp className="h-3 w-3 text-white" />
+              </div>
+              <span className="font-medium text-slate-600 dark:text-slate-400">
+                {goal.currentStreak && goal.currentStreak > 0 ? `${goal.currentStreak} day streak` : 'No active streak'}
+              </span>
+              {goal.currentStreak && goal.currentStreak > 0 && (
                 <div className="flex items-center gap-1 ml-2">
                   {[...Array(Math.min(goal.currentStreak, 7))].map((_, i) => (
                     <div key={i} className="w-2 h-2 bg-emerald-500 rounded-full"></div>
@@ -236,8 +236,8 @@ export function GoalCard({ goal }: GoalCardProps) {
                     </span>
                   )}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
