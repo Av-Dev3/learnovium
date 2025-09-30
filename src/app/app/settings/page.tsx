@@ -17,7 +17,6 @@ import {
   Mail,
   Smartphone,
   Camera,
-  Upload,
   X,
   Check
 } from "lucide-react";
@@ -26,6 +25,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useReminders } from "@/app/lib/hooks";
 import { useProfile } from "@/app/lib/hooks/useProfile";
 import { success as showSuccess, error as showError } from "@/app/lib/toast";
+import { ImageCropper } from "@/components/ui/image-cropper";
+import { DragDropUpload } from "@/components/ui/drag-drop-upload";
 
 export default function Settings() {
   const { 
@@ -52,7 +53,9 @@ export default function Settings() {
     preview: null as string | null,
     file: null as File | null,
     isUploading: false,
-    showUploadModal: false
+    showUploadModal: false,
+    showCropper: false,
+    originalFile: null as File | null
   });
 
   const [reminderSettings, setReminderSettings] = useState({
@@ -99,32 +102,71 @@ export default function Settings() {
     }
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        showError("Please select an image file");
-        return;
-      }
-      
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        showError("Image size must be less than 5MB");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfilePicture(prev => ({
-          ...prev,
-          file,
-          preview: e.target?.result as string,
-          showUploadModal: true
-        }));
-      };
-      reader.readAsDataURL(file);
+  const handleImageUpload = (file: File) => {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      showError("Please select an image file");
+      return;
     }
+    
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showError("Image size must be less than 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setProfilePicture(prev => ({
+        ...prev,
+        originalFile: file,
+        preview: e.target?.result as string,
+        showCropper: true
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+
+  const handleCropComplete = async (croppedImageBlob: Blob) => {
+    setProfilePicture(prev => ({ ...prev, isUploading: true, showCropper: false }));
+
+    try {
+      // Convert Blob to File
+      const croppedFile = new File([croppedImageBlob], 'cropped-avatar.jpg', {
+        type: 'image/jpeg',
+        lastModified: Date.now(),
+      });
+      
+      const success = await uploadAvatar(croppedFile);
+      if (success) {
+        showSuccess("Profile picture updated successfully!");
+        setProfilePicture(prev => ({ 
+          ...prev, 
+          isUploading: false, 
+          showUploadModal: false,
+          file: null,
+          preview: null,
+          originalFile: null
+        }));
+      } else {
+        showError("Failed to update profile picture");
+        setProfilePicture(prev => ({ ...prev, isUploading: false }));
+      }
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      showError("Error uploading profile picture");
+      setProfilePicture(prev => ({ ...prev, isUploading: false }));
+    }
+  };
+
+  const handleCropCancel = () => {
+    setProfilePicture(prev => ({ 
+      ...prev, 
+      showCropper: false,
+      originalFile: null,
+      preview: null
+    }));
   };
 
   const handleSaveProfilePicture = async () => {
@@ -140,7 +182,9 @@ export default function Settings() {
           preview: null,
           file: null,
           isUploading: false,
-          showUploadModal: false
+          showUploadModal: false,
+          showCropper: false,
+          originalFile: null
         });
         
         showSuccess("Profile picture updated successfully!");
@@ -159,7 +203,9 @@ export default function Settings() {
       preview: null,
       file: null,
       isUploading: false,
-      showUploadModal: false
+      showUploadModal: false,
+      showCropper: false,
+      originalFile: null
     });
   };
 
@@ -289,12 +335,12 @@ export default function Settings() {
           
           <div className="space-y-8 max-w-2xl">
             {/* Profile Picture Section */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               <Label className="text-lg font-semibold text-slate-700 dark:text-slate-300">Profile Picture</Label>
               
-              <div className="flex items-center gap-6">
+              <div className="flex items-start gap-6">
                 {/* Current Avatar */}
-                <div className="relative group cursor-pointer" onClick={() => document.getElementById('avatar-upload')?.click()}>
+                <div className="relative group">
                   <Avatar className="h-24 w-24 ring-4 ring-slate-200 dark:ring-slate-600 shadow-lg">
                     <AvatarImage src={profile?.avatarUrl || ""} alt={profile?.name || "User"} />
                     <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-2xl font-bold">
@@ -303,47 +349,33 @@ export default function Settings() {
                   </Avatar>
                   
                   {/* Upload Overlay */}
-                  <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
                     <Camera className="h-6 w-6 text-white" />
                   </div>
                 </div>
                 
                 {/* Upload Controls */}
-                <div className="flex-1 space-y-3">
-                  <div className="flex gap-3">
+                <div className="flex-1 space-y-4">
+                  {/* Drag and Drop Upload */}
+                  <DragDropUpload
+                    onFileSelect={handleImageUpload}
+                    accept="image/*"
+                    maxSize={5}
+                    className="max-w-md"
+                  />
+                  
+                  {/* Remove Button */}
+                  {profile?.avatarUrl && (
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => document.getElementById('avatar-upload')?.click()}
-                      className="flex-1 h-10 text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                      onClick={handleRemoveProfilePicture}
+                      className="h-10 px-4 text-sm font-semibold border-2 border-red-200 dark:border-red-800 hover:border-red-400 hover:ring-4 hover:ring-red-400/20 rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 text-red-600 dark:text-red-400"
                     >
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload New Photo
+                      <X className="h-4 w-4 mr-2" />
+                      Remove Current Photo
                     </Button>
-                    <input
-                      id="avatar-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                    
-                    {profile?.avatarUrl && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleRemoveProfilePicture}
-                        className="h-10 px-4 text-sm font-semibold border-2 border-red-200 dark:border-red-800 hover:border-red-400 hover:ring-4 hover:ring-red-400/20 rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105 text-red-600 dark:text-red-400"
-                      >
-                        <X className="h-4 w-4 mr-2" />
-                        Remove
-                      </Button>
-                    )}
-                  </div>
-                  
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    JPG, PNG or GIF. Max size 5MB. Recommended: 200x200px
-                  </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -649,6 +681,50 @@ export default function Settings() {
                   )}
                 </Button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Cropper Modal */}
+      {profilePicture.showCropper && profilePicture.preview && (
+        <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-indigo-900/20 to-cyan-900/20 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          {/* Animated background elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl animate-pulse" />
+          </div>
+          
+          <div className="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-white/20 dark:border-slate-700/50 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="relative p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-3xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-xl">
+                    <Camera className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">Crop Your Photo</h3>
+                    <p className="text-indigo-100 text-sm">Position and resize your image</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleCropCancel}
+                  className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Cropper Content */}
+            <div className="p-6">
+              <ImageCropper
+                src={profilePicture.preview}
+                onCropComplete={handleCropComplete}
+                onCancel={handleCropCancel}
+                aspectRatio={1}
+              />
             </div>
           </div>
         </div>
