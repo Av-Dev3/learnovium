@@ -27,17 +27,60 @@ interface LessonCardProps {
 }
 
 export function LessonCard({ lesson, onStart }: LessonCardProps) {
+  // Generate consistent color theme based on lesson ID
+  const getColorTheme = (lessonId: string) => {
+    const colors = [
+      {
+        bg: 'from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20',
+        border: 'border-blue-200/50 dark:border-blue-800/30',
+        icon: 'from-blue-500 to-indigo-600',
+        text: 'text-blue-700 dark:text-blue-300',
+        accent: 'text-blue-600 dark:text-blue-400'
+      },
+      {
+        bg: 'from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20',
+        border: 'border-emerald-200/50 dark:border-emerald-800/30',
+        icon: 'from-emerald-500 to-green-600',
+        text: 'text-emerald-700 dark:text-emerald-300',
+        accent: 'text-emerald-600 dark:text-emerald-400'
+      },
+      {
+        bg: 'from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20',
+        border: 'border-purple-200/50 dark:border-purple-800/30',
+        icon: 'from-purple-500 to-violet-600',
+        text: 'text-purple-700 dark:text-purple-300',
+        accent: 'text-purple-600 dark:text-purple-400'
+      },
+      {
+        bg: 'from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20',
+        border: 'border-orange-200/50 dark:border-orange-800/30',
+        icon: 'from-orange-500 to-amber-600',
+        text: 'text-orange-700 dark:text-orange-300',
+        accent: 'text-orange-600 dark:text-orange-400'
+      }
+    ];
+    
+    // Use lesson ID to consistently pick a color
+    const hash = lessonId.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    return colors[Math.abs(hash) % colors.length];
+  };
+
+  const colorTheme = getColorTheme(lesson.id);
+
   return (
-    <div className="group relative overflow-hidden rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-slate-400/60">
+    <div className={`group relative overflow-hidden rounded-3xl bg-gradient-to-br ${colorTheme.bg} backdrop-blur-sm border ${colorTheme.border} hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-slate-400/60`}>
       <div className="relative p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               {lesson.day_index && (
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200/50 dark:border-blue-800/30 rounded-full">
+                <div className={`flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r ${colorTheme.bg} border ${colorTheme.border} rounded-full`}>
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
+                  <span className={`text-xs font-semibold ${colorTheme.text} uppercase tracking-wider`}>
                     Day {lesson.day_index}
                   </span>
                 </div>
@@ -132,7 +175,7 @@ export function LessonCard({ lesson, onStart }: LessonCardProps) {
           {!lesson.completed ? (
             <Button 
               onClick={() => onStart?.(lesson.id)} 
-              className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl py-3"
+              className={`flex-1 bg-gradient-to-r ${colorTheme.icon} hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl py-3`}
             >
               Start Lesson
             </Button>
