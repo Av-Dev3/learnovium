@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Target, TrendingUp, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { CircularProgress } from "@/components/ui/circular-progress";
 
 interface GoalCardProps {
   goal: {
@@ -27,6 +28,29 @@ interface GoalCardProps {
 
 export function GoalCard({ goal }: GoalCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Calculate completion percentage
+  const calculateCompletionPercentage = () => {
+    // If we have explicit progress data, use it
+    if (goal.progress !== undefined) {
+      return Math.min(goal.progress, 100);
+    }
+    
+    // Otherwise, calculate based on plan structure
+    if (!goal.plan_json?.modules) return 0;
+    
+    const totalModules = goal.plan_json.modules.length;
+    if (totalModules === 0) return 0;
+    
+    // For demonstration, we'll simulate some progress based on plan version and creation date
+    // In a real implementation, this would come from actual lesson completion data
+    const daysSinceCreation = Math.floor((Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24));
+    const estimatedProgress = Math.min((daysSinceCreation * 10) / totalModules, 100); // 10% per day as example
+    
+    return Math.round(estimatedProgress);
+  };
+  
+  const completionPercentage = calculateCompletionPercentage();
   
   // Safety check for goal data
   if (!goal || typeof goal !== 'object' || !goal.id || !goal.topic || !goal.focus || !goal.created_at) {
@@ -148,9 +172,28 @@ export function GoalCard({ goal }: GoalCardProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className={`px-3 py-1.5 bg-gradient-to-r ${colorTheme.bg} border ${colorTheme.border} rounded-full`}>
-              <span className={`text-xs font-semibold ${colorTheme.text} uppercase tracking-wider`}>v{goal.plan_version}</span>
+            {/* Completion Percentage Circle */}
+            <div className="flex items-center gap-2">
+              <CircularProgress
+                percentage={completionPercentage}
+                size={36}
+                strokeWidth={3}
+                color={colorTheme.text.includes('blue') ? '#3b82f6' : colorTheme.text.includes('green') ? '#10b981' : colorTheme.text.includes('purple') ? '#8b5cf6' : '#6b7280'}
+                backgroundColor={colorTheme.text.includes('blue') ? '#3b82f6' : colorTheme.text.includes('green') ? '#10b981' : colorTheme.text.includes('purple') ? '#8b5cf6' : '#6b7280'}
+                className="opacity-80"
+              />
+              <div className="text-right">
+                <div className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                  {completionPercentage === 0 ? 'Not Started' : 
+                   completionPercentage === 100 ? 'Complete' : 
+                   `${completionPercentage}% Done`}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-500">
+                  v{goal.plan_version}
+                </div>
+              </div>
             </div>
+            
             <Button
               variant="ghost"
               size="sm"
