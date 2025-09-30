@@ -276,12 +276,25 @@ function UserMenu() {
         
         // Fetch profile data if user exists
         if (user) {
-          const { data: profileData } = await supabase
-            .from("profiles")
-            .select("avatar_url, name")
-            .eq("id", user.id)
-            .single();
-          setProfile(profileData);
+          try {
+            const { data: profileData, error: profileError } = await supabase
+              .from("profiles")
+              .select("avatar_url, name")
+              .eq("id", user.id)
+              .single();
+            
+            if (profileError) {
+              console.error("Error fetching profile:", profileError);
+              // Set empty profile to avoid repeated requests
+              setProfile({ avatar_url: undefined, name: undefined });
+            } else {
+              setProfile(profileData);
+            }
+          } catch (error) {
+            console.error("Profile fetch failed:", error);
+            // Set empty profile to avoid repeated requests
+            setProfile({ avatar_url: undefined, name: undefined });
+          }
         }
       } catch (error) {
         console.error("Error getting user:", error);
@@ -505,12 +518,25 @@ function MobileUserMenu() {
         
         // Fetch profile data if user exists
         if (user) {
-          const { data: profileData } = await supabase
-            .from("profiles")
-            .select("avatar_url, name")
-            .eq("id", user.id)
-            .single();
-          setProfile(profileData);
+          try {
+            const { data: profileData, error: profileError } = await supabase
+              .from("profiles")
+              .select("avatar_url, name")
+              .eq("id", user.id)
+              .single();
+            
+            if (profileError) {
+              console.error("Error fetching profile:", profileError);
+              // Set empty profile to avoid repeated requests
+              setProfile({ avatar_url: undefined, name: undefined });
+            } else {
+              setProfile(profileData);
+            }
+          } catch (error) {
+            console.error("Profile fetch failed:", error);
+            // Set empty profile to avoid repeated requests
+            setProfile({ avatar_url: undefined, name: undefined });
+          }
         }
       } catch (error) {
         console.error("Error getting user:", error);
