@@ -50,6 +50,7 @@ function useScrollAnimation() {
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const [profile, setProfile] = useState<{ avatar_url?: string; name?: string } | null>(null);
   const animatedElements = useScrollAnimation();
 
   useEffect(() => {
@@ -60,6 +61,16 @@ export default function Home() {
         const { data: { session } } = await supabase.auth.getSession();
         setIsAuthenticated(!!session);
         setUser(session?.user || null);
+        
+        // Fetch profile data if user exists
+        if (session?.user) {
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("avatar_url, name")
+            .eq("id", session.user.id)
+            .single();
+          setProfile(profileData);
+        }
       } catch (err) {
         console.error('Auth check error:', err);
       }
@@ -74,8 +85,8 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 overflow-x-hidden">
       <AppHeader 
         isLoggedIn={isAuthenticated} 
-        userName={user?.email || "Guest"}
-        userAvatarUrl={user?.user_metadata?.avatar_url}
+        userName={profile?.name || user?.email || "Guest"}
+        userAvatarUrl={profile?.avatar_url || user?.user_metadata?.avatar_url}
       />
 
       {/* Hero Section */}

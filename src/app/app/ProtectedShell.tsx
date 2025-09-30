@@ -263,7 +263,8 @@ function MobileAppNav() {
 function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
-  const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const [user, setUser] = useState<{ id?: string; email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const [profile, setProfile] = useState<{ avatar_url?: string; name?: string } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -272,12 +273,44 @@ function UserMenu() {
         const supabase = supabaseBrowser();
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
+        
+        // Fetch profile data if user exists
+        if (user) {
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("avatar_url, name")
+            .eq("id", user.id)
+            .single();
+          setProfile(profileData);
+        }
       } catch (error) {
         console.error("Error getting user:", error);
       }
     };
     getUser();
-  }, []);
+
+    // Listen for profile updates
+    const supabase = supabaseBrowser();
+    const channel = supabase
+      .channel('profile-changes')
+      .on('postgres_changes', 
+        { 
+          event: 'UPDATE', 
+          schema: 'public', 
+          table: 'profiles' 
+        }, 
+        (payload: { new: { id: string; avatar_url?: string; name?: string } }) => {
+          if (user && payload.new.id === user.id) {
+            setProfile(payload.new);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   const handleSignOut = async () => {
     try {
@@ -311,7 +344,7 @@ function UserMenu() {
         onClick={toggleMenu}
       >
         <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300 pointer-events-none">
-          <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />
+          <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={user?.email} />
           <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
             {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
           </AvatarFallback>
@@ -459,7 +492,8 @@ function UserMenu() {
 }
 
 function MobileUserMenu() {
-  const [user, setUser] = useState<{ email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const [user, setUser] = useState<{ id?: string; email?: string; user_metadata?: { avatar_url?: string } } | null>(null);
+  const [profile, setProfile] = useState<{ avatar_url?: string; name?: string } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -468,6 +502,16 @@ function MobileUserMenu() {
         const supabase = supabaseBrowser();
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
+        
+        // Fetch profile data if user exists
+        if (user) {
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("avatar_url, name")
+            .eq("id", user.id)
+            .single();
+          setProfile(profileData);
+        }
       } catch (error) {
         console.error("Error getting user:", error);
       }
@@ -496,7 +540,7 @@ function MobileUserMenu() {
         <div className="relative flex items-center space-x-4">
           <div className="relative">
             <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
-              <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />
+              <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={user?.email} />
               <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
                 {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
               </AvatarFallback>
