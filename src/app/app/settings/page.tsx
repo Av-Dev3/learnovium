@@ -294,7 +294,7 @@ export default function Settings() {
               
               <div className="flex items-center gap-6">
                 {/* Current Avatar */}
-                <div className="relative group">
+                <div className="relative group cursor-pointer" onClick={() => document.getElementById('avatar-upload')?.click()}>
                   <Avatar className="h-24 w-24 ring-4 ring-slate-200 dark:ring-slate-600 shadow-lg">
                     <AvatarImage src={profile?.avatarUrl || ""} alt={profile?.name || "User"} />
                     <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-2xl font-bold">
@@ -311,23 +311,22 @@ export default function Settings() {
                 {/* Upload Controls */}
                 <div className="flex-1 space-y-3">
                   <div className="flex gap-3">
-                    <label htmlFor="avatar-upload" className="flex-1">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full h-10 text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
-                      >
-                        <Upload className="h-4 w-4 mr-2" />
-                        Upload New Photo
-                      </Button>
-                      <input
-                        id="avatar-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById('avatar-upload')?.click()}
+                      className="flex-1 h-10 text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload New Photo
+                    </Button>
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
                     
                     {profile?.avatarUrl && (
                       <Button
