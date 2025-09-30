@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     const filePath = `avatars/${fileName}`;
 
     // Upload to Supabase Storage
+    console.log("Attempting to upload to bucket 'avatars' with path:", filePath);
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("avatars")
       .upload(filePath, file, {
@@ -44,7 +45,17 @@ export async function POST(req: NextRequest) {
 
     if (uploadError) {
       console.error("Error uploading file:", uploadError);
-      return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+      
+      // Check if it's a bucket not found error
+      if (uploadError.message?.includes("Bucket not found") || uploadError.message?.includes("not found")) {
+        return NextResponse.json({ 
+          error: "Storage bucket 'avatars' not found. Please create it in Supabase Storage settings." 
+        }, { status: 500 });
+      }
+      
+      return NextResponse.json({ 
+        error: `Failed to upload file: ${uploadError.message}` 
+      }, { status: 500 });
     }
 
     // Get public URL
