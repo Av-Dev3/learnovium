@@ -223,9 +223,9 @@ export function GoalCard({ goal }: GoalCardProps) {
                 <TrendingUp className="h-3 w-3 text-white" />
               </div>
               <span className="font-medium text-slate-600 dark:text-slate-400">
-                {goal.currentStreak !== undefined && goal.currentStreak > 0 ? `${goal.currentStreak} day streak` : 'No active streak'}
+                {goal.currentStreak > 0 ? `${goal.currentStreak} day streak` : 'No active streak'}
               </span>
-              {goal.currentStreak && goal.currentStreak > 0 && (
+              {goal.currentStreak > 0 && (
                 <div className="flex items-center gap-1 ml-2">
                   {[...Array(Math.min(goal.currentStreak, 7))].map((_, i) => (
                     <div key={i} className="w-2 h-2 bg-emerald-500 rounded-full"></div>
