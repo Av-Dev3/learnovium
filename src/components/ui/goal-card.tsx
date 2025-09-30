@@ -173,23 +173,24 @@ export function GoalCard({ goal }: GoalCardProps) {
           </div>
           <div className="flex items-center gap-2">
             {/* Completion Percentage Circle */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <CircularProgress
                 percentage={completionPercentage}
-                size={36}
-                strokeWidth={3}
-                color={colorTheme.text.includes('blue') ? '#3b82f6' : colorTheme.text.includes('green') ? '#10b981' : colorTheme.text.includes('purple') ? '#8b5cf6' : '#6b7280'}
-                backgroundColor={colorTheme.text.includes('blue') ? '#3b82f6' : colorTheme.text.includes('green') ? '#10b981' : colorTheme.text.includes('purple') ? '#8b5cf6' : '#6b7280'}
-                className="opacity-80"
+                size={40}
+                strokeWidth={4}
+                color={completionPercentage === 0 ? '#ef4444' : 
+                       completionPercentage === 100 ? '#10b981' : 
+                       completionPercentage >= 50 ? '#f59e0b' : '#3b82f6'}
+                backgroundColor={completionPercentage === 0 ? '#ef4444' : 
+                               completionPercentage === 100 ? '#10b981' : 
+                               completionPercentage >= 50 ? '#f59e0b' : '#3b82f6'}
+                className="opacity-90"
               />
               <div className="text-right">
-                <div className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                   {completionPercentage === 0 ? 'Not Started' : 
                    completionPercentage === 100 ? 'Complete' : 
                    `${completionPercentage}% Done`}
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-500">
-                  v{goal.plan_version}
                 </div>
               </div>
             </div>
