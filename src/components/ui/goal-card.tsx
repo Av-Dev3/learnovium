@@ -217,19 +217,29 @@ export function GoalCard({ goal }: GoalCardProps) {
               </div>
             )}
             
-            {/* Streak Counter */}
-            {goal.currentStreak && goal.currentStreak > 0 && (
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                  <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-md flex items-center justify-center">
-                    <TrendingUp className="h-3 w-3 text-white" />
-                  </div>
-                  <span className="font-medium">
-                    {goal.currentStreak} day streak
-                  </span>
+            {/* Streak Section */}
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-md flex items-center justify-center">
+                  <TrendingUp className="h-3 w-3 text-white" />
                 </div>
+                <span className="font-medium">
+                  {goal.currentStreak && goal.currentStreak > 0 ? `${goal.currentStreak} day streak` : 'No active streak'}
+                </span>
               </div>
-            )}
+              {goal.currentStreak && goal.currentStreak > 0 && (
+                <div className="flex items-center gap-1">
+                  {[...Array(Math.min(goal.currentStreak, 7))].map((_, i) => (
+                    <div key={i} className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                  ))}
+                  {goal.currentStreak > 7 && (
+                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
+                      +{goal.currentStreak - 7}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
