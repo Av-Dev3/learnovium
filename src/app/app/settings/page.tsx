@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LoadingState } from "@/components/ui/loading-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { Button } from "@/components/ui/button";
@@ -24,26 +24,29 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useReminders } from "@/app/lib/hooks";
+import { useProfile } from "@/app/lib/hooks/useProfile";
 import { success as showSuccess, error as showError } from "@/app/lib/toast";
 
 export default function Settings() {
   const { 
     reminders, 
-    isLoading, 
-    isError, 
-    error, 
+    isLoading: remindersLoading, 
+    isError: remindersError, 
+    error: remindersErrorMsg, 
     saveReminder, 
     isSaving, 
     saveError 
   } = useReminders();
 
-  const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    level: "intermediate" as "beginner" | "intermediate" | "advanced",
-    timezone: "UTC-5",
-    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-  });
+  const {
+    profile,
+    isLoading: profileLoading,
+    isError: profileError,
+    error: profileErrorMsg,
+    updateProfile,
+    uploadAvatar,
+    removeAvatar
+  } = useProfile();
 
   const [profilePicture, setProfilePicture] = useState({
     preview: null as string | null,
@@ -59,12 +62,38 @@ export default function Settings() {
     channel: reminders?.channel ?? "email" as "email" | "push" | "both"
   });
 
+  const [profileForm, setProfileForm] = useState({
+    name: "",
+    email: "",
+    level: "beginner" as "beginner" | "intermediate" | "advanced",
+    timezone: "UTC-5"
+  });
+
+  // Update form when profile data loads
+  useEffect(() => {
+    if (profile) {
+      setProfileForm({
+        name: profile.name || "",
+        email: profile.email || "",
+        level: profile.level || "beginner",
+        timezone: profile.timezone || "UTC-5"
+      });
+    }
+  }, [profile]);
+
   const handleProfileSave = async () => {
     try {
-      // Mock API call for profile update
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const success = await updateProfile({
+        level: profileForm.level,
+        timezone: profileForm.timezone,
+        minutesPerDay: 30 // Default value, could be made configurable later
+      });
       
-      showSuccess("Profile updated successfully!");
+      if (success) {
+        showSuccess("Profile updated successfully!");
+      } else {
+        showError("Failed to save profile");
+      }
     } catch {
       showError("Failed to save profile");
     }
@@ -104,25 +133,23 @@ export default function Settings() {
     setProfilePicture(prev => ({ ...prev, isUploading: true }));
     
     try {
-      // Mock API call for image upload
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const success = await uploadAvatar(profilePicture.file);
       
-      // Update profile with new avatar URL
-      setProfile(prev => ({
-        ...prev,
-        avatarUrl: profilePicture.preview || prev.avatarUrl
-      }));
-      
-      setProfilePicture({
-        preview: null,
-        file: null,
-        isUploading: false,
-        showUploadModal: false
-      });
-      
-      showSuccess("Profile picture updated successfully!");
+      if (success) {
+        setProfilePicture({
+          preview: null,
+          file: null,
+          isUploading: false,
+          showUploadModal: false
+        });
+        
+        showSuccess("Profile picture updated successfully!");
+      } else {
+        showError("Failed to upload profile picture");
+      }
     } catch {
       showError("Failed to upload profile picture");
+    } finally {
       setProfilePicture(prev => ({ ...prev, isUploading: false }));
     }
   };
@@ -138,15 +165,13 @@ export default function Settings() {
 
   const handleRemoveProfilePicture = async () => {
     try {
-      // Mock API call to remove profile picture
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const success = await removeAvatar();
       
-      setProfile(prev => ({
-        ...prev,
-        avatarUrl: ""
-      }));
-      
-      showSuccess("Profile picture removed successfully!");
+      if (success) {
+        showSuccess("Profile picture removed successfully!");
+      } else {
+        showError("Failed to remove profile picture");
+      }
     } catch {
       showError("Failed to remove profile picture");
     }
@@ -171,7 +196,7 @@ export default function Settings() {
     }
   };
 
-  if (isLoading) {
+  if (profileLoading || remindersLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -217,12 +242,12 @@ export default function Settings() {
     );
   }
 
-  if (isError) {
+  if (profileError || remindersError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 flex items-center justify-center">
         <ErrorState
           title="Settings Error"
-          message={error?.message || "Failed to load settings"}
+          message={profileErrorMsg || remindersErrorMsg || "Failed to load settings"}
           onRetry={() => window.location.reload()}
         />
       </div>
@@ -271,9 +296,9 @@ export default function Settings() {
                 {/* Current Avatar */}
                 <div className="relative group">
                   <Avatar className="h-24 w-24 ring-4 ring-slate-200 dark:ring-slate-600 shadow-lg">
-                    <AvatarImage src={profile.avatarUrl} alt={profile.name} />
+                    <AvatarImage src={profile?.avatarUrl || ""} alt={profile?.name || "User"} />
                     <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-2xl font-bold">
-                      {profile.name.charAt(0).toUpperCase()}
+                      {(profile?.name || "U").charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   
@@ -304,7 +329,7 @@ export default function Settings() {
                       />
                     </label>
                     
-                    {profile.avatarUrl && (
+                    {profile?.avatarUrl && (
                       <Button
                         type="button"
                         variant="outline"
@@ -327,8 +352,8 @@ export default function Settings() {
               <Label htmlFor="name" className="text-sm font-semibold text-slate-700 dark:text-slate-300">Full Name</Label>
               <Input
                 id="name"
-                value={profile.name}
-                onChange={(e) => setProfile(prev => ({ ...prev, name: e.target.value }))}
+                value={profileForm.name}
+                onChange={(e) => setProfileForm(prev => ({ ...prev, name: e.target.value }))}
                 aria-describedby="name-help"
                 className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
               />
@@ -342,8 +367,8 @@ export default function Settings() {
               <Input
                 id="email"
                 type="email"
-                value={profile.email}
-                onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
+                value={profileForm.email}
+                onChange={(e) => setProfileForm(prev => ({ ...prev, email: e.target.value }))}
                 aria-describedby="email-help"
                 className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm"
               />
@@ -354,7 +379,7 @@ export default function Settings() {
             
             <div className="space-y-3">
               <Label htmlFor="level" className="text-sm font-semibold text-slate-700 dark:text-slate-300">Experience Level</Label>
-              <Select value={profile.level} onValueChange={(value) => setProfile(prev => ({ ...prev, level: value as "beginner" | "intermediate" | "advanced" }))}>
+              <Select value={profileForm.level} onValueChange={(value) => setProfileForm(prev => ({ ...prev, level: value as "beginner" | "intermediate" | "advanced" }))}>
                 <SelectTrigger className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
                   <SelectValue placeholder="Select experience level" />
                 </SelectTrigger>
@@ -371,7 +396,7 @@ export default function Settings() {
             
             <div className="space-y-3">
               <Label htmlFor="timezone" className="text-sm font-semibold text-slate-700 dark:text-slate-300">Timezone</Label>
-              <Select value={profile.timezone} onValueChange={(value) => setProfile(prev => ({ ...prev, timezone: value }))}>
+              <Select value={profileForm.timezone} onValueChange={(value) => setProfileForm(prev => ({ ...prev, timezone: value }))}>
                 <SelectTrigger className="h-12 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
                   <SelectValue placeholder="Select timezone" />
                 </SelectTrigger>
@@ -572,7 +597,7 @@ export default function Settings() {
                 <Avatar className="h-32 w-32 ring-4 ring-slate-200 dark:ring-slate-600 shadow-lg">
                   <AvatarImage src={profilePicture.preview || ""} alt="Preview" />
                   <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-3xl font-bold">
-                    {profile.name.charAt(0).toUpperCase()}
+                    {(profile?.name || "U").charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
               </div>

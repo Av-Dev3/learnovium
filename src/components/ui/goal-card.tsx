@@ -204,7 +204,7 @@ export function GoalCard({ goal }: GoalCardProps) {
                     </span>
                   </div>
                 )}
-                {isPlanOverdue && (
+                {isPlanOverdue && daysSinceCreation - totalDays > 0 && (
                   <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                     <div className="w-5 h-5 bg-gradient-to-br from-orange-400 to-orange-500 rounded-md flex items-center justify-center">
                       <Calendar className="h-3 w-3 text-white" />
@@ -223,7 +223,7 @@ export function GoalCard({ goal }: GoalCardProps) {
                 <TrendingUp className="h-3 w-3 text-white" />
               </div>
               <span className="font-medium text-slate-600 dark:text-slate-400">
-                {goal.currentStreak && goal.currentStreak > 0 ? `${goal.currentStreak} day streak` : 'No active streak'}
+                {goal.currentStreak !== undefined && goal.currentStreak > 0 ? `${goal.currentStreak} day streak` : 'No active streak'}
               </span>
               {goal.currentStreak && goal.currentStreak > 0 && (
                 <div className="flex items-center gap-1 ml-2">
