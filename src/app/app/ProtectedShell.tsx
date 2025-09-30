@@ -401,7 +401,7 @@ function UserMenu() {
                   <div className="relative flex items-center space-x-4">
                     <div className="relative">
                       <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
-                        <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email} />
+                        <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={user?.email} />
                         <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
                           {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
                         </AvatarFallback>
