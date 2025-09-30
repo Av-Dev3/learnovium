@@ -57,8 +57,16 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
     <header className="sticky top-0 z-50 w-full border-b border-[var(--border)]/40 bg-[var(--bg)]/80 backdrop-blur-xl">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Left: Logo */}
-          <div className="flex items-center space-x-4">
+          {/* Left: Logo - Hidden on mobile, shown on desktop */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Link href="/" className="flex items-center space-x-2">
+              <Logo size="lg" />
+              <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
+            </Link>
+          </div>
+
+          {/* Center: Mobile Logo - Centered on mobile */}
+          <div className="flex md:hidden flex-1 justify-center">
             <Link href="/" className="flex items-center space-x-2">
               <Logo size="lg" />
               <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
@@ -86,17 +94,112 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
           <div className="flex items-center space-x-3">
             {!isLoggedIn ? (
               <>
-                <ThemeToggle />
+                {/* Desktop Theme Toggle */}
+                <div className="hidden md:block">
+                  <ThemeToggle />
+                </div>
                 <Button variant="ghost" size="sm" shape="pill" asChild className="hidden sm:inline-flex">
                   <Link href="/auth">Sign In</Link>
                 </Button>
                 <Button size="sm" shape="pill" asChild className="bg-gradient-to-r from-brand to-purple-600 hover:opacity-95 text-white border-0 shadow-md hidden sm:inline-flex">
                   <Link href="/auth">Get Started</Link>
                 </Button>
+                {/* Mobile Theme Toggle and Menu */}
+                <div className="flex md:hidden items-center space-x-2">
+                  <ThemeToggle />
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
+                        <Menu className="h-5 w-5 text-[var(--fg)]" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-l border-[var(--border)]/60">
+                      <div className="flex flex-col h-full overflow-hidden">
+                        {/* Mobile Header - Simplified */}
+                        <div className="flex items-center p-6 border-b border-[var(--border)]/60 flex-shrink-0">
+                          <div className="flex items-center space-x-3">
+                            <Logo size="lg" />
+                            <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
+                          </div>
+                        </div>
+                        
+                        {/* Scrollable Content Area */}
+                        <div className="flex-1 overflow-y-auto">
+                          {/* Mobile Navigation */}
+                          <nav className="p-6 space-y-2">
+                            {navItems.map((item) => {
+                              const isItemActive = isActive(item.href);
+                              return (
+                                <Link
+                                  key={item.href}
+                                  href={item.href}
+                                  className={`group block p-4 rounded-2xl transition-all duration-200 ${
+                                    isItemActive
+                                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
+                                      : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50"
+                                  }`}
+                                >
+                                  <div className="flex items-center space-x-4">
+                                    <div className={`p-3 rounded-xl transition-all duration-200 ${
+                                      isItemActive ? "bg-white/20" : "bg-[var(--muted)]/50 group-hover:bg-[var(--muted)]/70"
+                                    }`}>
+                                      <div className={`w-6 h-6 rounded-full ${
+                                        isItemActive ? "bg-white" : "bg-[var(--fg,_#101010)]/60"
+                                      }`} />
+                                    </div>
+                                    <div className="flex-1">
+                                      <div className={`font-semibold text-base ${
+                                        isItemActive ? "text-white" : "text-[var(--fg,_#101010)]"
+                                      }`}>
+                                        {item.label}
+                                      </div>
+                                      <div className={`text-sm ${
+                                        isItemActive ? "text-white/80" : "text-[var(--fg,_#101010)]/50"
+                                      }`}>
+                                        Navigate to {item.label.toLowerCase()}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </nav>
+
+                          {/* Mobile Footer - Simplified */}
+                          <div className="p-6 border-t border-[var(--border)]/60">
+                            <div className="space-y-3">
+                              <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
+                                <Link href="/auth">
+                                  <div className="flex items-center justify-center space-x-2">
+                                    <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                    <span>Start Learning Free</span>
+                                  </div>
+                                </Link>
+                              </Button>
+                              
+                              <Button variant="outline" className="w-full border-2 border-[var(--border)] hover:border-brand/50 hover:bg-muted/30 transition-all duration-300 rounded-2xl py-4 text-base font-medium" asChild>
+                                <Link href="/auth/sign-in">
+                                  <div className="flex items-center justify-center space-x-2">
+                                    <div className="w-2 h-2 bg-[var(--fg)]/60 rounded-full" />
+                                    <span>Sign In</span>
+                                  </div>
+                                </Link>
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
               </>
             ) : (
               <>
-                <ThemeToggle />
+                {/* Desktop Theme Toggle */}
+                <div className="hidden md:block">
+                  <ThemeToggle />
+                </div>
                 <AdminLinkClient />
                 <div className="relative">
                   <Button
@@ -217,132 +320,113 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                   document.body
                 )}
                 </div>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Menu */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="md:hidden bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                <Menu className="h-5 w-5 text-[var(--fg)]" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-l border-[var(--border)]/60">
-              <div className="flex flex-col h-full overflow-hidden">
-                {/* Mobile Header - Simplified */}
-                <div className="flex items-center p-6 border-b border-[var(--border)]/60 flex-shrink-0">
-                  <div className="flex items-center space-x-3">
-                    <Logo size="lg" />
-                    <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
-                  </div>
-                </div>
                 
-                {/* Scrollable Content Area */}
-                <div className="flex-1 overflow-y-auto">
-                  {/* Mobile Navigation */}
-                  <nav className="p-6 space-y-2">
-                    {navItems.map((item) => {
-                      const isItemActive = isActive(item.href);
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`group block p-4 rounded-2xl transition-all duration-200 ${
-                            isItemActive
-                              ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
-                              : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50"
-                          }`}
-                        >
-                          <div className="flex items-center space-x-4">
-                            <div className={`p-3 rounded-xl transition-all duration-200 ${
-                              isItemActive ? "bg-white/20" : "bg-[var(--muted)]/50 group-hover:bg-[var(--muted)]/70"
-                            }`}>
-                              <div className={`w-6 h-6 rounded-full ${
-                                isItemActive ? "bg-white" : "bg-[var(--fg,_#101010)]/60"
-                              }`} />
-                            </div>
-                            <div className="flex-1">
-                              <div className={`font-semibold text-base ${
-                                isItemActive ? "text-white" : "text-[var(--fg,_#101010)]"
-                              }`}>
-                                {item.label}
-                              </div>
-                              <div className={`text-sm ${
-                                isItemActive ? "text-white/80" : "text-[var(--fg,_#101010)]/50"
-                              }`}>
-                                Navigate to {item.label.toLowerCase()}
-                              </div>
-                            </div>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </nav>
-
-                  {/* Mobile Footer - Simplified */}
-                  <div className="p-6 border-t border-[var(--border)]/60">
-                    {isLoggedIn ? (
-                      <div className="space-y-4">
-                        {/* Simple User Info */}
-                        <div className="flex items-center space-x-3 p-4 rounded-2xl bg-[var(--muted)]/30">
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage src={userAvatarUrl} alt={userName} />
-                            <AvatarFallback className="bg-brand text-white font-medium">
-                              {userName ? userName.charAt(0).toUpperCase() : "U"}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium text-[var(--fg)]">{userName || "User"}</p>
-                            <p className="text-sm text-[var(--fg)]/60">Signed In</p>
+                {/* Mobile Theme Toggle and Menu for logged-in users */}
+                <div className="flex md:hidden items-center space-x-2">
+                  <ThemeToggle />
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
+                        <Menu className="h-5 w-5 text-[var(--fg)]" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-l border-[var(--border)]/60">
+                      <div className="flex flex-col h-full overflow-hidden">
+                        {/* Mobile Header - Simplified */}
+                        <div className="flex items-center p-6 border-b border-[var(--border)]/60 flex-shrink-0">
+                          <div className="flex items-center space-x-3">
+                            <Logo size="lg" />
+                            <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
                           </div>
                         </div>
                         
-                        {/* Go to Dashboard */}
-                        <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
-                          <Link href="/app">
-                            <div className="flex items-center justify-center space-x-2">
-                              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                              <span>Go to Dashboard</span>
+                        {/* Scrollable Content Area */}
+                        <div className="flex-1 overflow-y-auto">
+                          {/* Mobile Navigation */}
+                          <nav className="p-6 space-y-2">
+                            {navItems.map((item) => {
+                              const isItemActive = isActive(item.href);
+                              return (
+                                <Link
+                                  key={item.href}
+                                  href={item.href}
+                                  className={`group block p-4 rounded-2xl transition-all duration-200 ${
+                                    isItemActive
+                                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
+                                      : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50"
+                                  }`}
+                                >
+                                  <div className="flex items-center space-x-4">
+                                    <div className={`p-3 rounded-xl transition-all duration-200 ${
+                                      isItemActive ? "bg-white/20" : "bg-[var(--muted)]/50 group-hover:bg-[var(--muted)]/70"
+                                    }`}>
+                                      <div className={`w-6 h-6 rounded-full ${
+                                        isItemActive ? "bg-white" : "bg-[var(--fg,_#101010)]/60"
+                                      }`} />
+                                    </div>
+                                    <div className="flex-1">
+                                      <div className={`font-semibold text-base ${
+                                        isItemActive ? "text-white" : "text-[var(--fg,_#101010)]"
+                                      }`}>
+                                        {item.label}
+                                      </div>
+                                      <div className={`text-sm ${
+                                        isItemActive ? "text-white/80" : "text-[var(--fg,_#101010)]/50"
+                                      }`}>
+                                        Navigate to {item.label.toLowerCase()}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </nav>
+
+                          {/* Mobile Footer - User Info */}
+                          <div className="p-6 border-t border-[var(--border)]/60">
+                            <div className="space-y-4">
+                              {/* Simple User Info */}
+                              <div className="flex items-center space-x-3 p-4 rounded-2xl bg-[var(--muted)]/30">
+                                <Avatar className="h-12 w-12">
+                                  <AvatarImage src={userAvatarUrl} alt={userName} />
+                                  <AvatarFallback className="bg-brand text-white font-medium">
+                                    {userName ? userName.charAt(0).toUpperCase() : "U"}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-medium text-[var(--fg)]">{userName || "User"}</p>
+                                  <p className="text-sm text-[var(--fg)]/60">Signed In</p>
+                                </div>
+                              </div>
+                              
+                              {/* Go to Dashboard */}
+                              <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
+                                <Link href="/app">
+                                  <div className="flex items-center justify-center space-x-2">
+                                    <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                    <span>Go to Dashboard</span>
+                                  </div>
+                                </Link>
+                              </Button>
+                              
+                              {/* Sign Out */}
+                              <button
+                                onClick={handleSignOut}
+                                className="w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-2xl transition-colors"
+                              >
+                                Sign Out
+                              </button>
                             </div>
-                          </Link>
-                        </Button>
-                        
-                        {/* Sign Out */}
-                        <button
-                          onClick={handleSignOut}
-                          className="w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-2xl transition-colors"
-                        >
-                          Sign Out
-                        </button>
+                          </div>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
-                          <Link href="/auth">
-                            <div className="flex items-center justify-center space-x-2">
-                              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                              <span>Start Learning Free</span>
-                            </div>
-                          </Link>
-                        </Button>
-                        
-                        <Button variant="outline" className="w-full border-2 border-[var(--border)] hover:border-brand/50 hover:bg-muted/30 transition-all duration-300 rounded-2xl py-4 text-base font-medium" asChild>
-                          <Link href="/auth/sign-in">
-                            <div className="flex items-center justify-center space-x-2">
-                              <div className="w-2 h-2 bg-[var(--fg)]/60 rounded-full" />
-                              <span>Sign In</span>
-                            </div>
-                          </Link>
-                        </Button>
-                      </div>
-                    )}
-                  </div>
+                    </SheetContent>
+                  </Sheet>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>

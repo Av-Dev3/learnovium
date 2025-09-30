@@ -85,6 +85,12 @@ export default async function PlanDetailPage({
     (Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)
   );
 
+  // Calculate plan day information
+  const totalDays = plan_json?.total_days || 0;
+  const currentDay = Math.min(daysSinceCreation + 1, totalDays || daysSinceCreation + 1);
+  const isPlanComplete = totalDays > 0 && daysSinceCreation >= totalDays;
+  const isPlanOverdue = totalDays > 0 && daysSinceCreation > totalDays;
+
   return (
     <div>
       {/* Header */}
@@ -154,9 +160,17 @@ export default async function PlanDetailPage({
             </div>
             <div>
               <p className="text-2xl font-bold text-orange-600">
-                {plan_json?.total_days || 0}
+                {totalDays > 0 ? `${currentDay} / ${totalDays}` : (plan_json?.total_days || 0)}
               </p>
-              <p className="text-sm text-muted-foreground">Total Days</p>
+              <p className="text-sm text-muted-foreground">
+                {totalDays > 0 ? 'Current / Total Days' : 'Total Days'}
+                {isPlanComplete && (
+                  <span className="ml-2 text-emerald-600 font-semibold">✓ Complete</span>
+                )}
+                {isPlanOverdue && (
+                  <span className="ml-2 text-orange-600 font-semibold">+{daysSinceCreation - totalDays} days</span>
+                )}
+              </p>
             </div>
             <div>
               <p className="text-2xl font-bold text-purple-600">
@@ -182,9 +196,21 @@ export default async function PlanDetailPage({
         <div className="space-y-6">
           <div>
             <h2 className="text-2xl font-semibold mb-4">Learning Timeline</h2>
-            <p className="text-muted-foreground">
-              {plan_json.total_days} days • {plan_json.total_minutes} minutes estimated
-            </p>
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <p>
+                {totalDays > 0 ? `Day ${currentDay} of ${totalDays}` : `${plan_json.total_days} days`} • {plan_json.total_minutes} minutes estimated
+              </p>
+              {isPlanComplete && (
+                <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-semibold">
+                  ✓ Plan Complete
+                </span>
+              )}
+              {isPlanOverdue && (
+                <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-semibold">
+                  +{daysSinceCreation - totalDays} days overdue
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="space-y-4">

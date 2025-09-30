@@ -9,6 +9,7 @@ interface LessonCardProps {
     title: string;
     objective: string;
     content: string;
+    day_index?: number;
     quiz?: {
       question: string;
       options: string[];
@@ -27,18 +28,24 @@ interface LessonCardProps {
 
 export function LessonCard({ lesson, onStart }: LessonCardProps) {
   return (
-    <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-slate-100 to-gray-100 dark:from-slate-950/30 dark:via-slate-900/20 dark:to-gray-900/30 border border-slate-200/50 dark:border-slate-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-slate-400/60">
-      {/* Animated background elements */}
-      <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-slate-400/20 to-gray-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-gray-400/20 to-slate-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
-      
+    <div className="group relative overflow-hidden rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-slate-400/60">
       <div className="relative p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div className="space-y-3">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
-              {lesson.title}
-            </h3>
+            <div className="flex items-center gap-3">
+              {lesson.day_index && (
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200/50 dark:border-blue-800/30 rounded-full">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
+                    Day {lesson.day_index}
+                  </span>
+                </div>
+              )}
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
+                {lesson.title}
+              </h3>
+            </div>
             <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
               <Target className="h-4 w-4" />
               <span className="text-sm font-medium">{lesson.objective}</span>

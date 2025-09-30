@@ -14,6 +14,14 @@ interface GoalCardProps {
     created_at: string;
     progress?: number;
     currentStreak?: number;
+    plan_json?: {
+      total_days?: number;
+      modules?: Array<{
+        days: Array<{
+          day_index: number;
+        }>;
+      }>;
+    };
   };
 }
 
@@ -33,6 +41,12 @@ export function GoalCard({ goal }: GoalCardProps) {
   const daysSinceCreation = Math.ceil(
     (Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)
   );
+
+  // Calculate plan day information
+  const totalDays = goal.plan_json?.total_days || 0;
+  const currentDay = Math.min(daysSinceCreation + 1, totalDays || daysSinceCreation + 1);
+  const isPlanComplete = totalDays > 0 && daysSinceCreation >= totalDays;
+  const isPlanOverdue = totalDays > 0 && daysSinceCreation > totalDays;
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this learning plan? This action cannot be undone.")) {
@@ -61,11 +75,7 @@ export function GoalCard({ goal }: GoalCardProps) {
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-slate-100 to-gray-100 dark:from-slate-950/30 dark:via-slate-900/20 dark:to-gray-900/30 border border-slate-200/50 dark:border-slate-800/30 hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-slate-400/60">
-      {/* Animated background elements */}
-      <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-slate-400/20 to-gray-500/20 rounded-full blur-lg group-hover:scale-150 transition-transform duration-700" />
-      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-gray-400/20 to-slate-500/20 rounded-full blur-lg group-hover:scale-125 transition-transform duration-700" />
-      
+    <div className="group relative overflow-hidden rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/50 hover:shadow-xl hover:scale-105 transition-all duration-300 hover:border-slate-400/60">
       <div className="relative p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
@@ -115,21 +125,52 @@ export function GoalCard({ goal }: GoalCardProps) {
           )}
           
           {/* Stats Row */}
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-              <div className="w-5 h-5 bg-gradient-to-br from-slate-400 to-slate-500 rounded-md flex items-center justify-center">
-                <Calendar className="h-3 w-3 text-white" />
-              </div>
-              <span className="font-medium">{daysSinceCreation} days</span>
-            </div>
-            {goal.currentStreak && goal.currentStreak > 0 && (
-              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-md flex items-center justify-center">
-                  <TrendingUp className="h-3 w-3 text-white" />
+          <div className="space-y-3">
+            {/* Day Counter */}
+            {totalDays > 0 && (
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                  <div className="w-5 h-5 bg-gradient-to-br from-blue-400 to-blue-500 rounded-md flex items-center justify-center">
+                    <Calendar className="h-3 w-3 text-white" />
+                  </div>
+                  <span className="font-medium">
+                    Day {currentDay} of {totalDays}
+                  </span>
                 </div>
-                <span className="font-medium">
-                  {goal.currentStreak} day streak
-                </span>
+                {isPlanComplete && (
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                    <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-md flex items-center justify-center">
+                      <Target className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="font-medium text-xs">
+                      {isPlanOverdue ? 'Plan Complete!' : 'Plan Complete!'}
+                    </span>
+                  </div>
+                )}
+                {isPlanOverdue && (
+                  <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
+                    <div className="w-5 h-5 bg-gradient-to-br from-orange-400 to-orange-500 rounded-md flex items-center justify-center">
+                      <Calendar className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="font-medium text-xs">
+                      +{daysSinceCreation - totalDays} days
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* Streak Counter */}
+            {goal.currentStreak && goal.currentStreak > 0 && (
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                  <div className="w-5 h-5 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-md flex items-center justify-center">
+                    <TrendingUp className="h-3 w-3 text-white" />
+                  </div>
+                  <span className="font-medium">
+                    {goal.currentStreak} day streak
+                  </span>
+                </div>
               </div>
             )}
           </div>
