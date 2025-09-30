@@ -173,27 +173,18 @@ export function GoalCard({ goal }: GoalCardProps) {
           </div>
           <div className="flex items-center gap-2">
             {/* Completion Percentage Circle */}
-            <div className="flex items-center gap-3">
-              <CircularProgress
-                percentage={completionPercentage}
-                size={40}
-                strokeWidth={4}
-                color={completionPercentage === 0 ? '#ef4444' : 
-                       completionPercentage === 100 ? '#10b981' : 
-                       completionPercentage >= 50 ? '#f59e0b' : '#3b82f6'}
-                backgroundColor={completionPercentage === 0 ? '#ef4444' : 
-                               completionPercentage === 100 ? '#10b981' : 
-                               completionPercentage >= 50 ? '#f59e0b' : '#3b82f6'}
-                className="opacity-90"
-              />
-              <div className="text-right">
-                <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  {completionPercentage === 0 ? 'Not Started' : 
-                   completionPercentage === 100 ? 'Complete' : 
-                   `${completionPercentage}% Done`}
-                </div>
-              </div>
-            </div>
+            <CircularProgress
+              percentage={completionPercentage}
+              size={40}
+              strokeWidth={4}
+              color={completionPercentage === 0 ? '#ef4444' : 
+                     completionPercentage === 100 ? '#10b981' : 
+                     completionPercentage >= 50 ? '#f59e0b' : '#3b82f6'}
+              backgroundColor={completionPercentage === 0 ? '#ef4444' : 
+                             completionPercentage === 100 ? '#10b981' : 
+                             completionPercentage >= 50 ? '#f59e0b' : '#3b82f6'}
+              className="opacity-90"
+            />
             
             <Button
               variant="ghost"
