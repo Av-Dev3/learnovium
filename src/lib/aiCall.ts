@@ -212,51 +212,18 @@ export async function generateFlashcards(
 ) {
   const { FlashcardJSON } = await import("@/types/ai");
   
-  const systemPrompt = `You are an expert at creating educational flashcards. Create flashcards based on the provided lesson content.
-
-TASK: Generate 4-6 flashcards that test understanding of the lesson content.
-
-REQUIREMENTS:
-- Base questions on specific information from the lesson reading
-- Use clear, concise questions and answers
-- Vary difficulty: easy, medium, hard
-- Focus on key concepts and definitions from the lesson
-
-CRITICAL: Return ONLY valid JSON in this exact format:
+  const systemPrompt = `Create 4-6 educational flashcards from the lesson. Return ONLY valid JSON, no markdown:
 {
   "flashcards": [
-    {
-      "front": "Question text here",
-      "back": "Answer text here", 
-      "difficulty": "easy"
-    }
-  ]
-}
-
-Do NOT include markdown, backticks, or any other formatting. Only return the pure JSON object.`;
-
-  const userPrompt = `Create flashcards for this lesson:
-
-Topic: ${goalTopic}
-${goalFocus ? `Focus: ${goalFocus}` : ''}
-
-Lesson Content:
-${lessonContent.map(lesson => `
-Day ${lesson.day}: ${lesson.topic}
-Reading: ${lesson.reading}
-Walkthrough: ${lesson.walkthrough}
-`).join('\n---\n')}
-
-Create 4-6 flashcards based on the lesson content. Return ONLY valid JSON in this format:
-{
-  "flashcards": [
-    {
-      "front": "Question text here",
-      "back": "Answer text here", 
-      "difficulty": "easy"
-    }
+    {"front": "Question", "back": "Answer", "difficulty": "easy"}
   ]
 }`;
+
+  const userPrompt = `Lesson: ${lessonContent[0].topic}
+
+${lessonContent[0].reading.substring(0, 1500)}
+
+Create 4-6 flashcards testing key concepts. Return ONLY JSON.`;
 
   const messages: Msg[] = [
     { role: "system", content: systemPrompt },
@@ -276,7 +243,7 @@ Create 4-6 flashcards based on the lesson content. Return ONLY valid JSON in thi
       task: "lesson", // Reuse lesson model for flashcard generation
       messages, 
       schema: FlashcardJSON, 
-      temperature: 0.7 
+      temperature: 0.3 // Lower temperature for more consistent output
     });
     
     console.log("AI flashcard generation successful:", {

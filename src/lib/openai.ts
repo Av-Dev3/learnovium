@@ -15,7 +15,8 @@ function getOpenAI(): OpenAI {
 
     _openai = new OpenAI({ 
       apiKey: process.env.OPENAI_API_KEY!,
-      timeout: 240000, // 4 minutes timeout for OpenAI calls
+      timeout: 45000, // 45 seconds timeout for OpenAI calls - matches our Promise.race timeout
+      maxRetries: 0, // Disable automatic retries to respect our timeout
     });
     console.log("AI: OpenAI client initialized successfully");
   }
