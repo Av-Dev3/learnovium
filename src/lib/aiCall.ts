@@ -39,26 +39,40 @@ async function chatCore(model: string, messages: Msg[], desiredTemp?: number) {
   console.log("AI: chatCore called with model:", model, "temperature:", desiredTemp);
   const baseParams = { model, messages };
   
+  // Add timeout wrapper
+  const timeoutMs = 45000; // 45 seconds timeout
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(`OpenAI API call timeout after ${timeoutMs}ms`)), timeoutMs);
+  });
+  
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let apiCall: Promise<any>;
+    
     if (supportsCustomTemp(model) && typeof desiredTemp === "number") {
       console.log("AI: Using custom temperature:", desiredTemp);
-      const result = await openai.chat.completions.create({
+      console.log("AI: About to call OpenAI API with custom temp...");
+      apiCall = openai.chat.completions.create({
         ...baseParams,
         temperature: desiredTemp,
       });
-      console.log("AI: chatCore with custom temp completed");
-      return result;
+    } else {
+      // Keep it simple: no response_format. We'll parse ourselves.
+      console.log("AI: Using default temperature");
+      console.log("AI: About to call OpenAI API with default temp...");
+      apiCall = openai.chat.completions.create(baseParams);
     }
-    // Keep it simple: no response_format. We'll parse ourselves.
-    console.log("AI: Using default temperature");
-    const result = await openai.chat.completions.create(baseParams);
-    console.log("AI: chatCore with default temp completed");
+    
+    const result = await Promise.race([apiCall, timeoutPromise]);
+    console.log("AI: chatCore completed successfully");
+    console.log("AI: Response received, choices count:", result.choices?.length || 0);
     return result;
   } catch (error) {
     console.error("AI: chatCore failed with error:", error);
     console.error("AI: Model used:", model);
     console.error("AI: OpenAI API Key exists:", !!process.env.OPENAI_API_KEY);
     console.error("AI: OpenAI API Key length:", process.env.OPENAI_API_KEY?.length || 0);
+    console.error("AI: Error details:", error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
@@ -100,6 +114,11 @@ async function chatJSON<T>(opts: {
       console.log("AI: Raw response text length:", text.length);
       console.log("AI: Raw response preview:", text.substring(0, 500) + "...");
       
+      if (!text || text.trim().length === 0) {
+        throw new Error("AI returned empty response");
+      }
+      
+      console.log("AI: Attempting to parse JSON from response...");
       const parsed = coerceJSON(text);
       console.log("AI: JSON parsed successfully");
       console.log("AI: Parsed JSON keys:", Object.keys(parsed));
@@ -174,75 +193,51 @@ export async function generateFlashcards(
 ) {
   const { FlashcardJSON } = await import("@/types/ai");
   
-  const systemPrompt = `You are an expert at creating educational flashcards for spaced repetition learning. 
+  const systemPrompt = `You are an expert at creating educational flashcards. Create flashcards based on the provided lesson content.
 
-Your task is to create flashcards DIRECTLY from the provided lesson content. You must:
+TASK: Generate 4-6 flashcards that test understanding of the lesson content.
 
-1. READ the lesson content carefully and identify the key concepts, definitions, and important details
-2. Create flashcards that test understanding of specific information from the reading material
-3. Use clear, concise questions and answers
-4. Vary in difficulty (easy, medium, hard)
-5. Focus on understanding, not just memorization
-6. Base questions on specific details and concepts explained in the lesson content
-7. Make sure each flashcard tests knowledge that can be found in the provided reading material
+REQUIREMENTS:
+- Base questions on specific information from the lesson reading
+- Use clear, concise questions and answers
+- Vary difficulty: easy, medium, hard
+- Focus on key concepts and definitions from the lesson
 
-CRITICAL: Every flashcard must be based on information that is explicitly stated or explained in the lesson content. Do not create flashcards about general knowledge that isn't covered in the lesson.
-
-CRITICAL: You MUST return ONLY valid JSON in the exact format specified. No markdown, no backticks, no commentary, no human-readable format. Only pure JSON.
-
-Generate 4-6 flashcards per lesson, focusing on the most important concepts from the comprehensive reading material.`;
-
-  const userPrompt = `Topic: ${goalTopic}
-${goalFocus ? `Focus: ${goalFocus}` : ''}
-
-Lesson Content:
-${lessonContent.map(lesson => `
-Day ${lesson.day}: ${lesson.topic}
-
-Reading:
-${lesson.reading}
-
-Walkthrough:
-${lesson.walkthrough}
-
-${lesson.quiz ? `Quiz Questions:
-${lesson.quiz.map(q => `- ${q.question}`).join('\n')}` : ''}
-`).join('\n---\n')}
-
-INSTRUCTIONS:
-1. Read the lesson content above carefully
-2. Identify the key concepts, definitions, and important details from the reading material
-3. Create flashcards that test understanding of these specific concepts
-4. Each flashcard should have a clear question and a detailed answer
-5. Base your questions on information that is explicitly stated in the reading material
-6. Vary the difficulty levels (easy, medium, hard)
-7. Focus on concepts that are important for understanding the topic
-
-CRITICAL: You MUST return ONLY valid JSON in this EXACT format. Do NOT include any other text, explanations, or formatting:
-
+CRITICAL: Return ONLY valid JSON in this exact format:
 {
   "flashcards": [
     {
       "front": "Question text here",
       "back": "Answer text here", 
       "difficulty": "easy"
-    },
-    {
-      "front": "Another question",
-      "back": "Another answer",
-      "difficulty": "medium"
     }
   ]
 }
 
-REQUIREMENTS:
-- Front text must be 10-200 characters
-- Back text must be 5-500 characters  
-- Difficulty must be exactly "easy", "medium", or "hard"
-- Must include exactly 4-6 flashcards
-- Return ONLY the JSON object above, nothing else
-
 Do NOT include markdown, backticks, or any other formatting. Only return the pure JSON object.`;
+
+  const userPrompt = `Create flashcards for this lesson:
+
+Topic: ${goalTopic}
+${goalFocus ? `Focus: ${goalFocus}` : ''}
+
+Lesson Content:
+${lessonContent.map(lesson => `
+Day ${lesson.day}: ${lesson.topic}
+Reading: ${lesson.reading}
+Walkthrough: ${lesson.walkthrough}
+`).join('\n---\n')}
+
+Create 4-6 flashcards based on the lesson content. Return ONLY valid JSON in this format:
+{
+  "flashcards": [
+    {
+      "front": "Question text here",
+      "back": "Answer text here", 
+      "difficulty": "easy"
+    }
+  ]
+}`;
 
   const messages: Msg[] = [
     { role: "system", content: systemPrompt },
@@ -257,12 +252,21 @@ Do NOT include markdown, backticks, or any other formatting. Only return the pur
       lessonCount: lessonContent.length
     });
     
-    const result = await chatJSON({ 
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Flashcard generation timeout after 60 seconds")), 60000);
+    });
+    
+    const generationPromise = chatJSON({ 
       task: "lesson", // Reuse lesson model for flashcard generation
       messages, 
       schema: FlashcardJSON, 
       temperature: 0.7 
     });
+    
+    console.log("AI: Starting flashcard generation with timeout...");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await Promise.race([generationPromise, timeoutPromise]) as any;
     
     console.log("AI flashcard generation successful:", {
       hasData: !!result.data,
