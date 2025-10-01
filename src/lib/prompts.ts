@@ -136,53 +136,48 @@ export function buildLessonPrompt(context: string) {
     { role: "system" as const, content: `You are a skilled teacher. Write comprehensive, detailed lessons as flowing reading material that teaches clearly and progressively.
 Output must be ONLY valid LessonJSON and the "topic" MUST equal the plan's DayTitle exactly.
 
-CONTENT REQUIREMENTS - CREATE RICH, DETAILED LESSONS:
-- Write like a comprehensive textbook chapter (continuous narrative with substantial depth).
-- Include multiple examples, explanations, and practical applications.
-- Provide detailed explanations of concepts, not just brief descriptions.
-- Include real-world scenarios and use cases.
-- Explain the "why" behind concepts, not just the "what".
-- Use analogies and comparisons to make complex ideas clear.
-- Include common mistakes and how to avoid them.
-- Provide step-by-step breakdowns of complex processes.
+TEACHING APPROACH:
+- Write like an engaging textbook chapter that flows naturally from one idea to the next.
+- Weave concepts, examples, and explanations together seamlessly in a continuous narrative.
+- Introduce key terms and definitions organically as they naturally arise in the discussion.
+- Use storytelling, analogies, and real-world connections to make concepts memorable.
+- Build understanding progressively through natural progression of ideas.
+
+CONTENT REQUIREMENTS:
+- Create substantial, educational content that thoroughly teaches the concept.
+- Include multiple examples and explanations woven throughout the narrative.
+- Explain the reasoning behind concepts, not just the mechanics.
+- Include practical insights and common pitfalls naturally in the flow.
+- Make the content engaging and easy to follow.
 
 STYLE & ORIGINALITY:
-- Definitions and key terms are introduced naturally inside the prose when first needed.
-- No copy/paste or close paraphrase from sources; your wording must be original.
+- Write in your own words; no copy/paste or close paraphrase from sources.
 - Avoid "N/A" placeholders or placeholder text.
+- Create a natural, conversational tone that feels like a knowledgeable teacher speaking.
 
-FIELD INTENT (schema remains the same):
+FIELD INTENT:
 - "reading": The main teaching text (comprehensive mini-chapter with substantial content).
-- "walkthrough": Use this field to summarize "Key Points & Definitions" extracted from today's reading (not step-by-step). It should read like a concise consolidation section, not instructions.
+- "walkthrough": "Key Points & Definitions" - a natural summary of the most important ideas from the reading.
 
 STRUCTURE & LENGTH:
 - topic: equals DayTitle exactly (trim trailing spaces only).
-- reading: 800–4000 characters. MUST be comprehensive and detailed. Flow: brief recap → introduce concept with examples → deepen with multiple examples and explanations → connect to today's outcome. Embed definitions naturally and provide substantial educational content.
-- walkthrough (Key Points & Definitions): 400–800 characters. Concise, coherent recap of the most important ideas and definitions from the reading; full sentences or short paragraphs (not bullets required).
+- reading: 800–4000 characters. Write as a flowing, comprehensive narrative that teaches the concept thoroughly.
+- walkthrough: 400–800 characters. Natural summary of key points and definitions from the reading.
 - quiz: exactly 2 questions; each has 4 options (5–150 chars) and one correct answer (0–3). Questions must say "Based on the reading…" or "According to the reading…".
-- exercise: 100–300 characters. A single practical or reflective task directly reinforcing today's concept.
+- exercise: 100–300 characters. A single practical or reflective task reinforcing today's concept.
 - citations: 1–3 reputable sources used only for verification; do not quote them.
 - est_minutes: 5–20.
-
-CRITICAL: The reading field must contain substantial, educational content that thoroughly teaches the concept. Do not create minimal or placeholder content.
 
 Respond with ONLY valid JSON.` },
     { role: "user" as const, content:
 `Context (for inspiration; do NOT copy or quote):
 ${context}
 
-INPUT HEADER (parse from Context if present; otherwise infer conservatively):
-- DayTitle: exact plan day title → use as LessonJSON "topic".
-- Level: beginner | intermediate | advanced (calibrate tone/depth).
-- EstMinutes: integer 5–20 (choose realistically if missing).
-- (Optional) DayRecapHint: one sentence describing what the previous day accomplished.
-- (Optional) Focus: sub-scope or constraints to emphasize.
-
 TASK:
-Create a comprehensive LessonJSON for topic "DayTitle". The lesson must be a detailed, educational mini-chapter that thoroughly teaches the concept with examples, explanations, and practical applications. 
-Use "walkthrough" to provide a cohesive "Key Points & Definitions" summary extracted from the reading (not procedural steps).
+Create a comprehensive LessonJSON for the day's topic. Write the lesson as a flowing, engaging narrative that naturally teaches the concept through examples, explanations, and insights. 
+Use "walkthrough" to provide a natural summary of the key points and definitions from the reading.
 
-IMPORTANT: Generate substantial, detailed content that provides real educational value. Do not create minimal or placeholder content.
+IMPORTANT: Generate substantial, detailed content that flows naturally and provides real educational value.
 
 ${JSON_RULES}` },
   ];
@@ -194,18 +189,22 @@ export function buildAdvancedLessonPrompt(context: string, topic: string, focus:
   return [
     { role: "system" as const, content: `You are a senior teacher creating comprehensive, detailed, level-appropriate LessonJSON aligned to a specific plan day.
 
-CONTENT REQUIREMENTS - CREATE RICH, DETAILED LESSONS:
-- Write as a comprehensive mini-chapter with substantial educational content.
-- Include multiple detailed examples, explanations, and practical applications.
-- Provide thorough explanations of concepts with real-world scenarios.
-- Explain the "why" behind concepts, not just the "what".
-- Use analogies and comparisons to make complex ideas clear.
-- Include common mistakes and how to avoid them.
-- Provide step-by-step breakdowns of complex processes.
-- Include use cases and practical applications.
+TEACHING APPROACH:
+- Write like an engaging textbook chapter that flows naturally from one idea to the next.
+- Weave concepts, examples, and explanations together seamlessly in a continuous narrative.
+- Introduce key terms and definitions organically as they naturally arise in the discussion.
+- Use storytelling, analogies, and real-world connections to make concepts memorable.
+- Build understanding progressively through natural progression of ideas.
+
+CONTENT REQUIREMENTS:
+- Create substantial, educational content that thoroughly teaches the concept.
+- Include multiple examples and explanations woven throughout the narrative.
+- Explain the reasoning behind concepts, not just the mechanics.
+- Include practical insights and common pitfalls naturally in the flow.
+- Make the content engaging and easy to follow.
 
 STYLE & ORIGINALITY:
-- Write as a continuous mini-chapter: graceful transitions, examples, and definitions introduced in context.
+- Write as a continuous mini-chapter with graceful transitions and natural flow.
 - All text must be original; do not copy or closely paraphrase sources; no quotes.
 
 ALIGNMENT:
@@ -214,27 +213,25 @@ ALIGNMENT:
 
 FIELD INTENT:
 - "reading": main teaching narrative (comprehensive mini-chapter with substantial content).
-- "walkthrough": "Key Points & Definitions" — a compact, coherent summary of essentials from the reading (not step-by-step).
+- "walkthrough": "Key Points & Definitions" - a natural summary of the most important ideas from the reading.
 
 LEVEL CALIBRATION:
 ${levelInstructions}
 
 LENGTH & RULES:
 - topic: equals the provided day title exactly.
-- reading: 800–4000 chars; MUST be comprehensive and detailed. Include a brief, natural recap referencing Day ${dayIndex-1} (or "Starting from zero" if Day 1); define terms on first use; weave multiple examples and explanations; lead the learner to today's outcome with substantial educational content.
-- walkthrough (Key Points & Definitions): 400–800 chars; cohesive recap of the most important ideas and definitions from the reading.
+- reading: 800–4000 chars; Write as a flowing, comprehensive narrative that teaches the concept thoroughly. Include a brief, natural recap referencing Day ${dayIndex-1} (or "Starting from zero" if Day 1) and build naturally to today's learning goals.
+- walkthrough: 400–800 chars; natural summary of key points and definitions from the reading.
 - quiz: exactly 2 questions; each 4 options; options 5–150 chars; one correct (0–3); questions must refer to the reading.
 - exercise: 100–300 chars; one practical or reflective task reinforcing today's concept/outcome.
 - citations: 1–3 reputable sources for verification only (no quotes).
 - est_minutes: 5–20.
 
-CRITICAL: The reading field must contain substantial, educational content that thoroughly teaches the concept. Do not create minimal or placeholder content.
-
 Output ONLY valid JSON.` },
     { role: "assistant" as const, content: `{
   "topic": "Must equal the plan's day title exactly",
-  "reading": "800–4000 chars; comprehensive narrative with detailed explanations, multiple examples, and practical applications.",
-  "walkthrough": "400–800 chars; cohesive 'Key Points & Definitions' summary derived from the reading.",
+  "reading": "800–4000 chars; flowing narrative with detailed explanations, examples, and insights woven naturally throughout.",
+  "walkthrough": "400–800 chars; natural summary of key points and definitions from the reading.",
   "quiz": [
     { "q": "Based on the reading, ...", "a": ["A","B","C","D"], "correct_index": 2 },
     { "q": "According to the reading, ...", "a": ["A","B","C","D"], "correct_index": 1 }
@@ -254,19 +251,10 @@ Inputs:
 - Focus (optional): ${focus}
 
 TASK:
-Create a comprehensive LessonJSON for day ${dayIndex} that reads as a detailed, educational mini-chapter with substantial content. 
-Use "walkthrough" to provide a cohesive "Key Points & Definitions" summary extracted from the reading (not procedural steps).
+Create a comprehensive LessonJSON for day ${dayIndex} that reads as a flowing, engaging narrative that naturally teaches the concept through examples, explanations, and insights. 
+Use "walkthrough" to provide a natural summary of the key points and definitions from the reading.
 
-STRICT RULES:
-- topic equals DayTitle exactly (trim trailing spaces only).
-- reading: 800–4000 chars; MUST be comprehensive and detailed. Recap → introduce → deepen with multiple examples and explanations → connect to today's outcome; definitions in context; provide substantial educational value.
-- walkthrough: 400–800 chars; coherent Key Points & Definitions derived from the reading.
-- quiz: exactly 2 questions; 4 options each; options 5–150 chars; one correct (0–3); questions explicitly reference the reading.
-- exercise: 100–300 chars; single, practical/reflective task reinforcing the concept.
-- citations: 1–3 reputable sources; verification only; do not quote.
-- est_minutes: 5–20.
-
-IMPORTANT: Generate substantial, detailed content that provides real educational value. Do not create minimal or placeholder content.
+IMPORTANT: Generate substantial, detailed content that flows naturally and provides real educational value.
 
 ${JSON_RULES}` },
   ];
@@ -370,34 +358,36 @@ export async function buildLessonPromptWithRAG(query: string, topic?: string, k 
   return [
     { role: "system" as const, content: `You are an expert AI tutor. Generate comprehensive, detailed, original LessonJSON aligned to the plan day title.
 
-CONTENT REQUIREMENTS - CREATE RICH, DETAILED LESSONS:
-- Write as a comprehensive mini-chapter with substantial educational content.
-- Include multiple detailed examples, explanations, and practical applications.
-- Provide thorough explanations of concepts with real-world scenarios.
-- Explain the "why" behind concepts, not just the "what".
-- Use analogies and comparisons to make complex ideas clear.
-- Include common mistakes and how to avoid them.
-- Provide step-by-step breakdowns of complex processes.
-- Include use cases and practical applications.
+TEACHING APPROACH:
+- Write like an engaging textbook chapter that flows naturally from one idea to the next.
+- Weave concepts, examples, and explanations together seamlessly in a continuous narrative.
+- Introduce key terms and definitions organically as they naturally arise in the discussion.
+- Use storytelling, analogies, and real-world connections to make concepts memorable.
+- Build understanding progressively through natural progression of ideas.
+
+CONTENT REQUIREMENTS:
+- Create substantial, educational content that thoroughly teaches the concept.
+- Include multiple examples and explanations woven throughout the narrative.
+- Explain the reasoning behind concepts, not just the mechanics.
+- Include practical insights and common pitfalls naturally in the flow.
+- Make the content engaging and easy to follow.
 
 RAG POLICY:
 - Use RAG context to fact-check or inspire examples only; do NOT copy phrases or sentences; do NOT quote it.
 - The lesson must be self-contained and fully original.
 
 FIELD INTENT:
-- "reading": comprehensive mini-chapter with substantial content and in-context definitions.
-- "walkthrough": "Key Points & Definitions" summary distilled from the reading (not step-by-step).
+- "reading": comprehensive mini-chapter with substantial content and natural flow.
+- "walkthrough": "Key Points & Definitions" - a natural summary of the most important ideas from the reading.
 
 LENGTH & RULES:
 - topic equals the exact plan DayTitle; if not explicitly present, derive a precise DayTitle from the plan format and use consistently.
-- reading: 800–4000 chars; MUST be comprehensive and detailed. Recap → introduce → deepen with multiple examples and explanations → connect to outcome; provide substantial educational content.
-- walkthrough: 400–800 chars; coherent Key Points & Definitions from the reading.
+- reading: 800–4000 chars; Write as a flowing, comprehensive narrative that teaches the concept thoroughly.
+- walkthrough: 400–800 chars; natural summary of key points and definitions from the reading.
 - quiz: 2 questions referencing the reading; 4 options each; one correct (0–3); options 5–150 chars.
 - exercise: 100–300 chars; single task reinforcing the concept.
 - citations: 1–3 reputable sources; verification only; no quotes.
 - est_minutes: 5–20.
-
-CRITICAL: The reading field must contain substantial, educational content that thoroughly teaches the concept. Do not create minimal or placeholder content.
 
 Output ONLY valid JSON.` },
     { role: "user" as const, content:
@@ -407,9 +397,9 @@ ${context}
 Task:
 Return comprehensive LessonJSON for today's focus: ${query}. 
 Ensure 'topic' equals the exact DayTitle from context (or a precise derived DayTitle in plan format). 
-Use 'walkthrough' for a cohesive Key Points & Definitions recap from the reading.
+Use 'walkthrough' for a natural summary of key points and definitions from the reading.
 
-IMPORTANT: Generate substantial, detailed content that provides real educational value. Do not create minimal or placeholder content.
+IMPORTANT: Generate substantial, detailed content that flows naturally and provides real educational value.
 
 Respond with ONLY valid JSON.
 
