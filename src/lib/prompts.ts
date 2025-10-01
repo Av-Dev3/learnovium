@@ -51,100 +51,83 @@ export function buildPlannerPrompt(context: string, level: string = 'beginner') 
   const levelInstructions = getLevelInstructions(level);
   
   return [
-    { role: "system" as const, content: `You are a learning plan generator that creates skill-level-appropriate learning plans. You MUST return JSON that matches the PlanJSON schema exactly. Do not use any other structure. Follow the format precisely.
+    { role: "system" as const, content: `You are a master curriculum architect. Produce a progressive, pristine day-by-day learning plan.
+
+Return ONLY valid JSON that conforms EXACTLY to the PlanJSON schema (see demo provided later). 
+No code fences, no commentary, no extra fields.
+
+LEVEL RULES:
+- Beginner: Day 1 starts from absolute zero ("What is it? Why learn it?"). Plain language; one new idea per day; include a brief spiral review. Prefer Bloom verbs: identify, recall, describe, execute, apply.
+- Intermediate: Assume foundations exist but fluency is fragile. Start with a quick practical review. Combine 1–2 related ideas/day; introduce best practices and common pitfalls. Prefer Bloom verbs: apply, analyze, implement, refactor.
+- Advanced: Assume solid intermediate skill. Start at complexity. Focus on optimization, architecture, trade-offs, and edge cases. Prefer Bloom verbs: evaluate, architect, optimize, synthesize, critique.
+
+DURATION RULES:
+- 7 days (intensive): essentials only; 45–90 min/day; every day is a milestone; end with a minimal viable capstone.
+- 30 days (standard): steady foundations + small projects; 30–60 min/day; end with a complete small capstone.
+- 60 days (deep dive): coverage + depth; 30–60 min/day; include a mid-program integrator + final capstone.
+- 90 days (comprehensive): full breadth + depth; 20–45 min/day; 3–6 modules; portfolio-grade capstone.
+
+DAY TITLE TEMPLATE (must be used for each day's "topic"):
+"D{two-digit day} | {ModuleShort}: {Imperative verb} {precise concept} — {specific outcome} [Builds on Day {N-1}: {carryover}]"
+
+Title rules:
+- Use imperative Bloom verbs appropriate to level.
+- Outcome must be specific and testable.
+- Day 1 must end with "[Builds on Day 0: N/A]" or "[Builds on Day 0: starts from zero]".
+- Days 2+ must state what they build on from the previous day.
+- Avoid vague nouns ("basics", "stuff"); avoid passive voice.
+- Keep under ~140 characters, prefer clarity.
+
+ASSESSMENT RULES:
+- Each day's "assessment" must specify a concrete artifact + criteria (e.g., "Script runs on 3 sample inputs using for loops; outputs must match expected results.").
+
+CITATIONS:
+- Include 3–6 credible sources (official docs, standards, reputable books/tutorials).
 
 ${levelInstructions}` },
-    { role: "user" as const, content: `Create a 7-day learning plan for Python programming at ${level} level. Use this EXACT format:` },
     { role: "assistant" as const, content: `{
   "version": "1",
-  "topic": "Python Programming",
+  "topic": "Sample Topic",
   "total_days": 7,
-  "modules": [
-    {
-      "title": "Python Fundamentals",
-      "days": [
-        {
-          "day_index": 1,
-          "topic": "Introduction to Python Syntax",
-          "objective": "Learn basic Python syntax and data types",
-          "practice": "Write simple Python programs with variables and print statements",
-          "assessment": "Complete 5 coding exercises with correct syntax",
-          "est_minutes": 45
-        },
-        {
-          "day_index": 2,
-          "topic": "Control Structures",
-          "objective": "Master if statements and loops",
-          "practice": "Create programs using if/else and for/while loops",
-          "assessment": "Build a number guessing game",
-          "est_minutes": 60
-        }
-      ]
-    },
-    {
-      "title": "Data Structures",
-      "days": [
-        {
-          "day_index": 3,
-          "topic": "Lists and Dictionaries",
-          "objective": "Work with Python lists and dictionaries",
-          "practice": "Manipulate data using list methods and dictionary operations",
-          "assessment": "Create a contact book using dictionaries",
-          "est_minutes": 50
-        }
-      ]
-    }
-  ],
-  "citations": ["Python.org documentation", "Real Python tutorials"]
-}` },
-    { role: "user" as const, content:
-`Context (use as knowledge base only):
-${context}
-
-Now create a learning plan for a ${level} level learner using the EXACT same format as the example above. Do not deviate from this structure:
-
-IMPORTANT: This plan is for a ${level} level learner, so:
-- Adjust the complexity and depth of each day's topic based on the skill level
-- Make sure the progression is appropriate for someone at ${level} level
-- Use language and examples that match the ${level} level
-- Ensure each day builds appropriately on previous knowledge for a ${level} learner
-
-{
-  "version": "1",
-  "topic": "Your Topic Here",
-  "total_days": 30,
   "modules": [
     {
       "title": "Module Title",
       "days": [
         {
           "day_index": 1,
-          "topic": "Day Topic",
-          "objective": "Learning objective",
-          "practice": "Practice activity",
-          "assessment": "Assessment method",
-          "est_minutes": 30
+          "topic": "D01 | Foundations: Understand core concept X — perform outcome Y [Builds on Day 0: N/A]",
+          "objective": "Achieve a clear, concrete goal; include 2–3 micro-objectives separated by semicolons.",
+          "practice": "Brief spiral review of the previous day if applicable; then today's guided steps toward the outcome.",
+          "assessment": "Explicit artifact + criteria (what will be checked and how).",
+          "est_minutes": 45
         }
       ]
     }
   ],
-  "citations": ["Source 1", "Source 2"]
-}
+  "citations": ["Source 1", "Source 2", "Source 3"]
+}` },
+    { role: "user" as const, content: `Create a progressive learning plan using the exact PlanJSON format shown above.
 
-CRITICAL RULES:
-- MUST start with "version": "1"
-- MUST use "topic" (not "plan_title" or "title")
-- MUST use "total_days" (not "duration_weeks" or "days_total")
-- MUST use "modules" array (not "weeks" or "days")
-- Each module MUST have "title" and "days"
-- Each day MUST have: day_index, topic, objective, practice, assessment, est_minutes
-- est_minutes MUST be between 5 and 120
-- day_index MUST be a number starting from 1
-- Create 30 days total across multiple modules
-- Make each day topic unique and progressive
+Context (use as grounding only; do NOT copy verbatim):
+${context}
 
-${JSON_RULES}`
-    },
+HARD SCHEMA RULES:
+- MUST start with "version": "1".
+- MUST include "topic", "total_days", "modules"[], "days"[], and "citations".
+- "day_index" must be integers 1..(total_days) with no gaps or duplicates.
+- Each "day" MUST include: day_index, topic, objective, practice, assessment, est_minutes.
+- Each day's "topic" MUST follow the DAY TITLE TEMPLATE exactly.
+- "objective" must state the target and include 2–3 micro-objectives (semicolon-separated).
+- "practice" must contain hands-on steps; for Days 2+, begin with 1–2 sentences of spiral review.
+- "assessment" must define a concrete artifact + criteria.
+- "est_minutes" must be realistic for the duration category.
+- Distribute days across modules logically (sub-skills or project phases).
+- Every day must be unique, specific, and progressively harder.
+- End with an appropriate synthesis or capstone for the duration/level.
+
+Respond with ONLY valid JSON.
+
+${JSON_RULES}` },
   ];
 }
 
@@ -282,13 +265,33 @@ export async function buildPlannerPromptWithRAG(query: string, topic?: string, l
   const levelInstructions = getLevelInstructions(level);
   
   return [
-    { role: "system" as const, content: `You are a learning plan generator that creates skill-level-appropriate learning plans. You MUST return JSON that matches the PlanJSON schema exactly. Do not use any other structure. Follow the format precisely.
+    { role: "system" as const, content: `You are a master curriculum architect. Produce a progressive, pristine day-by-day learning plan.
+
+Return ONLY valid JSON that conforms EXACTLY to the PlanJSON schema (see demo provided later). 
+No code fences, no commentary, no extra fields.
+
+Use the provided RAG context for grounding only; do NOT copy or quote it verbatim, and do NOT let it override the requested level/duration rules.
+
+LEVEL RULES:
+- Beginner: Day 1 starts from absolute zero; plain language; one idea per day; brief spiral review. Bloom verbs: identify, recall, describe, execute, apply.
+- Intermediate: Fluency building; combine 1–2 ideas/day; best practices & pitfalls; Bloom verbs: apply, analyze, implement, refactor.
+- Advanced: Start at complexity; optimization, architecture, edge cases; Bloom verbs: evaluate, architect, optimize, synthesize, critique.
+
+DURATION RULES:
+- 7 days: 45–90 min/day; essentials only; minimal viable capstone.
+- 30 days: 30–60 min/day; steady progression; small capstone.
+- 60 days: 30–60 min/day; mid integrator + final capstone.
+- 90 days: 20–45 min/day; 3–6 modules; portfolio-grade capstone.
+
+DAY TITLE TEMPLATE (must be used for each day's "topic"):
+"D{two-digit day} | {ModuleShort}: {Imperative verb} {precise concept} — {specific outcome} [Builds on Day {N-1}: {carryover}]"
+
+Assessment, citations, and title rules are identical to the non-RAG version.
 
 ${levelInstructions}` },
-    { role: "user" as const, content: "Here is the EXACT JSON format you must use for learning plans:" },
     { role: "assistant" as const, content: `{
   "version": "1",
-  "topic": "TOPIC_NAME_HERE",
+  "topic": "Sample Topic",
   "total_days": 7,
   "modules": [
     {
@@ -296,58 +299,36 @@ ${levelInstructions}` },
       "days": [
         {
           "day_index": 1,
-          "topic": "Day Topic",
-          "objective": "Learning objective",
-          "practice": "Practice activity",
-          "assessment": "Assessment method",
+          "topic": "D01 | Foundations: Understand core concept X — perform outcome Y [Builds on Day 0: N/A]",
+          "objective": "Achieve a clear, concrete goal; include 2–3 micro-objectives separated by semicolons.",
+          "practice": "Brief spiral review of the previous day if applicable; then today's guided steps toward the outcome.",
+          "assessment": "Explicit artifact + criteria (what will be checked and how).",
           "est_minutes": 45
-        },
-        {
-          "day_index": 2,
-          "topic": "Another Day Topic",
-          "objective": "Another learning objective",
-          "practice": "Another practice activity",
-          "assessment": "Another assessment method",
-          "est_minutes": 60
         }
       ]
     }
   ],
-  "citations": ["Source 1", "Source 2"]
+  "citations": ["Source 1", "Source 2", "Source 3"]
 }` },
-    { role: "user" as const, content:
-`Context (RAG top-${k}, use as inspiration only):
+    { role: "user" as const, content: `Context (RAG top-${k}, use for grounding only; do NOT copy verbatim):
 ${context}
 
-Now create a learning plan for: ${query} at ${level} level
+Task:
+Create a learning plan for: ${query} at ${levelInstructions ? '' : ''} level (respect the LEVEL and DURATION rules above).
 
-Use the EXACT same JSON structure as shown above, but replace the content with your own original plan for the requested topic. Do not copy the example content - only use the structure.
+HARD SCHEMA RULES:
+- MUST start with "version": "1".
+- MUST include "topic", "total_days", "modules"[], "days"[], and "citations".
+- "day_index" 1..(total_days), no gaps/dupes.
+- Each day MUST include: day_index, topic, objective, practice, assessment, est_minutes.
+- Each day's "topic" MUST follow the DAY TITLE TEMPLATE exactly.
+- "objective": target + 2–3 micro-objectives separated by semicolons.
+- "practice": hands-on steps; include 1–2 sentence spiral review for Days 2+.
+- "assessment": explicit artifact + criteria.
+- "est_minutes": realistic for duration category.
+- Logical module grouping; progressive difficulty; appropriate synthesis or capstone.
 
-IMPORTANT: This plan is for a ${level} level learner, so:
-- Adjust the complexity and depth of each day's topic based on the skill level
-- Make sure the progression is appropriate for someone at ${level} level
-- Use language and examples that match the ${level} level
-- Ensure each day builds appropriately on previous knowledge for a ${level} learner
-
-CRITICAL RULES:
-- MUST start with "version": "1"
-- MUST use "topic" field with the actual requested topic name
-- MUST use "total_days" (not "duration_weeks" or "days_total")
-- MUST use "modules" array (not "weeks" or "days")
-- Each module MUST have "title" and "days"
-- Each day MUST have: day_index, topic, objective, practice, assessment, est_minutes
-- est_minutes MUST be between 5 and 120
-- day_index MUST be a number starting from 1
-- Create the requested number of days total across multiple modules
-- Make each day topic unique and progressive
-- Use the context to understand the topic, but create completely original plan content
-- Never copy phrases, sentences, or exact explanations from the sources
-- Each day must have a UNIQUE, DISTINCT topic that builds progressively
-- Day 1: Start with absolute fundamentals
-- Day 2+: Each day should introduce new concepts, skills, or deeper understanding
-- Avoid repetitive topics or similar-sounding objectives
-- Create a logical progression from basic to advanced concepts
-- Each topic should be specific and actionable
+Respond with ONLY valid JSON.
 
 ${JSON_RULES}` }
   ];
