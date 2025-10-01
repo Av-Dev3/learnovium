@@ -35,14 +35,18 @@ function supportsCustomTemp(model: string) {
   return !/mini/i.test(model);
 }
 
-async function chatCore(model: string, messages: Msg[], desiredTemp?: number) {
-  console.log("AI: chatCore called with model:", model, "temperature:", desiredTemp);
+async function chatCore(model: string, messages: Msg[], desiredTemp?: number, taskType?: string) {
+  console.log("AI: chatCore called with model:", model, "temperature:", desiredTemp, "task:", taskType);
   const baseParams = { model, messages };
   
-  // Add timeout wrapper
-  const timeoutMs = 45000; // 45 seconds timeout
+  // Add timeout wrapper - longer for plan generation, shorter for other tasks
+  const timeoutMs = taskType === 'planner' ? 120000 : 60000; // 2 minutes for plans, 1 minute for others
+  console.log(`AI: Setting timeout for ${timeoutMs}ms (task: ${taskType})`);
   const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error(`OpenAI API call timeout after ${timeoutMs}ms`)), timeoutMs);
+    setTimeout(() => {
+      console.error(`AI: TIMEOUT TRIGGERED after ${timeoutMs}ms`);
+      reject(new Error(`OpenAI API call timeout after ${timeoutMs}ms`));
+    }, timeoutMs);
   });
   
   try {
@@ -63,6 +67,7 @@ async function chatCore(model: string, messages: Msg[], desiredTemp?: number) {
       apiCall = openai.chat.completions.create(baseParams);
     }
     
+    console.log("AI: Waiting for API response or timeout...");
     const result = await Promise.race([apiCall, timeoutPromise]);
     console.log("AI: chatCore completed successfully");
     console.log("AI: Response received, choices count:", result.choices?.length || 0);
@@ -106,7 +111,7 @@ async function chatJSON<T>(opts: {
       console.log("AI: Message count:", opts.messages.length);
       console.log("AI: Temperature:", opts.temperature ?? 0.7);
       
-      const res = await chatCore(model, opts.messages, opts.temperature ?? 0.7);
+      const res = await chatCore(model, opts.messages, opts.temperature ?? 0.7, opts.task);
       const dt = Date.now() - t0;
       console.log("AI: OpenAI API call successful, response received in", dt, "ms");
 
@@ -253,8 +258,12 @@ Create 4-6 flashcards based on the lesson content. Return ONLY valid JSON in thi
     });
     
     // Add timeout to prevent hanging
+    console.log("AI: Setting flashcard generation timeout for 60 seconds...");
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("Flashcard generation timeout after 60 seconds")), 60000);
+      setTimeout(() => {
+        console.error("AI: FLASHCARD TIMEOUT TRIGGERED after 60 seconds");
+        reject(new Error("Flashcard generation timeout after 60 seconds"));
+      }, 60000);
     });
     
     const generationPromise = chatJSON({ 
