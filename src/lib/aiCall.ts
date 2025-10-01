@@ -37,27 +37,21 @@ function supportsCustomTemp(model: string) {
 
 async function chatCore(model: string, messages: Msg[], desiredTemp?: number, taskType?: string) {
   console.log("AI: chatCore called with model:", model, "temperature:", desiredTemp, "task:", taskType);
+  const baseParams = { model, messages };
   
   // Add timeout wrapper - longer for plan generation, shorter for other tasks
   const timeoutMs = taskType === 'planner' ? 120000 : 60000; // 2 minutes for plans, 1 minute for others
   console.log(`AI: Setting timeout for ${timeoutMs}ms (task: ${taskType})`);
   
-  // Create AbortController for proper timeout handling
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => {
-    console.error(`AI: TIMEOUT TRIGGERED after ${timeoutMs}ms - aborting request`);
-    controller.abort();
-  }, timeoutMs);
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      console.error(`AI: TIMEOUT TRIGGERED after ${timeoutMs}ms`);
+      reject(new Error(`OpenAI API call timeout after ${timeoutMs}ms`));
+    }, timeoutMs);
+  });
   
   try {
     console.log("AI: Model being used:", model);
-    
-    const baseParams = { 
-      model, 
-      messages,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      signal: controller.signal as any // Add abort signal
-    };
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let apiCall: Promise<any>;
@@ -77,22 +71,20 @@ async function chatCore(model: string, messages: Msg[], desiredTemp?: number, ta
     }
     
     console.log("AI: Waiting for API response or timeout...");
-    const result = await apiCall;
-    clearTimeout(timeoutId); // Clear timeout if request completes
+    const result = await Promise.race([apiCall, timeoutPromise]);
     console.log("AI: chatCore completed successfully");
     console.log("AI: Response received, choices count:", result.choices?.length || 0);
     return result;
   } catch (error) {
-    clearTimeout(timeoutId); // Clear timeout on error
     console.error("AI: chatCore failed with error:", error);
     console.error("AI: Model used:", model);
     console.error("AI: OpenAI API Key exists:", !!process.env.OPENAI_API_KEY);
     console.error("AI: OpenAI API Key length:", process.env.OPENAI_API_KEY?.length || 0);
     console.error("AI: Error details:", error instanceof Error ? error.message : String(error));
     
-    // Check if it's an abort error (timeout)
-    if (error instanceof Error && error.name === 'AbortError') {
-      console.error("AI: Request was aborted due to timeout");
+    // Check if it's a timeout error
+    if (error instanceof Error && error.message.includes('timeout')) {
+      console.error("AI: Request timed out");
     }
     
     // Check if it's an invalid model error
