@@ -177,6 +177,11 @@ TASK:
 Create a comprehensive LessonJSON for the day's topic. Write the lesson as a flowing, engaging narrative that naturally teaches the concept through examples, explanations, and insights. 
 Use "walkthrough" to provide a natural summary of the key points and definitions from the reading.
 
+CRITICAL REQUIREMENTS:
+- The "topic" field MUST be the exact day title from the plan (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes [Builds on Day 0: N/A]")
+- Do NOT create your own topic name - use the provided day title exactly as it appears in the plan
+- The topic field must be at least 10 characters long
+
 IMPORTANT: Generate substantial, detailed content that flows naturally and provides real educational value.
 
 ${JSON_RULES}` },
@@ -253,6 +258,11 @@ Inputs:
 TASK:
 Create a comprehensive LessonJSON for day ${dayIndex} that reads as a flowing, engaging narrative that naturally teaches the concept through examples, explanations, and insights. 
 Use "walkthrough" to provide a natural summary of the key points and definitions from the reading.
+
+CRITICAL REQUIREMENTS:
+- The "topic" field MUST be the exact day title provided (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes [Builds on Day 0: N/A]")
+- Do NOT create your own topic name - use the provided day title exactly as it appears
+- The topic field must be at least 10 characters long
 
 IMPORTANT: Generate substantial, detailed content that flows naturally and provides real educational value.
 
@@ -398,6 +408,11 @@ Task:
 Return comprehensive LessonJSON for today's focus: ${query}. 
 Ensure 'topic' equals the exact DayTitle from context (or a precise derived DayTitle in plan format). 
 Use 'walkthrough' for a natural summary of key points and definitions from the reading.
+
+CRITICAL REQUIREMENTS:
+- The "topic" field MUST be the exact day title from the plan (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes [Builds on Day 0: N/A]")
+- Do NOT create your own topic name - use the provided day title exactly as it appears in the plan
+- The topic field must be at least 10 characters long
 
 IMPORTANT: Generate substantial, detailed content that flows naturally and provides real educational value.
 

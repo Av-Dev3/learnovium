@@ -218,7 +218,8 @@ INSTRUCTIONS:
 6. Vary the difficulty levels (easy, medium, hard)
 7. Focus on concepts that are important for understanding the topic
 
-CRITICAL: You MUST return ONLY valid JSON in this EXACT format:
+CRITICAL: You MUST return ONLY valid JSON in this EXACT format. Do NOT include any other text, explanations, or formatting:
+
 {
   "flashcards": [
     {
@@ -234,9 +235,14 @@ CRITICAL: You MUST return ONLY valid JSON in this EXACT format:
   ]
 }
 
-IMPORTANT: Keep answers concise but informative. Front text should be 10-200 characters, back text should be 5-500 characters.
+REQUIREMENTS:
+- Front text must be 10-200 characters
+- Back text must be 5-500 characters  
+- Difficulty must be exactly "easy", "medium", or "hard"
+- Must include exactly 4-6 flashcards
+- Return ONLY the JSON object above, nothing else
 
-Do NOT include any other text, explanations, or formatting. Only return the JSON object.`;
+Do NOT include markdown, backticks, or any other formatting. Only return the pure JSON object.`;
 
   const messages: Msg[] = [
     { role: "system", content: systemPrompt },
@@ -245,16 +251,33 @@ Do NOT include any other text, explanations, or formatting. Only return the JSON
 
   try {
     console.log("Starting AI flashcard generation...");
+    console.log("Flashcard generation prompt preview:", {
+      systemPromptLength: systemPrompt.length,
+      userPromptLength: userPrompt.length,
+      lessonCount: lessonContent.length
+    });
+    
     const result = await chatJSON({ 
       task: "lesson", // Reuse lesson model for flashcard generation
       messages, 
       schema: FlashcardJSON, 
       temperature: 0.7 
     });
-    console.log("AI flashcard generation successful:", result.data);
+    
+    console.log("AI flashcard generation successful:", {
+      hasData: !!result.data,
+      flashcardsCount: result.data?.flashcards?.length || 0,
+      usage: result.usage
+    });
+    
+    if (!result.data || !result.data.flashcards) {
+      console.error("Invalid flashcard response structure:", result.data);
+      return { error: "Invalid flashcard response structure", data: null };
+    }
+    
     return { data: result.data.flashcards, usage: result.usage };
   } catch (error) {
     console.error("Flashcard generation error:", error);
-    return { error: "Failed to generate flashcards", data: null };
+    return { error: `Failed to generate flashcards: ${error instanceof Error ? error.message : 'Unknown error'}`, data: null };
   }
 }
