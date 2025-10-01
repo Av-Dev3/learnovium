@@ -133,50 +133,43 @@ ${JSON_RULES}` },
 
 export function buildLessonPrompt(context: string) {
   return [
-    { role: "system" as const, content: `You are an expert AI tutor. Generate a LessonJSON that TEACHES, not summarizes. The lesson must be original, explanatory, and actionable.
+    { role: "system" as const, content: `You are a skilled teacher. Write lessons as flowing reading material that teaches clearly and progressively.
+Output must be ONLY valid LessonJSON and the "topic" MUST equal the plan's DayTitle exactly.
 
-QUALITY CONTRACT:
-- Write in your own words. Do NOT copy or paraphrase closely from any source. Avoid distinctive phrasings. No quotes from websites.
-- Teach like a great instructor: brief recap → concept explanation → worked example tied to the day's outcome → application guidance.
-- All quiz questions must be directly answerable from today's reading.
-- Output ONLY valid LessonJSON (see schema expectations in the user message). No commentary.` },
+STYLE & ORIGINALITY:
+- Write like a short textbook chapter (continuous narrative).
+- Definitions and key terms are introduced naturally inside the prose when first needed.
+- No copy/paste or close paraphrase from sources; your wording must be original.
+- Avoid "N/A" placeholders.
+
+FIELD INTENT (schema remains the same):
+- "reading": The main teaching text (the mini-chapter).
+- "walkthrough": Use this field to summarize "Key Points & Definitions" extracted from today's reading (not step-by-step). It should read like a concise consolidation section, not instructions.
+
+STRUCTURE & LENGTH:
+- topic: equals DayTitle exactly (trim trailing spaces only).
+- reading: 800–4000 characters. Flow: brief recap → introduce concept → deepen with examples → connect to today's outcome. Embed definitions naturally.
+- walkthrough (Key Points & Definitions): 400–800 characters. Concise, coherent recap of the most important ideas and definitions from the reading; full sentences or short paragraphs (not bullets required).
+- quiz: exactly 2 questions; each has 4 options (5–150 chars) and one correct answer (0–3). Questions must say "Based on the reading…" or "According to the reading…".
+- exercise: 100–300 characters. A single practical or reflective task directly reinforcing today's concept.
+- citations: 1–3 reputable sources used only for verification; do not quote them.
+- est_minutes: 5–20.
+
+Respond with ONLY valid JSON.` },
     { role: "user" as const, content:
-`Context:
+`Context (for inspiration; do NOT copy or quote):
 ${context}
 
-INPUT HEADER (required; parse from Context):
-- DayTitle: the exact day title from the plan (use as LessonJSON "topic" verbatim).
-- DayGoal: the concrete outcome that must be achieved today.
-- Level: beginner | intermediate | advanced (determines voice and depth).
-- EstMinutes: integer within 5–20; if missing, choose realistically based on Level.
+INPUT HEADER (parse from Context if present; otherwise infer conservatively):
+- DayTitle: exact plan day title → use as LessonJSON "topic".
+- Level: beginner | intermediate | advanced (calibrate tone/depth).
+- EstMinutes: integer 5–20 (choose realistically if missing).
+- (Optional) DayRecapHint: one sentence describing what the previous day accomplished.
 - (Optional) Focus: sub-scope or constraints to emphasize.
 
-If the header is missing, infer conservatively from the context. The lesson MUST align to DayTitle and DayGoal.
-
-SCHEMA (LessonJSON):
-{
-  "topic": "Must equal DayTitle exactly (trim trailing spaces only).",
-  "reading": "800–4000 chars. Structure inside the prose: (1) 2–3 sentence recap of yesterday linking to DayTitle; (2) clear definitions of today's key terms at first use; (3) one worked example that achieves DayGoal; (4) common mistakes & how to avoid them; (5) a concise checklist for success.",
-  "walkthrough": "400–800 chars. Deterministic steps that a learner can follow to reach DayGoal. Reference the same variables/data/tools used in the worked example.",
-  "quiz": [
-    {"q":"Based on the reading, ...","a":["...","...","...","..."],"correct_index":N},
-    {"q":"According to the reading, ...","a":["...","...","...","..."],"correct_index":M}
-  ],
-  "exercise": "100–300 chars. A practical mini-task that directly produces the DayGoal artifact.",
-  "citations": ["1–3 credible sources used to check facts, not copied from."],
-  "est_minutes": 5–20
-}
-
-STRICT RULES:
-- topic: MUST equal DayTitle exactly.
-- reading: 800–4000 chars; fully original; no copy/paste; define terms at first use; include recap → explanation → worked example → pitfalls → checklist.
-- walkthrough: 400–800 chars; step-by-step; no branching; must achieve DayGoal.
-- quiz: exactly 2 questions; each 4 options; correct_index 0–3; questions must explicitly say "Based on the reading" or "According to the reading".
-- options length: 5–150 chars each; one clearly correct.
-- exercise: 100–300 chars, directly tied to DayGoal, single artifact.
-- citations: 1–3 reputable sources (docs, books, standards); do not quote; use for verification only.
-- est_minutes: integer 5–20 (prefer EstMinutes if provided).
-- No backticks, no commentary, ONLY valid JSON.
+TASK:
+Create LessonJSON for topic "DayTitle". The lesson must read as a flowing mini-chapter with definitions woven in. 
+Use "walkthrough" to provide a cohesive "Key Points & Definitions" summary extracted from the reading (not procedural steps).
 
 ${JSON_RULES}` },
   ];
@@ -186,51 +179,67 @@ export function buildAdvancedLessonPrompt(context: string, topic: string, focus:
   const levelInstructions = getLevelInstructions(level);
   
   return [
-    { role: "system" as const, content: `You are a senior teacher creating an original, level-appropriate LessonJSON. Align STRICTLY to the provided day of the plan.
+    { role: "system" as const, content: `You are a senior teacher creating an original, level-appropriate LessonJSON aligned to a specific plan day.
 
-ORIGINALITY & TEACHING:
-- Write everything in your own words. Do NOT copy or closely paraphrase any source. No quotes from websites.
-- Teach with structure: recap of prior day → clear explanation → one worked example → actionable steps → brief pitfalls & checklist inside the reading.
-- All quiz questions must be answerable from the reading.
+STYLE & ORIGINALITY:
+- Write as a continuous mini-chapter: graceful transitions, examples, and definitions introduced in context.
+- All text must be original; do not copy or closely paraphrase sources; no quotes.
+
+ALIGNMENT:
+- LessonJSON "topic" MUST equal the provided day title exactly (the 'topic' parameter).
+- Calibrate depth and terminology to the learner level.
+
+FIELD INTENT:
+- "reading": main teaching narrative (mini-chapter).
+- "walkthrough": "Key Points & Definitions" — a compact, coherent summary of essentials from the reading (not step-by-step).
 
 LEVEL CALIBRATION:
 ${levelInstructions}
 
-Output ONLY valid LessonJSON. No commentary.` },
+LENGTH & RULES:
+- topic: equals the provided day title exactly.
+- reading: 800–4000 chars; include a brief, natural recap referencing Day ${dayIndex-1} (or "Starting from zero" if Day 1); define terms on first use; weave examples; lead the learner to today's outcome.
+- walkthrough (Key Points & Definitions): 400–800 chars; cohesive recap of the most important ideas and definitions from the reading.
+- quiz: exactly 2 questions; each 4 options; options 5–150 chars; one correct (0–3); questions must refer to the reading.
+- exercise: 100–300 chars; one practical or reflective task reinforcing today's concept/outcome.
+- citations: 1–3 reputable sources for verification only (no quotes).
+- est_minutes: 5–20.
+
+Output ONLY valid JSON.` },
     { role: "assistant" as const, content: `{
-  "topic": "Must equal the provided day title exactly",
-  "reading": "800–4000 chars, includes recap → definitions → worked example → pitfalls → checklist.",
-  "walkthrough": "400–800 chars, deterministic steps to reach today's outcome.",
+  "topic": "Must equal the plan's day title exactly",
+  "reading": "800–4000 chars; flowing narrative with in-context definitions and examples.",
+  "walkthrough": "400–800 chars; cohesive 'Key Points & Definitions' summary derived from the reading.",
   "quiz": [
     { "q": "Based on the reading, ...", "a": ["A","B","C","D"], "correct_index": 2 },
     { "q": "According to the reading, ...", "a": ["A","B","C","D"], "correct_index": 1 }
   ],
-  "exercise": "100–300 chars practical task producing the day's artifact.",
+  "exercise": "100–300 chars; one task reinforcing today's concept.",
   "citations": ["1–3 credible sources"],
   "est_minutes": 15
 }` },
     { role: "user" as const, content:
-`Context (condensed; for grounding; do NOT copy):
+`Context (condensed; grounding only; do NOT copy):
 ${context}
 
 Inputs:
-- DayTitle (required): Must be used verbatim as LessonJSON "topic".
-- DayGoal (required): The concrete learner outcome for day ${dayIndex}.
-- Focus (optional): ${focus}
+- DayTitle (required): use EXACTLY as LessonJSON "topic".
 - Level: ${level}
 - DayIndex: ${dayIndex}
+- Focus (optional): ${focus}
 
 TASK:
-Create LessonJSON for day ${dayIndex} that achieves DayGoal and matches DayTitle.
+Create LessonJSON for day ${dayIndex} that reads as a mini-chapter. 
+Use "walkthrough" to provide a cohesive "Key Points & Definitions" summary extracted from the reading (not procedural steps).
 
-HARD CONSTRAINTS:
-- topic: EXACTLY equals DayTitle (trim trailing spaces only).
-- reading: 800–4000 chars; include (1) 2–3 sentence recap referencing what Day ${dayIndex-1} accomplished (or "N/A" if day 1); (2) define key terms at first use; (3) one worked example that achieves DayGoal; (4) common mistakes & how to avoid; (5) checklist.
-- walkthrough: 400–800 chars; precise steps to reproduce the worked example and achieve DayGoal.
-- quiz: exactly 2 Qs; "Based on the reading…" / "According to the reading…"; 4 options each; one clearly correct; options 5–150 chars.
-- exercise: 100–300 chars; produce a single artifact aligned with DayGoal.
-- citations: 1–3 credible sources (docs, standards, reputable tutorials) used for verification only; do NOT quote or paraphrase closely.
-- est_minutes: integer 5–20, realistic for ${level}.
+STRICT RULES:
+- topic equals DayTitle exactly (trim trailing spaces only).
+- reading: 800–4000 chars; recap → introduce → deepen with examples → connect to today's outcome; definitions in context.
+- walkthrough: 400–800 chars; coherent Key Points & Definitions derived from the reading.
+- quiz: exactly 2 questions; 4 options each; options 5–150 chars; one correct (0–3); questions explicitly reference the reading.
+- exercise: 100–300 chars; single, practical/reflective task reinforcing the concept.
+- citations: 1–3 reputable sources; verification only; do not quote.
+- est_minutes: 5–20.
 
 ${JSON_RULES}` },
   ];
@@ -332,33 +341,34 @@ ${JSON_RULES}` }
 export async function buildLessonPromptWithRAG(query: string, topic?: string, k = 5) {
   const { context } = await retrieveContext(query, k, topic);
   return [
-    { role: "system" as const, content: `You are an expert AI tutor. Generate an original, teachable LessonJSON aligned to a plan day.
+    { role: "system" as const, content: `You are an expert AI tutor. Generate an original, teachable LessonJSON aligned to the plan day title.
 
-RAG USAGE:
-- Use the RAG context for fact-checking and examples only; do NOT copy phrases or sentences; do NOT quote it.
+RAG POLICY:
+- Use RAG context to fact-check or inspire examples only; do NOT copy phrases or sentences; do NOT quote it.
 - The lesson must be self-contained and fully original.
 
-TEACHING STRUCTURE:
-- reading: recap of prior day → definitions → one worked example → pitfalls → checklist.
-- walkthrough: deterministic steps to reach the day's outcome.
-- quiz: 2 questions based solely on the reading.
+FIELD INTENT:
+- "reading": flowing mini-chapter with in-context definitions.
+- "walkthrough": "Key Points & Definitions" summary distilled from the reading (not step-by-step).
 
-Output ONLY valid LessonJSON.` },
+LENGTH & RULES:
+- topic equals the exact plan DayTitle; if not explicitly present, derive a precise DayTitle from the plan format and use consistently.
+- reading: 800–4000 chars; recap → introduce → deepen with examples → connect to outcome.
+- walkthrough: 400–800 chars; coherent Key Points & Definitions from the reading.
+- quiz: 2 questions referencing the reading; 4 options each; one correct (0–3); options 5–150 chars.
+- exercise: 100–300 chars; single task reinforcing the concept.
+- citations: 1–3 reputable sources; verification only; no quotes.
+- est_minutes: 5–20.
+
+Output ONLY valid JSON.` },
     { role: "user" as const, content:
-`Context (RAG top-${k}):
+`Context (RAG top-${k}; grounding only; do NOT copy):
 ${context}
 
 Task:
-Return LessonJSON for today's focus: ${query}. The "topic" field MUST equal the exact DayTitle for today (if DayTitle is present in context). If not present, derive a precise DayTitle from the plan-style format and use it consistently.
-
-STRICT RULES:
-- topic: Must equal DayTitle exactly (or the derived exact title).
-- reading: 800–4000 chars; original text; include recap → definitions → worked example → pitfalls → checklist.
-- walkthrough: 400–800 chars; precise steps to achieve the outcome implied by the DayTitle.
-- quiz: exactly 2 Qs; each 4 options; options 5–150 chars; correct_index 0–3; questions must reference the reading explicitly.
-- exercise: 100–300 chars; practical and outcome-aligned.
-- citations: 1–3 credible sources; used for verification only; do NOT quote or closely paraphrase.
-- est_minutes: 5–20.
+Return LessonJSON for today's focus: ${query}. 
+Ensure 'topic' equals the exact DayTitle from context (or a precise derived DayTitle in plan format). 
+Use 'walkthrough' for a cohesive Key Points & Definitions recap from the reading.
 
 Respond with ONLY valid JSON.
 
