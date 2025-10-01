@@ -133,34 +133,52 @@ ${JSON_RULES}` },
 
 export function buildLessonPrompt(context: string) {
   return [
-    { role: "system" as const, content: `You are an expert AI tutor who creates engaging, practical, and focused daily lessons. Your lessons should be:
+    { role: "system" as const, content: `You are an expert AI tutor. Generate a LessonJSON that TEACHES, not summarizes. The lesson must be original, explanatory, and actionable.
 
-1. SPECIFIC and ACTIONABLE - Focus on one clear skill or concept per lesson
-2. PRACTICAL - Include real-world examples and hands-on exercises
-3. PROGRESSIVE - Build on previous knowledge and prepare for next steps
-4. ENGAGING - Use clear language, examples, and interactive elements
-5. MEASURABLE - Include specific learning objectives and assessment
-
-Always use the provided context as your primary source of information. If the context doesn't contain enough detail, supplement with general knowledge but stay focused on the topic.
-
-Output must validate against LessonJSON schema.` },
+QUALITY CONTRACT:
+- Write in your own words. Do NOT copy or paraphrase closely from any source. Avoid distinctive phrasings. No quotes from websites.
+- Teach like a great instructor: brief recap → concept explanation → worked example tied to the day's outcome → application guidance.
+- All quiz questions must be directly answerable from today's reading.
+- Output ONLY valid LessonJSON (see schema expectations in the user message). No commentary.` },
     { role: "user" as const, content:
 `Context:
 ${context}
 
-Task:
-Create a focused, practical daily lesson that teaches ONE specific skill or concept. The lesson should be immediately actionable and build toward the larger learning goal.
+INPUT HEADER (required; parse from Context):
+- DayTitle: the exact day title from the plan (use as LessonJSON "topic" verbatim).
+- DayGoal: the concrete outcome that must be achieved today.
+- Level: beginner | intermediate | advanced (determines voice and depth).
+- EstMinutes: integer within 5–20; if missing, choose realistically based on Level.
+- (Optional) Focus: sub-scope or constraints to emphasize.
 
-Requirements:
-- Topic: Be specific about what skill/concept is being learned today
-- Reading: 200-500 words explaining the concept with clear examples (aim for comprehensive coverage)
-- Walkthrough: 200-300 words showing step-by-step how to apply the concept
-- Quiz: 2 questions that test understanding and application based on the reading material
-- Exercise: A practical task that can be completed in 5-10 minutes
-- Citations: Use the provided context sources
-- Est minutes: Realistic time estimate (5-15 minutes)
+If the header is missing, infer conservatively from the context. The lesson MUST align to DayTitle and DayGoal.
 
-Focus on making this lesson immediately useful and actionable.` },
+SCHEMA (LessonJSON):
+{
+  "topic": "Must equal DayTitle exactly (trim trailing spaces only).",
+  "reading": "800–4000 chars. Structure inside the prose: (1) 2–3 sentence recap of yesterday linking to DayTitle; (2) clear definitions of today's key terms at first use; (3) one worked example that achieves DayGoal; (4) common mistakes & how to avoid them; (5) a concise checklist for success.",
+  "walkthrough": "400–800 chars. Deterministic steps that a learner can follow to reach DayGoal. Reference the same variables/data/tools used in the worked example.",
+  "quiz": [
+    {"q":"Based on the reading, ...","a":["...","...","...","..."],"correct_index":N},
+    {"q":"According to the reading, ...","a":["...","...","...","..."],"correct_index":M}
+  ],
+  "exercise": "100–300 chars. A practical mini-task that directly produces the DayGoal artifact.",
+  "citations": ["1–3 credible sources used to check facts, not copied from."],
+  "est_minutes": 5–20
+}
+
+STRICT RULES:
+- topic: MUST equal DayTitle exactly.
+- reading: 800–4000 chars; fully original; no copy/paste; define terms at first use; include recap → explanation → worked example → pitfalls → checklist.
+- walkthrough: 400–800 chars; step-by-step; no branching; must achieve DayGoal.
+- quiz: exactly 2 questions; each 4 options; correct_index 0–3; questions must explicitly say "Based on the reading" or "According to the reading".
+- options length: 5–150 chars each; one clearly correct.
+- exercise: 100–300 chars, directly tied to DayGoal, single artifact.
+- citations: 1–3 reputable sources (docs, books, standards); do not quote; use for verification only.
+- est_minutes: integer 5–20 (prefer EstMinutes if provided).
+- No backticks, no commentary, ONLY valid JSON.
+
+${JSON_RULES}` },
   ];
 }
 
@@ -168,74 +186,51 @@ export function buildAdvancedLessonPrompt(context: string, topic: string, focus:
   const levelInstructions = getLevelInstructions(level);
   
   return [
-    { role: "system" as const, content: `You are a senior teacher who creates skill-level-appropriate lessons. You MUST return JSON that matches the LessonJSON schema exactly. Do not use any other structure. Follow the format precisely.
+    { role: "system" as const, content: `You are a senior teacher creating an original, level-appropriate LessonJSON. Align STRICTLY to the provided day of the plan.
 
+ORIGINALITY & TEACHING:
+- Write everything in your own words. Do NOT copy or closely paraphrase any source. No quotes from websites.
+- Teach with structure: recap of prior day → clear explanation → one worked example → actionable steps → brief pitfalls & checklist inside the reading.
+- All quiz questions must be answerable from the reading.
+
+LEVEL CALIBRATION:
 ${levelInstructions}
 
-LESSON CREATION GUIDELINES:
-- Adapt ALL content (reading, walkthrough, quiz, exercise) to the ${level} level
-- Use appropriate language complexity and technical depth
-- Include examples and explanations that match the skill level
-- Ensure the lesson builds on appropriate prior knowledge for a ${level} learner
-- Make the content immediately actionable for someone at ${level} level` },
-    { role: "user" as const, content: "Here is the EXACT JSON format you must use for lessons:" },
+Output ONLY valid LessonJSON. No commentary.` },
     { role: "assistant" as const, content: `{
-  "topic": "Introduction to Variables in Programming",
-  "reading": "Variables are fundamental building blocks in programming that allow you to store and manipulate data. Think of a variable as a labeled box where you can put different types of information - numbers, text, or true/false values. In most programming languages, you create a variable by giving it a name and assigning a value using the equals sign (=). For example, 'age = 25' creates a variable called 'age' and stores the number 25 in it. Variables can change their values throughout your program, which makes them incredibly useful for calculations, storing user input, and keeping track of program state. The key is choosing descriptive names that clearly indicate what the variable represents, like 'userName' instead of just 'x' or 'data'. Practice creating variables with different data types and remember that variable names are case-sensitive, so 'age' and 'Age' are different variables. Variables are essential for building dynamic programs that can respond to user input, perform calculations, and maintain state. They allow you to store temporary data, pass information between functions, and create flexible code that can handle different scenarios. Understanding how to use variables effectively is the foundation of programming, as they enable you to create programs that can process data, make decisions, and produce meaningful output. Start with simple examples and gradually work your way up to more complex uses as you become comfortable with the concept. Variables also have different scopes - some are accessible throughout your entire program (global variables) while others are only available within specific functions or code blocks (local variables). This concept of scope is crucial for writing clean, maintainable code. When you declare a variable inside a function, it's only accessible within that function unless you explicitly return it or pass it as a parameter. Global variables, while sometimes necessary, should be used sparingly as they can make code harder to debug and maintain. Another important aspect is variable types - some languages require you to declare the type explicitly (like int age = 25 in C++), while others infer the type automatically (like age = 25 in Python). Understanding type systems helps prevent errors and makes your code more predictable. Variables can also be constants, meaning their values cannot be changed once set. This is useful for values that should remain the same throughout your program's execution, like mathematical constants or configuration settings. The concept of variables extends beyond simple data storage - they're the foundation for more complex data structures like arrays, objects, and classes. As you progress in programming, you'll learn how to create custom data types and use variables to build sophisticated programs that can model real-world scenarios. Remember that good variable naming is not just about following syntax rules, but about making your code self-documenting and easy to understand for both yourself and other developers who might work with your code in the future.",
-  "walkthrough": "To work with variables effectively, start by identifying what data you need to store. Choose a clear, descriptive name using camelCase (like 'firstName') or snake_case (like 'first_name'). Declare your variable and assign an initial value. Practice with different data types: numbers for calculations, strings for text, and booleans for true/false conditions. Always initialize variables before using them to avoid errors. As you write more complex programs, you'll use variables to store user input, perform calculations, and control program flow.",
+  "topic": "Must equal the provided day title exactly",
+  "reading": "800–4000 chars, includes recap → definitions → worked example → pitfalls → checklist.",
+  "walkthrough": "400–800 chars, deterministic steps to reach today's outcome.",
   "quiz": [
-    {
-      "q": "Based on the lesson, what happens when you declare a variable inside a function?",
-      "a": ["It becomes global automatically", "It's only accessible within that function", "It causes a syntax error", "It overwrites existing variables"],
-      "correct_index": 1
-    },
-    {
-      "q": "According to the lesson, why should global variables be used sparingly?",
-      "a": ["They use more memory", "They make code harder to debug and maintain", "They run slower", "They can't store numbers"],
-      "correct_index": 1
-    }
+    { "q": "Based on the reading, ...", "a": ["A","B","C","D"], "correct_index": 2 },
+    { "q": "According to the reading, ...", "a": ["A","B","C","D"], "correct_index": 1 }
   ],
-  "exercise": "Create three variables: one to store your name, one for your age, and one for whether you like programming. Then write a simple program that prints out a sentence using these variables.",
-  "citations": ["Programming Fundamentals Guide", "Variable Naming Best Practices"],
+  "exercise": "100–300 chars practical task producing the day's artifact.",
+  "citations": ["1–3 credible sources"],
   "est_minutes": 15
 }` },
     { role: "user" as const, content:
-`Context (condensed, use only for grounding; do not copy):
+`Context (condensed; for grounding; do NOT copy):
 ${context}
 
-Now create a lesson using the EXACT same JSON structure as shown above, but replace the content with your own original lesson for the requested topic.
+Inputs:
+- DayTitle (required): Must be used verbatim as LessonJSON "topic".
+- DayGoal (required): The concrete learner outcome for day ${dayIndex}.
+- Focus (optional): ${focus}
+- Level: ${level}
+- DayIndex: ${dayIndex}
 
-Task: Create LessonJSON for topic "${topic}" teaching ONE concrete skill aligned with "${focus}" for a ${level} learner on day ${dayIndex}.
+TASK:
+Create LessonJSON for day ${dayIndex} that achieves DayGoal and matches DayTitle.
 
-CRITICAL: This lesson is for a ${level} level learner, so:
-- Adjust ALL content complexity to match ${level} level knowledge and experience
-- Use language and examples appropriate for a ${level} learner
-- Assume appropriate prior knowledge for someone at ${level} level
-- Make the lesson immediately actionable for a ${level} learner
-- Ensure the reading, walkthrough, quiz, and exercise all match the ${level} level
-
-CRITICAL RULES - FOLLOW THESE EXACTLY:
-- Use the EXACT same JSON structure as the example above
-- Replace the content with your own original lesson for the requested topic
-- topic: 10-100 characters describing what is being learned
-- reading: 800-4000 characters MAXIMUM (be comprehensive and detailed, aim for 2000+ characters)
-- walkthrough: 400-800 characters MAXIMUM (step-by-step guidance)
-- quiz: Exactly 2 questions with 4 options each, correct_index 0-3
-  * CRITICAL: Quiz questions MUST be based on specific content from the reading material
-  * Questions should test understanding of concepts explained in the reading
-  * Use phrases like "Based on the lesson..." or "According to the reading..." to ensure questions reference the material
-  * Quiz answers must be 5-150 characters each - keep them concise but descriptive
-  * Avoid answers that are too short (< 5 chars) or too long (> 150 chars)
-- exercise: 100-300 characters MAXIMUM (practical task description)
-- citations: 1-3 strings with at least 10 characters each
-- est_minutes: 5-20 minutes
-- LENGTH IS CRITICAL: Stay within the character limits or validation will fail
-- Use the context to understand the topic, but create completely original content
-- Never copy phrases, sentences, or exact explanations from the sources
-- Focus on teaching the specific topic that was planned for day ${dayIndex}
-- Build naturally on previous days while staying true to the planned curriculum
-- Emphasize clarity, actionability, and topic-specific learning
-- Make the reading content comprehensive and detailed - this is the core learning material
+HARD CONSTRAINTS:
+- topic: EXACTLY equals DayTitle (trim trailing spaces only).
+- reading: 800–4000 chars; include (1) 2–3 sentence recap referencing what Day ${dayIndex-1} accomplished (or "N/A" if day 1); (2) define key terms at first use; (3) one worked example that achieves DayGoal; (4) common mistakes & how to avoid; (5) checklist.
+- walkthrough: 400–800 chars; precise steps to reproduce the worked example and achieve DayGoal.
+- quiz: exactly 2 Qs; "Based on the reading…" / "According to the reading…"; 4 options each; one clearly correct; options 5–150 chars.
+- exercise: 100–300 chars; produce a single artifact aligned with DayGoal.
+- citations: 1–3 credible sources (docs, standards, reputable tutorials) used for verification only; do NOT quote or paraphrase closely.
+- est_minutes: integer 5–20, realistic for ${level}.
 
 ${JSON_RULES}` },
   ];
@@ -337,13 +332,36 @@ ${JSON_RULES}` }
 export async function buildLessonPromptWithRAG(query: string, topic?: string, k = 5) {
   const { context } = await retrieveContext(query, k, topic);
   return [
-    { role: "system" as const, content: "You are an AI tutor. Output must validate against LessonJSON." },
+    { role: "system" as const, content: `You are an expert AI tutor. Generate an original, teachable LessonJSON aligned to a plan day.
+
+RAG USAGE:
+- Use the RAG context for fact-checking and examples only; do NOT copy phrases or sentences; do NOT quote it.
+- The lesson must be self-contained and fully original.
+
+TEACHING STRUCTURE:
+- reading: recap of prior day → definitions → one worked example → pitfalls → checklist.
+- walkthrough: deterministic steps to reach the day's outcome.
+- quiz: 2 questions based solely on the reading.
+
+Output ONLY valid LessonJSON.` },
     { role: "user" as const, content:
 `Context (RAG top-${k}):
 ${context}
 
 Task:
-Return LessonJSON for today's focus: ${query}.
-Respond with ONLY valid JSON.` }
+Return LessonJSON for today's focus: ${query}. The "topic" field MUST equal the exact DayTitle for today (if DayTitle is present in context). If not present, derive a precise DayTitle from the plan-style format and use it consistently.
+
+STRICT RULES:
+- topic: Must equal DayTitle exactly (or the derived exact title).
+- reading: 800–4000 chars; original text; include recap → definitions → worked example → pitfalls → checklist.
+- walkthrough: 400–800 chars; precise steps to achieve the outcome implied by the DayTitle.
+- quiz: exactly 2 Qs; each 4 options; options 5–150 chars; correct_index 0–3; questions must reference the reading explicitly.
+- exercise: 100–300 chars; practical and outcome-aligned.
+- citations: 1–3 credible sources; used for verification only; do NOT quote or closely paraphrase.
+- est_minutes: 5–20.
+
+Respond with ONLY valid JSON.
+
+${JSON_RULES}` }
   ];
 }
