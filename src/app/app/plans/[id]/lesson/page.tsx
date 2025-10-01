@@ -367,8 +367,8 @@ export default function LessonPage() {
                 <Target className="h-5 w-5 sm:h-8 sm:w-8 text-white" />
               </div>
               <div>
-                <h2 className="text-base sm:text-2xl md:text-3xl font-bold text-[var(--fg)]">Step-by-Step Guide</h2>
-                <p className="text-xs sm:text-base text-[var(--fg)]/70">Follow along with detailed instructions</p>
+                <h2 className="text-base sm:text-2xl md:text-3xl font-bold text-[var(--fg)]">Key Points and Definitions</h2>
+                <p className="text-xs sm:text-base text-[var(--fg)]/70">Essential concepts and key terms from today&apos;s lesson</p>
               </div>
             </div>
             
