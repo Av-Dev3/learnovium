@@ -431,6 +431,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
       // Generate flashcards from this lesson (async, don't block response)
       console.log("🚀 Starting async flashcard generation for lesson...");
+      
+      // Don't wait for flashcard generation - let it happen in the background
+      // The generation will continue even if the client disconnects
       generateFlashcardsFromLesson(user.id, goalId, dayIndex, lesson, goal.topic, goal.focus)
         .then(() => {
           console.log("✅ Flashcard generation completed successfully");
@@ -448,7 +451,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           console.error("🔍 This error means flashcards won't be created for this lesson. Check the database migration and AI response format.");
         });
       
-      return NextResponse.json({ reused: false, lesson });
+      // Return immediately with a flag indicating flashcard generation is in progress
+      return NextResponse.json({ 
+        reused: false, 
+        lesson,
+        flashcards_pending: true // Client can use this to show a loading state
+      });
     } catch (error) {
       console.error("Lesson generation failed:", error);
       console.error("Error details:", {
