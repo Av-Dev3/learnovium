@@ -318,9 +318,9 @@ export default function AuthPage() {
           <div className="hidden lg:block space-y-8">
             {/* Hero Section */}
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-full border border-yellow-300/30">
-                <Sparkles className="w-4 h-4 text-yellow-600" />
-                <span className="text-sm font-bold text-yellow-800">AI-Powered Learning Platform</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20 backdrop-blur-sm">
+                <Sparkles className="w-4 h-4 text-brand" />
+                <span className="text-sm font-bold text-brand">AI-Powered Learning Platform</span>
               </div>
               
               <h2 className="text-4xl lg:text-5xl font-bold text-[var(--fg)] leading-tight">
