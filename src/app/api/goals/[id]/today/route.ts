@@ -248,12 +248,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       .single();
     if (gErr || !goal) return NextResponse.json({ error: "Goal not found" }, { status: 404 });
 
-    const dayIndex = dayIndexFrom(goal.created_at || new Date().toISOString());
+    // Get user's timezone from request headers or default to UTC
+    const userTimezone = req.headers.get('x-user-timezone') || 'UTC';
+    
+    const dayIndex = dayIndexFrom(goal.created_at || new Date().toISOString(), userTimezone);
     
     console.log(`📅 Day calculation for goal ${goalId}:`, {
       created_at: goal.created_at,
       calculated_day: dayIndex,
-      current_time: new Date().toISOString()
+      current_time: new Date().toISOString(),
+      user_timezone: userTimezone
     });
 
     // If we have a template, try to reuse lesson

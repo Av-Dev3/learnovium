@@ -13,25 +13,31 @@ export async function requireUser(req: NextRequest) {
   return { user, supabase, res: null };
 }
 
-export function dayIndexFrom(startISO: string) {
+export function dayIndexFrom(startISO: string, timezone: string = 'UTC') {
   const start = new Date(startISO);
   const now = new Date();
   
-  // Use LOCAL time to ensure day changes at local midnight
-  const startLocal = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-  const nowLocal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  // Convert to the specified timezone for day calculation
+  const startInTz = new Date(start.toLocaleString("en-US", { timeZone: timezone }));
+  const nowInTz = new Date(now.toLocaleString("en-US", { timeZone: timezone }));
+  
+  // Get just the date part (midnight) in the target timezone
+  const startLocal = new Date(startInTz.getFullYear(), startInTz.getMonth(), startInTz.getDate());
+  const nowLocal = new Date(nowInTz.getFullYear(), nowInTz.getMonth(), nowInTz.getDate());
   
   const ms = nowLocal.getTime() - startLocal.getTime();
   const dayIndex = Math.max(1, Math.floor(ms / 86400000) + 1);
   
-  console.log('dayIndexFrom calculation (LOCAL TIME):', {
+  console.log('dayIndexFrom calculation (TIMEZONE AWARE):', {
     startISO,
+    timezone,
+    startInTz: startInTz.toISOString(),
+    nowInTz: nowInTz.toISOString(),
     startLocal: startLocal.toISOString(),
     nowLocal: nowLocal.toISOString(),
     ms,
     days: Math.floor(ms / 86400000),
-    dayIndex,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    dayIndex
   });
   
   return dayIndex;

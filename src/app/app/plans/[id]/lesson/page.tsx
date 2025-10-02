@@ -50,7 +50,11 @@ export default function LessonPage() {
         setIsLoading(true);
         setIsError(false);
         
-        const response = await fetch(`/api/goals/${goalId}/today`);
+        const response = await fetch(`/api/goals/${goalId}/today`, {
+          headers: {
+            'x-user-timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
+          }
+        });
         
         if (!response.ok) {
           throw new Error(`Failed to fetch lesson: ${response.status}`);
