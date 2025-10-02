@@ -15,7 +15,7 @@ function getOpenAI(): OpenAI {
 
     _openai = new OpenAI({ 
       apiKey: process.env.OPENAI_API_KEY!,
-      timeout: 45000, // 45 seconds timeout for OpenAI calls - matches our Promise.race timeout
+      timeout: 150000, // 150 seconds timeout for OpenAI calls - longer than task timeouts
       maxRetries: 0, // Disable automatic retries to respect our timeout
     });
     console.log("AI: OpenAI client initialized successfully");
@@ -34,13 +34,13 @@ export function modelFor(task: "planner"|"lesson"|"validator") {
   let model: string;
   switch (task) {
     case "planner": 
-      model = process.env.OPENAI_MODEL_PLANNER ?? "gpt-5-mini";
+      model = process.env.OPENAI_MODEL_PLANNER ?? "gpt-4o-mini";
       break;
     case "lesson": 
-      model = process.env.OPENAI_MODEL_LESSON ?? "gpt-5-mini";
+      model = process.env.OPENAI_MODEL_LESSON ?? "gpt-4o-mini";
       break;
     case "validator": 
-      model = process.env.OPENAI_MODEL_VALIDATOR ?? "gpt-5-mini";
+      model = process.env.OPENAI_MODEL_VALIDATOR ?? "gpt-4o-mini";
       break;
   }
   console.log("AI: modelFor selected model:", model, "for task:", task);
