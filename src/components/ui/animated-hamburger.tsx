@@ -11,21 +11,21 @@ export function AnimatedHamburger({ isOpen = false, className }: AnimatedHamburg
   return (
     <div className={cn("w-6 h-6 flex flex-col justify-center items-center", className)}>
       <div className="w-full flex flex-col items-center justify-center space-y-1">
-        {/* Top line */}
+        {/* Top line - transforms to X */}
         <div
           className={cn(
             "h-0.5 bg-current rounded-full transition-all duration-300 ease-in-out",
             isOpen ? "w-5 rotate-45 translate-y-1.5" : "w-6"
           )}
         />
-        {/* Middle line */}
+        {/* Middle line - fades out */}
         <div
           className={cn(
             "h-0.5 bg-current rounded-full transition-all duration-300 ease-in-out",
             isOpen ? "w-0 opacity-0" : "w-5"
           )}
         />
-        {/* Bottom line */}
+        {/* Bottom line - transforms to X */}
         <div
           className={cn(
             "h-0.5 bg-current rounded-full transition-all duration-300 ease-in-out",

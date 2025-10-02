@@ -118,7 +118,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                         <span className="sr-only">Toggle menu</span>
                       </Button>
                     </SheetTrigger>
-                    <SheetContent side="right" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50">
+                    <SheetContent side="right" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50 top-16 h-[calc(100vh-4rem)]">
                       <div className="flex flex-col h-full overflow-hidden">
                         {/* Modern Mobile Header */}
                         <div className="relative overflow-hidden bg-gradient-fresh p-6 text-white shadow-lg">
@@ -363,7 +363,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                         <span className="sr-only">Toggle menu</span>
                       </Button>
                     </SheetTrigger>
-                    <SheetContent side="right" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50">
+                    <SheetContent side="right" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50 top-16 h-[calc(100vh-4rem)]">
                       <div className="flex flex-col h-full overflow-hidden">
                         {/* Modern Mobile Header */}
                         <div className="relative overflow-hidden bg-gradient-fresh p-6 text-white shadow-lg">
