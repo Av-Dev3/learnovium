@@ -12,11 +12,16 @@ export interface Flashcard {
   next_review_at: string;
   source: "manual" | "lesson" | "generated";
   lesson_day_index?: number;
+  goal_id?: string;
   created_at: string;
   category: {
     id: string;
     name: string;
     color: string;
+  };
+  goal?: {
+    id: string;
+    topic: string;
   };
 }
 

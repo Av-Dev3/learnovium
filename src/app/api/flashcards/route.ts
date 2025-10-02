@@ -33,8 +33,10 @@ export async function GET(req: NextRequest) {
         next_review_at,
         source,
         lesson_day_index,
+        goal_id,
         created_at,
-        category:flashcard_categories(id, name, color)
+        category:flashcard_categories(id, name, color),
+        goal:learning_goals(id, topic)
       `)
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })

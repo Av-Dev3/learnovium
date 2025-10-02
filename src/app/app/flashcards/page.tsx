@@ -23,7 +23,8 @@ import {
   Sparkles,
   Filter,
   RotateCcw,
-  X
+  X,
+  Target
 } from "lucide-react";
 import Link from "next/link";
 import { 
@@ -35,6 +36,7 @@ import {
   useGenerateFlashcards,
   useGoals
 } from "@/app/lib/hooks";
+import type { Flashcard } from "@/app/lib/hooks/useFlashcards";
 
 export default function FlashcardsPage() {
   // State for flashcard study
@@ -675,13 +677,128 @@ export default function FlashcardsPage() {
           </div>
         )}
 
-        {/* Recent Cards */}
+        {/* Organized by Plan and Day */}
+        {totalCards > 0 && (
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="flex items-center gap-3">
+                <Bookmark className="w-5 h-5 sm:w-6 sm:h-6 text-brand" />
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">Flashcards by Plan & Day</h2>
+              </div>
+              
+              {/* Group flashcards by goal/topic and then by day */}
+              {(() => {
+                // Group flashcards by goal_id and then by lesson_day_index
+                const groupedByGoal = flashcards.reduce((acc, card) => {
+                  const goalId = card.goal_id || 'unknown';
+                  const dayIndex = card.lesson_day_index || 0;
+                  
+                  // Debug logging for day numbering
+                  console.log('Flashcard day debug:', {
+                    cardId: card.id,
+                    front: card.front?.substring(0, 50),
+                    lesson_day_index: card.lesson_day_index,
+                    goalTopic: card.goal?.topic
+                  });
+                  
+                  if (!acc[goalId]) {
+                    acc[goalId] = {
+                      goalTopic: card.goal?.topic || 'Unknown Topic',
+                      goalId: goalId,
+                      days: {}
+                    };
+                  }
+                  
+                  if (!acc[goalId].days[dayIndex]) {
+                    acc[goalId].days[dayIndex] = [];
+                  }
+                  
+                  acc[goalId].days[dayIndex].push(card);
+                  return acc;
+                }, {} as Record<string, { goalTopic: string; goalId: string; days: Record<number, Flashcard[]> }>);
+
+                return Object.values(groupedByGoal).map((goalGroup) => (
+                  <div key={goalGroup.goalId} className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Target className="w-5 h-5 text-brand" />
+                      <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200">
+                        {goalGroup.goalTopic}
+                      </h3>
+                      <Badge variant="secondary" className="bg-brand/10 text-brand">
+                        {Object.values(goalGroup.days).flat().length} cards
+                      </Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {Object.entries(goalGroup.days)
+                        .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                        .map(([dayIndex, dayCards]) => (
+                        <div key={dayIndex} className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-slate-500" />
+                            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                              Day {dayIndex}
+                            </span>
+                            <Badge variant="outline" className="text-xs">
+                              {dayCards.length} cards
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            {dayCards.slice(0, 3).map((card) => (
+                              <div
+                                key={card.id}
+                                className="p-3 rounded-lg bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-105"
+                                onClick={() => {
+                                  const index = flashcards.findIndex(c => c.id === card.id);
+                                  if (index !== -1) {
+                                    setCurrentCardIndex(index);
+                                    setIsFlipped(false);
+                                  }
+                                }}
+                              >
+                                <div className="space-y-2">
+                                  <p className="text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-2">
+                                    {card.front}
+                                  </p>
+                                  <div className="flex items-center justify-between">
+                                    <Badge 
+                                      variant={card.difficulty === 'easy' ? 'default' : card.difficulty === 'medium' ? 'secondary' : 'destructive'}
+                                      className="text-xs"
+                                    >
+                                      {card.difficulty}
+                                    </Badge>
+                                    <span className="text-xs text-slate-500">
+                                      {card.mastery_score}% mastery
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            
+                            {dayCards.length > 3 && (
+                              <div className="text-xs text-slate-500 text-center py-2">
+                                +{dayCards.length - 3} more cards
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Cards - Keep as fallback */}
         {totalCards > 0 && (
           <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
             <div className="space-y-4 sm:space-y-6">
               <div className="flex items-center gap-3">
                 <Bookmark className="w-5 h-5 sm:w-6 sm:h-6 text-brand" />
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">Recent Cards</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">All Cards</h2>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
