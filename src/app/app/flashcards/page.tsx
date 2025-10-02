@@ -45,6 +45,11 @@ export default function FlashcardsPage() {
   const [studyMode, setStudyMode] = useState<'review' | 'practice'>('review');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showDueTodayOnly, setShowDueTodayOnly] = useState(false);
+  
+  // State for day/goal filtering
+  const [selectedGoal, setSelectedGoal] = useState<string>('all');
+  const [selectedDay, setSelectedDay] = useState<number | 'all'>('all');
+  const [studyModeFilter, setStudyModeFilter] = useState<'all' | 'day' | 'goal'>('all');
 
   // State for modals
   const [showCreateCard, setShowCreateCard] = useState(false);
@@ -68,14 +73,21 @@ export default function FlashcardsPage() {
   const { reviewFlashcard, loading: reviewLoading } = useReviewFlashcard();
   const { generateFlashcards, loading: generateLoading } = useGenerateFlashcards();
 
-  // Reset card index when flashcards change
+  // Filter flashcards based on selected goal and day
+  const filteredFlashcards = flashcards.filter(card => {
+    if (selectedGoal !== 'all' && card.goal_id !== selectedGoal) return false;
+    if (selectedDay !== 'all' && card.lesson_day_index !== selectedDay) return false;
+    return true;
+  });
+
+  // Reset card index when filtered flashcards change
   useEffect(() => {
     setCurrentCardIndex(0);
     setIsFlipped(false);
-  }, [flashcards]);
+  }, [filteredFlashcards]);
 
-  const currentCard = flashcards[currentCardIndex];
-  const totalCards = flashcards.length;
+  const currentCard = filteredFlashcards[currentCardIndex];
+  const totalCards = filteredFlashcards.length;
 
   // Debug logging
   useEffect(() => {
@@ -122,6 +134,31 @@ export default function FlashcardsPage() {
 
   const handleShuffle = () => {
     setCurrentCardIndex(Math.floor(Math.random() * totalCards));
+    setIsFlipped(false);
+  };
+
+  // Study mode functions
+  const startDayStudy = (goalId: string, dayIndex: number) => {
+    setSelectedGoal(goalId);
+    setSelectedDay(dayIndex);
+    setStudyModeFilter('day');
+    setCurrentCardIndex(0);
+    setIsFlipped(false);
+  };
+
+  const startGoalStudy = (goalId: string) => {
+    setSelectedGoal(goalId);
+    setSelectedDay('all');
+    setStudyModeFilter('goal');
+    setCurrentCardIndex(0);
+    setIsFlipped(false);
+  };
+
+  const resetFilters = () => {
+    setSelectedGoal('all');
+    setSelectedDay('all');
+    setStudyModeFilter('all');
+    setCurrentCardIndex(0);
     setIsFlipped(false);
   };
 
@@ -472,6 +509,35 @@ export default function FlashcardsPage() {
                 </div>
               </div>
 
+              {/* Filter Status */}
+              {(selectedGoal !== 'all' || selectedDay !== 'all') && (
+                <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                      {studyModeFilter === 'day' && selectedDay !== 'all' && (
+                        <>Studying Day {selectedDay} from {flashcards.find(c => c.goal_id === selectedGoal)?.goal?.topic}</>
+                      )}
+                      {studyModeFilter === 'goal' && selectedGoal !== 'all' && (
+                        <>Studying all cards from {flashcards.find(c => c.goal_id === selectedGoal)?.goal?.topic}</>
+                      )}
+                    </span>
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                      {totalCards} cards
+                    </Badge>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={resetFilters}
+                    className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                  >
+                    <X className="w-3 h-3 mr-1" />
+                    Clear Filter
+                  </Button>
+                </div>
+              )}
+
             {/* Flashcard */}
             <div className="flex justify-center">
               <div 
@@ -719,14 +785,24 @@ export default function FlashcardsPage() {
 
                 return Object.values(groupedByGoal).map((goalGroup) => (
                   <div key={goalGroup.goalId} className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <Target className="w-5 h-5 text-brand" />
-                      <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200">
-                        {goalGroup.goalTopic}
-                      </h3>
-                      <Badge variant="secondary" className="bg-brand/10 text-brand">
-                        {Object.values(goalGroup.days).flat().length} cards
-                      </Badge>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Target className="w-5 h-5 text-brand" />
+                        <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200">
+                          {goalGroup.goalTopic}
+                        </h3>
+                        <Badge variant="secondary" className="bg-brand/10 text-brand">
+                          {Object.values(goalGroup.days).flat().length} cards
+                        </Badge>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => startGoalStudy(goalGroup.goalId)}
+                        className="bg-brand hover:bg-brand/90"
+                      >
+                        <Brain className="w-4 h-4 mr-2" />
+                        Study All
+                      </Button>
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -734,14 +810,25 @@ export default function FlashcardsPage() {
                         .sort(([a], [b]) => parseInt(a) - parseInt(b))
                         .map(([dayIndex, dayCards]) => (
                         <div key={dayIndex} className="space-y-3">
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-slate-500" />
-                            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                              Day {dayIndex}
-                            </span>
-                            <Badge variant="outline" className="text-xs">
-                              {dayCards.length} cards
-                            </Badge>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-4 h-4 text-slate-500" />
+                              <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                Day {dayIndex}
+                              </span>
+                              <Badge variant="outline" className="text-xs">
+                                {dayCards.length} cards
+                              </Badge>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => startDayStudy(goalGroup.goalId, parseInt(dayIndex))}
+                              className="text-xs"
+                            >
+                              <BookOpen className="w-3 h-3 mr-1" />
+                              Study Day
+                            </Button>
                           </div>
                           
                           <div className="space-y-2">
