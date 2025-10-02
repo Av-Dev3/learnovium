@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { AppHeader } from "@/components/app-header";
 import { 
   Mail, 
   ArrowLeft,
@@ -39,6 +40,9 @@ export default function ResetRequestPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
+      {/* Navigation Header */}
+      <AppHeader isLoggedIn={false} />
+      
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse" />
@@ -47,7 +51,7 @@ export default function ResetRequestPage() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center min-h-screen py-8 lg:py-12">
+        <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] py-8 lg:py-12">
           <div className="w-full max-w-md">
             {/* Logo and Branding */}
             <div className="text-center mb-8">
