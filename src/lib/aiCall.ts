@@ -40,7 +40,7 @@ async function chatCore(model: string, messages: Msg[], desiredTemp?: number, ta
   const baseParams = { model, messages };
   
   // Add timeout wrapper - longer for plan generation, shorter for other tasks
-  const timeoutMs = taskType === 'planner' ? 120000 : 60000; // 2 minutes for plans, 1 minute for others
+  const timeoutMs = taskType === 'planner' ? 120000 : 90000; // 2 minutes for plans, 90 seconds for others
   console.log(`AI: Setting timeout for ${timeoutMs}ms (task: ${taskType})`);
   
   const timeoutPromise = new Promise((_, reject) => {

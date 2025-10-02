@@ -34,13 +34,13 @@ export function modelFor(task: "planner"|"lesson"|"validator") {
   let model: string;
   switch (task) {
     case "planner": 
-      model = process.env.OPENAI_MODEL_PLANNER ?? "gpt-4o-mini";
+      model = process.env.OPENAI_MODEL_PLANNER ?? "gpt-5-mini";
       break;
     case "lesson": 
-      model = process.env.OPENAI_MODEL_LESSON ?? "gpt-4o-mini";
+      model = process.env.OPENAI_MODEL_LESSON ?? "gpt-5-mini";
       break;
     case "validator": 
-      model = process.env.OPENAI_MODEL_VALIDATOR ?? "gpt-4o-mini";
+      model = process.env.OPENAI_MODEL_VALIDATOR ?? "gpt-5-mini";
       break;
   }
   console.log("AI: modelFor selected model:", model, "for task:", task);
