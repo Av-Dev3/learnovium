@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { MoreVertical, ChevronRight, LogOut } from "lucide-react";
+import { ChevronRight, LogOut } from "lucide-react";
 import AdminLinkClient from "./AdminLinkClient";
 import { Logo } from "./Logo";
+import { AnimatedHamburger } from "./ui/animated-hamburger";
 
 interface AppHeaderProps {
   isLoggedIn?: boolean;
@@ -22,6 +23,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
   const pathname = usePathname();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
 
@@ -65,8 +67,11 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
             </Link>
           </div>
 
-          {/* Center: Mobile Logo - Absolutely centered on mobile */}
-          <div className="flex md:hidden absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          {/* Mobile: Invisible spacer for balance */}
+          <div className="flex md:hidden w-12"></div>
+
+          {/* Center: Mobile Logo - Centered on mobile */}
+          <div className="flex md:hidden flex-1 justify-center">
             <Link href="/" className="flex items-center space-x-2">
               <Logo size="lg" />
               <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
@@ -106,10 +111,10 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 </Button>
                 {/* Mobile Menu Only */}
                 <div className="flex md:hidden items-center">
-                  <Sheet>
+                  <Sheet onOpenChange={setMobileMenuOpen}>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                        <MoreVertical className="h-5 w-5 text-[var(--fg)]" />
+                        <AnimatedHamburger isOpen={mobileMenuOpen} className="text-[var(--fg)]" />
                         <span className="sr-only">Toggle menu</span>
                       </Button>
                     </SheetTrigger>
@@ -336,10 +341,10 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 
                 {/* Mobile Menu for logged-in users */}
                 <div className="flex md:hidden items-center">
-                  <Sheet>
+                  <Sheet onOpenChange={setMobileMenuOpen}>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                        <MoreVertical className="h-5 w-5 text-[var(--fg)]" />
+                        <AnimatedHamburger isOpen={mobileMenuOpen} className="text-[var(--fg)]" />
                         <span className="sr-only">Toggle menu</span>
                       </Button>
                     </SheetTrigger>
