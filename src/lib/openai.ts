@@ -15,7 +15,7 @@ function getOpenAI(): OpenAI {
 
     _openai = new OpenAI({ 
       apiKey: process.env.OPENAI_API_KEY!,
-      timeout: 150000, // 150 seconds timeout for OpenAI calls - longer than task timeouts
+      timeout: 180000, // 3 minutes timeout for OpenAI SDK - longer than all task timeouts
       maxRetries: 0, // Disable automatic retries to respect our timeout
     });
     console.log("AI: OpenAI client initialized successfully");
