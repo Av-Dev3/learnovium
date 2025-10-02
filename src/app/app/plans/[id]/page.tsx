@@ -81,10 +81,10 @@ export default async function PlanDetailPage({
     ? Math.round((completed_lessons / total_lessons) * 100) 
     : 0;
 
-  // Use the same day calculation as the API and dashboard for consistency
-  const createdDate = new Date(goal.created_at);
+  // Use LOCAL time to match backend and dashboard
+  const start = new Date(goal.created_at);
   const now = new Date();
-  const startLocal = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+  const startLocal = new Date(start.getFullYear(), start.getMonth(), start.getDate());
   const nowLocal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const ms = nowLocal.getTime() - startLocal.getTime();
   const currentDay = Math.max(1, Math.floor(ms / 86400000) + 1);

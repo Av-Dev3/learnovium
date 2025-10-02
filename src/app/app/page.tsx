@@ -52,13 +52,13 @@ export default function Dashboard() {
   // Ensure goals is always an array and memoize to prevent infinite loops
   const safeGoals = useMemo(() => Array.isArray(goals) ? goals : [], [goals]);
 
-  // Function to compute day index
+  // Function to compute day index - uses LOCAL time to match backend
   const computeDayIndex = (createdAt: string) => {
-    const createdDate = new Date(createdAt);
+    const start = new Date(createdAt);
     const now = new Date();
     
-    // Use local time instead of UTC to ensure day changes at local midnight
-    const startLocal = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+    // Use LOCAL time to ensure day changes at local midnight
+    const startLocal = new Date(start.getFullYear(), start.getMonth(), start.getDate());
     const nowLocal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
     const ms = nowLocal.getTime() - startLocal.getTime();

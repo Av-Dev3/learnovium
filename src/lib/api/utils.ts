@@ -17,12 +17,24 @@ export function dayIndexFrom(startISO: string) {
   const start = new Date(startISO);
   const now = new Date();
   
-  // Use local time instead of UTC to ensure day changes at local midnight
+  // Use LOCAL time to ensure day changes at local midnight
   const startLocal = new Date(start.getFullYear(), start.getMonth(), start.getDate());
   const nowLocal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   
   const ms = nowLocal.getTime() - startLocal.getTime();
-  return Math.max(1, Math.floor(ms / 86400000) + 1);
+  const dayIndex = Math.max(1, Math.floor(ms / 86400000) + 1);
+  
+  console.log('dayIndexFrom calculation (LOCAL TIME):', {
+    startISO,
+    startLocal: startLocal.toISOString(),
+    nowLocal: nowLocal.toISOString(),
+    ms,
+    days: Math.floor(ms / 86400000),
+    dayIndex,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+  });
+  
+  return dayIndex;
 }
 
 export function calculateStreak(progressData: Array<{ completed_at: string; day_index?: number }>): number {
