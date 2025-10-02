@@ -17,7 +17,8 @@ import {
   ChevronRight,
   Shield,
   Brain,
-  BookCheck
+  BookCheck,
+  TrendingUp
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -455,13 +456,13 @@ function UserMenu() {
                     </div>
                   </Link>
                   
-                  <Link href="/app/plans" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                  <Link href="/app/stats" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 group-hover:from-emerald-100 group-hover:to-teal-200 dark:group-hover:from-emerald-800/30 dark:group-hover:to-teal-800/30 transition-all duration-200 mr-3">
-                      <Target className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                      <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-sm">Plans</div>
-                      <div className="text-xs text-gray-500 dark:text-slate-400">Track your learning plans</div>
+                      <div className="font-semibold text-sm">Stats & Streaks</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">View your progress analytics</div>
                     </div>
                     <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
                       <ChevronRight className="h-4 w-4" />
