@@ -104,9 +104,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 <Button size="sm" shape="pill" asChild className="bg-gradient-to-r from-brand to-purple-600 hover:opacity-95 text-white border-0 shadow-md hidden sm:inline-flex">
                   <Link href="/auth">Get Started</Link>
                 </Button>
-                {/* Mobile Theme Toggle and Menu */}
-                <div className="flex md:hidden items-center space-x-2">
-                  <ThemeToggle />
+                {/* Mobile Menu Only */}
+                <div className="flex md:hidden items-center">
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
@@ -168,7 +167,21 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
 
                           {/* Mobile Footer - Simplified */}
                           <div className="p-6 border-t border-[var(--border)]/60">
-                            <div className="space-y-3">
+                            <div className="space-y-4">
+                              {/* Theme Toggle */}
+                              <div className="flex items-center justify-between p-4 bg-[var(--muted)]/30 rounded-2xl border border-[var(--border)]/40">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20">
+                                    <div className="w-5 h-5 rounded-full bg-blue-600 dark:bg-blue-400" />
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-sm text-[var(--fg)]">Theme</div>
+                                    <div className="text-xs text-[var(--fg)]/60">Light / Dark mode</div>
+                                  </div>
+                                </div>
+                                <ThemeToggle />
+                              </div>
+                              
                               <Button className="w-full bg-gradient-to-r from-brand to-purple-600 text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
                                 <Link href="/auth">
                                   <div className="flex items-center justify-center space-x-2">
@@ -321,9 +334,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                 )}
                 </div>
                 
-                {/* Mobile Theme Toggle and Menu for logged-in users */}
-                <div className="flex md:hidden items-center space-x-2">
-                  <ThemeToggle />
+                {/* Mobile Menu for logged-in users */}
+                <div className="flex md:hidden items-center">
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">

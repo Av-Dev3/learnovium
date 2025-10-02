@@ -188,6 +188,10 @@ export default function PricingPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      <span className="text-slate-600 dark:text-slate-300">Offline mode for mobile app</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
                       <span className="text-slate-600 dark:text-slate-300">VIP support & onboarding</span>
                     </div>
                   </div>
@@ -255,6 +259,12 @@ export default function PricingPage() {
                       <td className="py-4 px-6 text-center text-slate-600 dark:text-slate-300">Yes</td>
                       <td className="py-4 px-6 text-center text-slate-600 dark:text-slate-300">No</td>
                       <td className="py-4 px-6 text-center text-slate-600 dark:text-slate-300">No</td>
+                    </tr>
+                    <tr className="border-b border-slate-100 dark:border-slate-800">
+                      <td className="py-4 px-6 text-slate-600 dark:text-slate-300">Offline Mode</td>
+                      <td className="py-4 px-6 text-center text-slate-600 dark:text-slate-300">No</td>
+                      <td className="py-4 px-6 text-center text-slate-600 dark:text-slate-300">No</td>
+                      <td className="py-4 px-6 text-center text-slate-600 dark:text-slate-300">Yes</td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-800">
                       <td className="py-4 px-6 text-slate-600 dark:text-slate-300">Support</td>

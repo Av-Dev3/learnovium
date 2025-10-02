@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app-header";
 import { Footer } from "@/components/layout/footer";
 
-import { ArrowRight, Target, Brain, Calendar, Sparkles, Zap, Shield, Users, TrendingUp, Star } from "lucide-react";
+import { ArrowRight, Target, Brain, Calendar, Sparkles, Zap, Shield, Users, TrendingUp, Star, Smartphone, Download, Apple, Play } from "lucide-react";
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { useEffect, useRef, useState } from "react";
@@ -409,6 +409,116 @@ export default function Home() {
             View All Plans
             <ArrowRight className="w-5 h-5" />
           </Link>
+        </div>
+      </section>
+
+      {/* Mobile App Coming Soon Section */}
+      <section className="py-24 relative overflow-hidden">
+        {/* Modern gradient background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800" />
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-br from-purple-400/10 via-indigo-400/10 to-cyan-400/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-br from-cyan-400/10 via-purple-400/10 to-indigo-400/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '3s'}} />
+        </div>
+        
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-12 border border-white/20 dark:border-slate-700/50 shadow-xl">
+            <div className="text-center space-y-8">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-emerald-400/20 to-green-400/20 backdrop-blur-sm border border-emerald-300/30 hover:from-emerald-400/30 hover:to-green-400/30 transition-all duration-300 rounded-full">
+                <Smartphone className="w-5 h-5 text-emerald-600 animate-pulse" />
+                <span className="text-emerald-800 dark:text-emerald-200 font-medium">Coming Soon</span>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 leading-tight">
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.2s'}}>Learn Anywhere with Our</span>{' '}
+                <span className="inline-block animate-fade-in-up text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600" style={{animationDelay: '0.4s'}}>Mobile Apps</span>
+              </h2>
+              
+              <p className="text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed">
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.6s'}}>Take your learning journey anywhere.</span>{' '}
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '0.8s'}}>Our iOS and Android apps are coming soon</span>{' '}
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.0s'}}>with offline sync, push notifications,</span>{' '}
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.2s'}}>and the same AI-powered experience</span>{' '}
+                <span className="inline-block animate-fade-in-up" style={{animationDelay: '1.4s'}}>you love on desktop.</span>
+              </p>
+
+              {/* Mobile App Features */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div className="group">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Download className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Offline Learning</h3>
+                  <p className="text-slate-600 dark:text-slate-300">Download lessons and study without an internet connection</p>
+                </div>
+
+                <div className="group">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Zap className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Smart Notifications</h3>
+                  <p className="text-slate-600 dark:text-slate-300">Get reminded at the perfect time to maintain your learning streak</p>
+                </div>
+
+                <div className="group">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Brain className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Seamless Sync</h3>
+                  <p className="text-slate-600 dark:text-slate-300">Your progress syncs instantly across all your devices</p>
+                </div>
+              </div>
+
+              {/* App Store Buttons (Coming Soon) */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
+                <div className="group relative">
+                  <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-slate-400 to-slate-500 text-white font-semibold rounded-2xl shadow-lg cursor-not-allowed opacity-60">
+                    <Apple className="h-6 w-6" />
+                    <div className="text-left">
+                      <div className="text-xs opacity-90">Coming Soon to</div>
+                      <div className="text-lg font-bold leading-tight">App Store</div>
+                    </div>
+                  </div>
+                  {/* Tooltip */}
+                  <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-sm py-2 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    iOS App Coming Soon!
+                  </div>
+                </div>
+
+                <div className="group relative">
+                  <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-slate-400 to-slate-500 text-white font-semibold rounded-2xl shadow-lg cursor-not-allowed opacity-60">
+                    <Play className="h-6 w-6" />
+                    <div className="text-left">
+                      <div className="text-xs opacity-90">Coming Soon to</div>
+                      <div className="text-lg font-bold leading-tight">Google Play</div>
+                    </div>
+                  </div>
+                  {/* Tooltip */}
+                  <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-sm py-2 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    Android App Coming Soon!
+                  </div>
+                </div>
+              </div>
+
+              {/* Early Access Signup */}
+              <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 rounded-2xl p-8 border border-emerald-200 dark:border-emerald-800 mt-8">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Get Notified When We Launch</h3>
+                <p className="text-slate-600 dark:text-slate-300 mb-6">Be among the first to experience learning on mobile. We&apos;ll notify you as soon as our apps are available.</p>
+                <Button 
+                  size="lg" 
+                  shape="pill"
+                  asChild 
+                  className="text-lg px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                >
+                  <Link href="/auth">
+                    Join Early Access List
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

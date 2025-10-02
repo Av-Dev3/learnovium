@@ -18,7 +18,8 @@ import {
   Shield,
   Brain,
   BookCheck,
-  TrendingUp
+  TrendingUp,
+  Lightbulb
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -26,6 +27,7 @@ import { useState, useEffect } from "react";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import { useIsAdmin } from "@/app/lib/hooks";
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function ProtectedShell({ children }: { children: React.ReactNode }) {
   const [isMounted, setIsMounted] = useState(false);
@@ -148,7 +150,7 @@ function AppNav() {
     { name: "Flashcards", href: "/app/flashcards", icon: Brain },
     { name: "History", href: "/app/history", icon: History },
     { name: "Create", href: "/app/create", icon: Plus },
-    { name: "Settings", href: "/app/settings", icon: Settings },
+    { name: "Recommendations", href: "/app/recommendations", icon: Lightbulb },
   ];
 
   // Add admin link if user is admin and no database errors
@@ -204,7 +206,7 @@ function MobileAppNav() {
     { name: "Flashcards", href: "/app/flashcards", icon: Brain, description: "Study with flashcards" },
     { name: "History", href: "/app/history", icon: History, description: "Past activities" },
     { name: "Create", href: "/app/create", icon: Plus, description: "Start something new" },
-    { name: "Settings", href: "/app/settings", icon: Settings, description: "Preferences & account" },
+    { name: "Recommendations", href: "/app/recommendations", icon: Lightbulb, description: "AI-powered suggestions" },
   ];
 
   // Add admin link if user is admin and no database errors
@@ -483,8 +485,21 @@ function UserMenu() {
                   </Link>
                 </div>
 
-                {/* Footer with sign out */}
-                <div className="p-3 border-t border-gray-100 dark:border-slate-700/50">
+                {/* Footer with theme toggle and sign out */}
+                <div className="p-3 border-t border-gray-100 dark:border-slate-700/50 space-y-2">
+                  <div className="flex items-center justify-between px-4 py-3 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 transition-all duration-200">
+                        <Settings className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-sm">Theme</div>
+                        <div className="text-xs text-gray-500 dark:text-slate-400">Light / Dark mode</div>
+                      </div>
+                    </div>
+                    <ThemeToggle />
+                  </div>
+                  
                   <button
                     onClick={handleSignOut}
                     className="group w-full flex items-center px-4 py-3 text-left text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
@@ -605,15 +620,18 @@ function MobileUserMenu() {
           </div>
         </button>
         
-        <button className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 group-hover:from-purple-100 group-hover:to-pink-200 transition-all duration-200 mr-4">
-            <Settings className="h-6 w-6 text-purple-600" />
+        <div className="group w-full flex items-center justify-between p-4 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 group-hover:from-purple-100 group-hover:to-pink-200 transition-all duration-200 mr-4">
+              <Settings className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="flex-1">
+              <div className="font-semibold text-base">Theme</div>
+              <div className="text-sm text-gray-500">Light / Dark mode</div>
+            </div>
           </div>
-          <div className="flex-1">
-            <div className="font-semibold text-base">Preferences</div>
-            <div className="text-sm text-gray-500">Customize your experience</div>
-          </div>
-        </button>
+          <ThemeToggle />
+        </div>
         
         <button className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 group-hover:from-emerald-100 group-hover:to-teal-200 transition-all duration-200 mr-4">
