@@ -745,10 +745,12 @@ export default function FlashcardsPage() {
 
         {/* Organized by Plan and Day */}
         {totalCards > 0 && (
-          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
+          <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
             <div className="space-y-6 sm:space-y-8">
               <div className="flex items-center gap-3">
-                <Bookmark className="w-5 h-5 sm:w-6 sm:h-6 text-brand" />
+                <div className="w-10 h-10 bg-gradient-to-br from-brand to-purple-600 rounded-xl flex items-center justify-center">
+                  <Bookmark className="w-5 h-5 text-white" />
+                </div>
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">Flashcards by Plan & Day</h2>
               </div>
               
@@ -784,107 +786,126 @@ export default function FlashcardsPage() {
                 }, {} as Record<string, { goalTopic: string; goalId: string; days: Record<number, Flashcard[]> }>);
 
                 return Object.values(groupedByGoal).map((goalGroup) => (
-                  <div key={goalGroup.goalId} className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Target className="w-5 h-5 text-brand" />
-                        <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200">
-                          {goalGroup.goalTopic}
-                        </h3>
-                        <Badge variant="secondary" className="bg-brand/10 text-brand">
-                          {Object.values(goalGroup.days).flat().length} cards
-                        </Badge>
-                      </div>
-                      <Button
-                        size="sm"
-                        onClick={() => startGoalStudy(goalGroup.goalId)}
-                        className="bg-brand hover:bg-brand/90"
-                      >
-                        <Brain className="w-4 h-4 mr-2" />
-                        Study All
-                      </Button>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {Object.entries(goalGroup.days)
-                        .sort(([a], [b]) => parseInt(a) - parseInt(b))
-                        .map(([dayIndex, dayCards]) => (
-                        <div key={dayIndex} className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4 text-slate-500" />
-                              <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                                Day {dayIndex}
-                              </span>
-                              <Badge variant="outline" className="text-xs">
-                                {dayCards.length} cards
+                  <div key={goalGroup.goalId} className="group relative rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                            <Target className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg sm:text-xl font-bold text-blue-800 dark:text-blue-200 truncate">
+                              {goalGroup.goalTopic}
+                            </h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
+                                {Object.values(goalGroup.days).flat().length} cards
                               </Badge>
                             </div>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => startDayStudy(goalGroup.goalId, parseInt(dayIndex))}
-                              className="text-xs"
-                            >
-                              <BookOpen className="w-3 h-3 mr-1" />
-                              Study Day
-                            </Button>
-                          </div>
-                          
-                          <div className="space-y-2">
-                            {dayCards.slice(0, 3).map((card) => (
-                              <div
-                                key={card.id}
-                                className="p-3 rounded-lg bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-105"
-                                onClick={() => {
-                                  const index = flashcards.findIndex(c => c.id === card.id);
-                                  if (index !== -1) {
-                                    setCurrentCardIndex(index);
-                                    setIsFlipped(false);
-                                  }
-                                }}
-                              >
-                                <div className="space-y-2">
-                                  <p className="text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-2">
-                                    {card.front}
-                                  </p>
-                                  <div className="flex items-center justify-between">
-                                    <Badge 
-                                      variant={card.difficulty === 'easy' ? 'default' : card.difficulty === 'medium' ? 'secondary' : 'destructive'}
-                                      className="text-xs"
-                                    >
-                                      {card.difficulty}
-                                    </Badge>
-                                    <span className="text-xs text-slate-500">
-                                      {card.mastery_score}% mastery
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                            
-                            {dayCards.length > 3 && (
-                              <div className="text-xs text-slate-500 text-center py-2">
-                                +{dayCards.length - 3} more cards
-                              </div>
-                            )}
                           </div>
                         </div>
-                      ))}
+                        <Button
+                          size="sm"
+                          onClick={() => startGoalStudy(goalGroup.goalId)}
+                          className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        >
+                          <Brain className="w-4 h-4 mr-2" />
+                          Study All
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {Object.entries(goalGroup.days)
+                          .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                          .map(([dayIndex, dayCards]) => (
+                          <div key={dayIndex} className="group relative rounded-lg sm:rounded-xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-600/50 shadow-md hover:shadow-lg transition-all duration-300">
+                            <div className="p-3 sm:p-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                                    <Clock className="w-3 h-3 text-white" />
+                                  </div>
+                                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    Day {dayIndex}
+                                  </span>
+                                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 text-xs">
+                                    {dayCards.length} cards
+                                  </Badge>
+                                </div>
+                                <Button
+                                  size="sm"
+                                  onClick={() => startDayStudy(goalGroup.goalId, parseInt(dayIndex))}
+                                  className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-xs shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+                                >
+                                  <BookOpen className="w-3 h-3 mr-1" />
+                                  Study Day
+                                </Button>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                {dayCards.slice(0, 3).map((card) => (
+                                  <div
+                                    key={card.id}
+                                    className="p-3 rounded-lg bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-600/50 dark:to-slate-700/50 border border-slate-200/50 dark:border-slate-600/50 hover:shadow-md transition-all duration-300 cursor-pointer group hover:scale-[1.02]"
+                                    onClick={() => {
+                                      const index = flashcards.findIndex(c => c.id === card.id);
+                                      if (index !== -1) {
+                                        setCurrentCardIndex(index);
+                                        setIsFlipped(false);
+                                      }
+                                    }}
+                                  >
+                                    <div className="space-y-2">
+                                      <p className="text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-2 group-hover:text-brand transition-colors duration-200">
+                                        {card.front}
+                                      </p>
+                                      <div className="flex items-center justify-between">
+                                        <Badge 
+                                          variant={card.difficulty === 'easy' ? 'default' : card.difficulty === 'medium' ? 'secondary' : 'destructive'}
+                                          className={`text-xs ${
+                                            card.difficulty === 'easy' 
+                                              ? 'bg-green-100 text-green-800 border-green-200' 
+                                              : card.difficulty === 'medium' 
+                                              ? 'bg-yellow-100 text-yellow-800 border-yellow-200' 
+                                              : 'bg-red-100 text-red-800 border-red-200'
+                                          }`}
+                                        >
+                                          {card.difficulty}
+                                        </Badge>
+                                        <span className="text-xs text-slate-500 font-medium">
+                                          {card.mastery_score}% mastery
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                                
+                                {dayCards.length > 3 && (
+                                  <div className="text-xs text-slate-500 text-center py-2 font-medium">
+                                    +{dayCards.length - 3} more cards
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ));
               })()}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Recent Cards - Keep as fallback */}
+        {/* All Cards - Fallback view */}
         {totalCards > 0 && (
-          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
+          <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 dark:border-slate-700/50">
             <div className="space-y-4 sm:space-y-6">
               <div className="flex items-center gap-3">
-                <Bookmark className="w-5 h-5 sm:w-6 sm:h-6 text-brand" />
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                  <Bookmark className="w-5 h-5 text-white" />
+                </div>
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">All Cards</h2>
               </div>
               
@@ -892,7 +913,7 @@ export default function FlashcardsPage() {
                 {flashcards.slice(0, 6).map((card) => (
                   <div
                     key={card.id}
-                    className="p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-105"
+                    className="group relative rounded-xl sm:rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-700/50 dark:to-slate-800/50 border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105"
                     onClick={() => {
                       const index = flashcards.findIndex(c => c.id === card.id);
                       if (index !== -1) {
@@ -901,7 +922,7 @@ export default function FlashcardsPage() {
                       }
                     }}
                   >
-                    <div className="space-y-3 sm:space-y-4">
+                    <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                       <div className="flex items-center justify-between">
                         <Badge className={`${getDifficultyColor(card.difficulty)} text-xs sm:text-sm`}>
                           {card.difficulty}
@@ -934,7 +955,7 @@ export default function FlashcardsPage() {
                 ))}
               </div>
             </div>
-          </div>
+          </section>
         )}
         </div>
       </div>
