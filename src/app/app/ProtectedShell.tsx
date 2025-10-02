@@ -16,7 +16,8 @@ import {
   HelpCircle,
   ChevronRight,
   Shield,
-  Brain
+  Brain,
+  BookCheck
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -142,6 +143,7 @@ function AppNav() {
   const navigation = [
     { name: "Dashboard", href: "/app", icon: Home },
     { name: "Plans", href: "/app/plans", icon: Target },
+    { name: "Quiz", href: "/app/quiz", icon: BookCheck },
     { name: "Flashcards", href: "/app/flashcards", icon: Brain },
     { name: "History", href: "/app/history", icon: History },
     { name: "Create", href: "/app/create", icon: Plus },
@@ -197,6 +199,7 @@ function MobileAppNav() {
   const navigation = [
     { name: "Dashboard", href: "/app", icon: Home, description: "Overview and progress" },
     { name: "Plans", href: "/app/plans", icon: Target, description: "Your learning plans" },
+    { name: "Quiz", href: "/app/quiz", icon: BookCheck, description: "Test your knowledge" },
     { name: "Flashcards", href: "/app/flashcards", icon: Brain, description: "Study with flashcards" },
     { name: "History", href: "/app/history", icon: History, description: "Past activities" },
     { name: "Create", href: "/app/create", icon: Plus, description: "Start something new" },
