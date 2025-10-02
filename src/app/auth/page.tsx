@@ -158,14 +158,10 @@ export default function AuthPage() {
           {/* Left Side - Auth Form */}
           <div className="flex items-center justify-center lg:justify-start">
             <div className="w-full max-w-md">
-              {/* Logo and Branding */}
+              {/* Logo */}
               <div className="text-center lg:text-left mb-8">
-                <div className="flex items-center justify-center lg:justify-start gap-3 mb-6">
+                <div className="flex items-center justify-center lg:justify-start mb-6">
                   <Logo size="lg" />
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20">
-                    <Sparkles className="w-4 h-4 text-brand" />
-                    <span className="text-brand font-medium text-sm">AI-Powered Learning</span>
-                  </div>
                 </div>
               </div>
 
