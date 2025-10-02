@@ -4,30 +4,35 @@ import Link from "next/link";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--bg)] via-[color-mix(in_oklab,var(--bg)_95%,black_2%)] to-[color-mix(in_oklab,var(--bg)_90%,black_4%)]">
-      <AppHeader />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
+      {/* Navigation Header */}
+      <AppHeader isLoggedIn={false} />
       
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto space-y-16">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-full blur-3xl animate-pulse" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="space-y-8 py-8 lg:py-12">
           
           {/* Hero Section */}
           <section className="relative text-center space-y-8">
-            {/* Clean background */}
-            <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900" />
-            
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-brand/10 rounded-full border border-brand/20 mb-8">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20 mb-8">
                 <Sparkles className="w-5 h-5 text-brand" />
                 <span className="text-brand font-medium">Revolutionizing Education</span>
               </div>
               
               <h1 className="font-heading text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl mb-6">
-                <span className="text-slate-900 dark:text-slate-100">
+                <span className="bg-gradient-to-r from-[var(--fg)] via-brand to-purple-600 bg-clip-text text-transparent">
                   About Learnovium
                 </span>
               </h1>
               
-              <p className="text-2xl text-[var(--fg)]/80 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-xl text-[var(--fg)]/80 max-w-4xl mx-auto leading-relaxed">
                 Revolutionizing education with artificial intelligence that adapts to every learner, 
                 making learning personal, practical, and accessible than ever before.
               </p>
@@ -35,47 +40,52 @@ export default function AboutPage() {
           </section>
 
           {/* Mission Statement Section */}
-          <section className="relative space-y-8">
-            <div className="text-center space-y-4 mb-12">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-brand/10 rounded-full border border-brand/20">
-                <Target className="w-5 h-5 text-brand" />
-                <span className="text-brand font-medium">Our Mission</span>
-              </div>
-              <h2 className="font-heading text-4xl font-bold">Transforming Education, One Learner at a Time</h2>
-            </div>
-            
-            <div className="relative rounded-3xl bg-white dark:bg-slate-800 p-12 shadow-lg border border-slate-200 dark:border-slate-700">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-brand rounded-3xl flex items-center justify-center mx-auto mb-8">
-                  <Heart className="h-10 w-10 text-white" />
+          <section className="relative">
+            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 p-8 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-white/10">
+              <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-brand/25 via-purple-500/25 to-indigo-500/25 rounded-full blur-2xl" />
+              <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-purple-400/25 via-indigo-400/25 to-blue-500/25 rounded-full blur-2xl" />
+              
+              <div className="relative z-10 space-y-6">
+                <div className="text-center space-y-4 mb-8">
+                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20">
+                    <Target className="w-5 h-5 text-brand" />
+                    <span className="text-brand font-medium">Our Mission</span>
+                  </div>
+                  <h2 className="font-heading text-4xl font-bold text-[var(--fg)]">Transforming Education, One Learner at a Time</h2>
                 </div>
                 
-                <div className="text-center space-y-6 max-w-5xl mx-auto">
-                  <p className="text-xl text-[var(--fg)]/90 leading-relaxed">
-                    <strong>Learnovium is dedicated to making education more personal, practical, and accessible than ever before.</strong> 
-                    We believe that learning should adapt to the individual, not the other way around.
-                  </p>
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-brand to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg">
+                    <Heart className="h-10 w-10 text-white" />
+                  </div>
                   
-                  <p className="text-lg text-[var(--fg)]/80 leading-relaxed">
-                    By combining structured learning paths with daily micro-lessons powered by AI, we give every learner the ability to move forward at their own pace while staying consistent and motivated.
-                  </p>
-                  
-                  <p className="text-lg text-[var(--fg)]/80 leading-relaxed">
-                    Our mission is to cut through the noise, break down barriers, and turn curiosity into steady, meaningful progress. With Learnovium, anyone can build skills that last, discover new passions, and unlock opportunities whether they are learning for career growth, creative exploration, or personal fulfillment.
-                  </p>
+                  <div className="text-center space-y-6 max-w-5xl mx-auto">
+                    <p className="text-xl text-[var(--fg)]/90 leading-relaxed">
+                      <strong>Learnovium is dedicated to making education more personal, practical, and accessible than ever before.</strong> 
+                      We believe that learning should adapt to the individual, not the other way around.
+                    </p>
+                    
+                    <p className="text-lg text-[var(--fg)]/80 leading-relaxed">
+                      By combining structured learning paths with daily micro-lessons powered by AI, we give every learner the ability to move forward at their own pace while staying consistent and motivated.
+                    </p>
+                    
+                    <p className="text-lg text-[var(--fg)]/80 leading-relaxed">
+                      Our mission is to cut through the noise, break down barriers, and turn curiosity into steady, meaningful progress. With Learnovium, anyone can build skills that last, discover new passions, and unlock opportunities whether they are learning for career growth, creative exploration, or personal fulfillment.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
           {/* Core Values Section */}
-          <section className="relative space-y-8">
+          <section className="relative">
             <div className="text-center space-y-4 mb-12">
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20">
                 <Zap className="w-5 h-5 text-brand" />
                 <span className="text-brand font-medium">Core Values</span>
               </div>
-              <h2 className="font-heading text-4xl font-bold">What Drives Us Forward</h2>
+              <h2 className="font-heading text-4xl font-bold text-[var(--fg)]">What Drives Us Forward</h2>
             </div>
             
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -130,13 +140,13 @@ export default function AboutPage() {
           </section>
 
           {/* How It Works Section */}
-          <section className="relative space-y-8">
+          <section className="relative">
             <div className="text-center space-y-4 mb-12">
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-brand/10 to-purple-600/10 rounded-full border border-brand/20">
                 <BookOpen className="w-5 h-5 text-brand" />
                 <span className="text-brand font-medium">How It Works</span>
               </div>
-              <h2 className="font-heading text-4xl font-bold">The Learnovium Learning Experience</h2>
+              <h2 className="font-heading text-4xl font-bold text-[var(--fg)]">The Learnovium Learning Experience</h2>
             </div>
             
             <div className="grid gap-8 md:grid-cols-2">
@@ -173,13 +183,12 @@ export default function AboutPage() {
           </section>
 
           {/* Call to Action */}
-          <section className="relative text-center space-y-8">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand/20 via-purple-600/20 to-indigo-500/20 p-12 backdrop-blur-xl shadow-2xl border border-brand/30">
-              {/* Animated background elements */}
-              <div className="absolute -top-12 -right-12 w-40 h-40 bg-gradient-to-br from-brand/30 via-purple-500/30 to-indigo-500/30 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-gradient-to-br from-purple-400/30 via-indigo-400/30 to-blue-500/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+          <section className="relative">
+            <div className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/5 dark:from-white/10 dark:via-white/5 dark:to-white/0 p-8 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-white/10">
+              <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-brand/25 via-purple-500/25 to-indigo-500/25 rounded-full blur-2xl" />
+              <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-br from-purple-400/25 via-indigo-400/25 to-blue-500/25 rounded-full blur-2xl" />
               
-              <div className="relative z-10 space-y-6">
+              <div className="relative z-10 text-center space-y-6">
                 <h2 className="font-heading text-4xl font-bold text-[var(--fg)]">
                   Ready to Transform Your Learning?
                 </h2>
