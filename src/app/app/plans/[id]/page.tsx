@@ -81,13 +81,18 @@ export default async function PlanDetailPage({
     ? Math.round((completed_lessons / total_lessons) * 100) 
     : 0;
 
-  const daysSinceCreation = Math.ceil(
-    (Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24)
-  );
+  // Use the same day calculation as the API and dashboard for consistency
+  const createdDate = new Date(goal.created_at);
+  const now = new Date();
+  const startLocal = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+  const nowLocal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const ms = nowLocal.getTime() - startLocal.getTime();
+  const currentDay = Math.max(1, Math.floor(ms / 86400000) + 1);
+  
+  const daysSinceCreation = currentDay - 1;
 
   // Calculate plan day information
   const totalDays = plan_json?.total_days || 0;
-  const currentDay = Math.min(daysSinceCreation + 1, totalDays || daysSinceCreation + 1);
   const isPlanComplete = totalDays > 0 && daysSinceCreation >= totalDays;
   const isPlanOverdue = totalDays > 0 && daysSinceCreation > totalDays;
 

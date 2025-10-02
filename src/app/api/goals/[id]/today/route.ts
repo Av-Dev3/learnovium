@@ -249,6 +249,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     if (gErr || !goal) return NextResponse.json({ error: "Goal not found" }, { status: 404 });
 
     const dayIndex = dayIndexFrom(goal.created_at || new Date().toISOString());
+    
+    console.log(`📅 Day calculation for goal ${goalId}:`, {
+      created_at: goal.created_at,
+      calculated_day: dayIndex,
+      current_time: new Date().toISOString()
+    });
 
     // If we have a template, try to reuse lesson
     if (goal.plan_template_id) {
@@ -262,8 +268,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           .maybeSingle();
 
         if (cached?.lesson_json) {
-          console.log("Using cached lesson template");
+          console.log(`✅ Using cached lesson template for day ${dayIndex}`);
           return NextResponse.json({ reused: true, lesson: cached.lesson_json });
+        } else {
+          console.log(`❌ No cached lesson template found for day ${dayIndex}`);
         }
       } catch (error) {
         console.log("Template lookup failed, proceeding with generation:", error);
@@ -278,8 +286,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         .eq("user_id", user.id).eq("goal_id", goalId).eq("day_index", dayIndex)
         .maybeSingle();
       if (existing?.lesson_json) {
-        console.log("Using cached user lesson");
+        console.log(`✅ Using cached user lesson for day ${dayIndex}`);
         return NextResponse.json({ reused: false, lesson: existing.lesson_json });
+      } else {
+        console.log(`❌ No cached user lesson found for day ${dayIndex}, generating new lesson...`);
       }
     } catch (error) {
       console.log("Lesson log lookup failed, proceeding with generation:", error);
