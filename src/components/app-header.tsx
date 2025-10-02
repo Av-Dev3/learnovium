@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, ChevronRight, LogOut } from "lucide-react";
+import { MoreVertical, ChevronRight, LogOut } from "lucide-react";
 import AdminLinkClient from "./AdminLinkClient";
 import { Logo } from "./Logo";
 
@@ -56,7 +56,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[var(--border)]/40 bg-[var(--bg)]/80 backdrop-blur-xl">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-16 items-center justify-between relative">
           {/* Left: Logo - Hidden on mobile, shown on desktop */}
           <div className="hidden md:flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
@@ -65,8 +65,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
             </Link>
           </div>
 
-          {/* Center: Mobile Logo - Centered on mobile */}
-          <div className="flex md:hidden flex-1 justify-center">
+          {/* Center: Mobile Logo - Absolutely centered on mobile */}
+          <div className="flex md:hidden absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <Link href="/" className="flex items-center space-x-2">
               <Logo size="lg" />
               <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
@@ -109,7 +109,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                        <Menu className="h-5 w-5 text-[var(--fg)]" />
+                        <MoreVertical className="h-5 w-5 text-[var(--fg)]" />
                         <span className="sr-only">Toggle menu</span>
                       </Button>
                     </SheetTrigger>
@@ -339,7 +339,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                        <Menu className="h-5 w-5 text-[var(--fg)]" />
+                        <MoreVertical className="h-5 w-5 text-[var(--fg)]" />
                         <span className="sr-only">Toggle menu</span>
                       </Button>
                     </SheetTrigger>
