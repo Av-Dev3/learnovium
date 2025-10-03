@@ -22,6 +22,7 @@ import {
   Search
 } from "lucide-react";
 import Link from "next/link";
+import { useGoals } from "@/app/lib/hooks/useGoals";
 
 interface Quiz {
   id: string;
@@ -59,7 +60,6 @@ interface Goal {
 export default function QuizPage() {
   // State for quiz management
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [goals, setGoals] = useState<Goal[]>([]);
   const [selectedGoal, setSelectedGoal] = useState<string>('all');
   const [selectedQuizType, setSelectedQuizType] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
@@ -78,10 +78,19 @@ export default function QuizPage() {
     question_count: 10
   });
 
-  // Fetch quizzes and goals
+  // Use the proper hook for goals
+  const { goals, isLoading: goalsLoading, isError: goalsError } = useGoals();
+
+  // Debug goals data
+  useEffect(() => {
+    console.log('Goals data:', goals);
+    console.log('Goals loading:', goalsLoading);
+    console.log('Goals error:', goalsError);
+  }, [goals, goalsLoading, goalsError]);
+
+  // Fetch quizzes
   useEffect(() => {
     fetchQuizzes();
-    fetchGoals();
   }, []);
 
   const fetchQuizzes = async () => {
@@ -89,24 +98,15 @@ export default function QuizPage() {
       const response = await fetch('/api/quizzes');
       if (response.ok) {
         const data = await response.json();
+        console.log('Quizzes data:', data);
         setQuizzes(data.quizzes || []);
+      } else {
+        console.error('Failed to fetch quizzes:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Failed to fetch quizzes:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const fetchGoals = async () => {
-    try {
-      const response = await fetch('/api/goals');
-      if (response.ok) {
-        const data = await response.json();
-        setGoals(data.goals || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch goals:', error);
     }
   };
 
@@ -179,12 +179,12 @@ export default function QuizPage() {
     return 'text-red-600 dark:text-red-400';
   };
 
-  if (isLoading) {
+  if (isLoading || goalsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto mb-4"></div>
-          <p className="text-[var(--fg)]/70">Loading quizzes...</p>
+          <p className="text-[var(--fg)]/70">Loading...</p>
         </div>
       </div>
     );
@@ -359,6 +359,63 @@ export default function QuizPage() {
           </div>
         </div>
 
+        {/* Debug Info */}
+        {process.env.NODE_ENV === 'development' && (
+          <section className="bg-yellow-50 dark:bg-yellow-900/20 rounded-3xl p-4 border border-yellow-200 dark:border-yellow-700">
+            <h3 className="font-bold text-yellow-800 dark:text-yellow-200 mb-2">Debug Info</h3>
+            <p className="text-sm text-yellow-700 dark:text-yellow-300">
+              Goals: {goals.length} | Quizzes: {quizzes.length} | Goals Loading: {goalsLoading.toString()} | Goals Error: {goalsError?.toString() || 'none'}
+            </p>
+          </section>
+        )}
+
+        {/* Goals Section - Show when no quizzes exist */}
+        {filteredQuizzes.length === 0 && goals.length > 0 && (
+          <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="text-center space-y-6">
+              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-brand/20 to-purple-600/20 rounded-full flex items-center justify-center">
+                <Brain className="h-12 w-12 text-brand" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Ready to Create Your First Quiz?</h3>
+              <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+                You have {goals.length} learning goal{goals.length !== 1 ? 's' : ''} available. Generate quizzes based on your lessons to test your knowledge!
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                {goals.slice(0, 6).map((goal) => (
+                  <div
+                    key={goal.id}
+                    className="p-4 rounded-xl bg-white/80 dark:bg-slate-700/80 border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-105"
+                    onClick={() => {
+                      setGenerateForm(prev => ({ ...prev, goal_id: goal.id }));
+                      setShowGenerateModal(true);
+                    }}
+                  >
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-slate-800 dark:text-slate-200 line-clamp-1">
+                        {goal.topic}
+                      </h4>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                        {goal.focus}
+                      </p>
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-500">
+                        <span>Goal</span>
+                        <span>Click to create quiz</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Button
+                onClick={() => setShowGenerateModal(true)}
+                className="bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white px-8 py-4 text-lg"
+              >
+                <Sparkles className="h-5 w-5 mr-2" />
+                Generate Quiz
+              </Button>
+            </div>
+          </section>
+        )}
+
         {/* Quizzes Grid */}
         <section className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
           {filteredQuizzes.length > 0 ? (
@@ -453,35 +510,51 @@ export default function QuizPage() {
               <div className="w-24 h-24 mx-auto bg-gradient-to-br from-brand/20 to-purple-600/20 rounded-full flex items-center justify-center mb-6">
                 <Brain className="h-12 w-12 text-brand" />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">No quizzes found</h3>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+                {goals.length === 0 ? "No Learning Goals Found" : "No quizzes found"}
+              </h3>
               <p className="text-slate-600 dark:text-slate-400 mb-6 text-lg">
-                {searchTerm || selectedGoal !== 'all' || selectedQuizType !== 'all' || selectedDifficulty !== 'all' || showCompletedOnly
-                  ? "Try adjusting your search or filters"
-                  : "Create your first quiz to get started"
+                {goals.length === 0 
+                  ? "You need to create a learning goal first before you can generate quizzes. Go to the dashboard to create your first learning goal!"
+                  : searchTerm || selectedGoal !== 'all' || selectedQuizType !== 'all' || selectedDifficulty !== 'all' || showCompletedOnly
+                    ? "Try adjusting your search or filters"
+                    : "Create your first quiz to get started"
                 }
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                {(searchTerm || selectedGoal !== 'all' || selectedQuizType !== 'all' || selectedDifficulty !== 'all' || showCompletedOnly) && (
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setSearchTerm("");
-                      setSelectedGoal("all");
-                      setSelectedQuizType("all");
-                      setSelectedDifficulty("all");
-                      setShowCompletedOnly(false);
-                    }}
-                    className="h-12 px-6 text-lg border-2 border-slate-300 dark:border-slate-600 hover:border-brand hover:bg-brand/5 rounded-2xl transition-all duration-300"
-                  >
-                    Clear Filters
+                {goals.length === 0 ? (
+                  <Button asChild className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-emerald-500/20">
+                    <Link href="/app">
+                      <Plus className="h-5 w-5 mr-3" />
+                      Create Learning Goal
+                    </Link>
                   </Button>
+                ) : (
+                  <>
+                    {(searchTerm || selectedGoal !== 'all' || selectedQuizType !== 'all' || selectedDifficulty !== 'all' || showCompletedOnly) && (
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setSearchTerm("");
+                          setSelectedGoal("all");
+                          setSelectedQuizType("all");
+                          setSelectedDifficulty("all");
+                          setShowCompletedOnly(false);
+                        }}
+                        className="h-12 px-6 text-lg border-2 border-slate-300 dark:border-slate-600 hover:border-brand hover:bg-brand/5 rounded-2xl transition-all duration-300"
+                      >
+                        Clear Filters
+                      </Button>
+                    )}
+                    <Button 
+                      onClick={() => setShowGenerateModal(true)}
+                      className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-emerald-500/20"
+                    >
+                      <Plus className="h-5 w-5 mr-3" />
+                      Create Your First Quiz
+                    </Button>
+                  </>
                 )}
-                <Button 
-                  className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl border-2 border-emerald-500/20"
-                >
-                  <Plus className="h-5 w-5 mr-3" />
-                  Create Your First Quiz
-                </Button>
               </div>
             </div>
           )}
