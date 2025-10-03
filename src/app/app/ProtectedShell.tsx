@@ -5,15 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createPortal } from "react-dom";
 import { 
-  Menu, 
   Home, 
   Target, 
   History, 
   Plus, 
   Settings,
   LogOut,
-  User,
-  HelpCircle,
   ChevronRight,
   Shield,
   Brain,
@@ -28,6 +25,7 @@ import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import { useIsAdmin } from "@/app/lib/hooks";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AnimatedHamburger } from "@/components/ui/animated-hamburger";
 
 export function ProtectedShell({ children }: { children: React.ReactNode }) {
   const [isMounted, setIsMounted] = useState(false);
@@ -75,28 +73,33 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="sm" className="fixed top-4 left-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                <Menu className="h-5 w-5 text-[var(--fg)]" />
+                <AnimatedHamburger isOpen={false} className="text-[var(--fg)]" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-80 p-0 bg-[var(--card)]/95 backdrop-blur-xl border-r border-[var(--border)]/60">
-              <div className="flex flex-col h-full">
-                {/* Mobile Header */}
-                <div className="flex items-center justify-between p-6 border-b border-[var(--border)]/60">
+            <SheetContent side="left" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50 top-16 h-[calc(100vh-4rem)]">
+              <div className="flex flex-col h-full overflow-hidden">
+                {/* Modern Mobile Header */}
+                <div className="relative overflow-hidden bg-gradient-fresh p-6 text-white shadow-lg">
                   <div className="flex items-center space-x-3">
                     <Logo size="lg" />
-                    <h1 className="font-heading text-xl font-semibold gradient-text">Learnovium</h1>
+                    <span className="font-heading text-xl font-semibold">Learnovium</span>
                   </div>
+                  <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl" />
+                  <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/5 rounded-full blur-lg" />
                 </div>
                 
-                {/* Mobile Navigation */}
-                <nav className="flex-1 p-6 space-y-2">
-                  <MobileAppNav />
-                </nav>
-                
-                {/* Mobile Footer */}
-                <div className="p-6 border-t border-[var(--border)]/60">
-                  <MobileUserMenu />
+                {/* Scrollable Content Area */}
+                <div className="flex-1 overflow-y-auto bg-gradient-to-b from-white/40 to-white/20 dark:from-slate-800/40 dark:to-slate-800/20">
+                  {/* Modern Mobile Navigation */}
+                  <nav className="p-6 space-y-3">
+                    <MobileAppNav />
+                  </nav>
+
+                  {/* Modern Mobile Footer - User Info */}
+                  <div className="p-6 border-t border-white/20 dark:border-slate-700/50 bg-white/30 dark:bg-slate-800/30">
+                    <MobileUserMenu />
+                  </div>
                 </div>
               </div>
             </SheetContent>
@@ -232,31 +235,44 @@ function MobileAppNav() {
           <Link
             key={item.name}
             href={item.href}
-            className={`group block p-4 rounded-2xl transition-all duration-200 ${
+            className={`group block p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] ${
               isActive
-                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
-                : "text-[var(--fg,_#101010)]/70 hover:text-[var(--fg,_#101010)] hover:bg-[var(--muted)]/50"
+                ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-400/30 shadow-lg shadow-blue-500/10"
+                : "bg-white/40 dark:bg-slate-700/40 border border-white/20 dark:border-slate-600/30 hover:bg-white/60 dark:hover:bg-slate-600/40 hover:shadow-lg hover:shadow-black/5"
             }`}
           >
             <div className="flex items-center space-x-4">
-              <div className={`p-3 rounded-xl transition-all duration-200 ${
-                isActive ? "bg-white/20" : "bg-[var(--muted)]/50 group-hover:bg-[var(--muted)]/70"
+              <div className={`p-3 rounded-xl transition-all duration-300 ${
+                isActive 
+                  ? "bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25" 
+                  : "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-600 dark:to-slate-700 group-hover:from-blue-50 group-hover:to-purple-50 dark:group-hover:from-blue-900/20 dark:group-hover:to-purple-900/20"
               }`}>
-                <item.icon className={`h-6 w-6 ${
-                  isActive ? "text-white" : "text-[var(--fg,_#101010)]/60"
-                }`} />
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                  isActive 
+                    ? "bg-white" 
+                    : "bg-gradient-to-br from-blue-500 to-purple-600"
+                }`}>
+                  <div className={`w-2 h-2 rounded-full ${
+                    isActive ? "bg-blue-500" : "bg-white"
+                  }`} />
+                </div>
               </div>
               <div className="flex-1">
                 <div className={`font-semibold text-base ${
-                  isActive ? "text-white" : "text-[var(--fg,_#101010)]"
+                  isActive ? "text-blue-600 dark:text-blue-400" : "text-slate-900 dark:text-slate-100"
                 }`}>
                   {item.name}
                 </div>
                 <div className={`text-sm ${
-                  isActive ? "text-white/80" : "text-[var(--fg,_#101010)]/50"
+                  isActive ? "text-blue-500 dark:text-blue-300" : "text-slate-600 dark:text-slate-400"
                 }`}>
-                  {item.description}
+                  Navigate to {item.description}
                 </div>
+              </div>
+              <div className={`text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors ${
+                isActive ? "text-blue-400" : ""
+              }`}>
+                <ChevronRight className="h-4 w-4" />
               </div>
             </div>
           </Link>
@@ -577,85 +593,50 @@ function MobileUserMenu() {
 
   return (
     <div className="space-y-4">
-      {/* Enhanced User Profile Card */}
-      <div className="relative p-6 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
-        {/* Background pattern */}
-        <div className="absolute inset-0 bg-white/10 opacity-30" />
-        
-        <div className="relative flex items-center space-x-4">
-          <div className="relative">
-            <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
-              <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={user?.email} />
-              <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
-                {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
-              </AvatarFallback>
-            </Avatar>
-            {/* Online status */}
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-lg">{user?.email || "User Account"}</h3>
-            <p className="text-indigo-100 text-sm">Premium Member</p>
-            <div className="flex items-center mt-3 space-x-2">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                Premium
-              </span>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                Verified
-              </span>
-            </div>
-          </div>
+      {/* Enhanced User Info */}
+      <div className="flex items-center space-x-3 p-4 rounded-2xl bg-white/60 dark:bg-slate-700/60 border border-white/20 dark:border-slate-600/30 shadow-lg hover:shadow-xl transition-all duration-300">
+        <Avatar className="h-12 w-12 ring-2 ring-white/20 dark:ring-slate-600/30">
+          <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={user?.email} />
+          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-medium">
+            {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
+          </AvatarFallback>
+        </Avatar>
+        <div>
+          <p className="font-semibold text-slate-900 dark:text-slate-100">{user?.email || "User"}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">Signed In</p>
         </div>
       </div>
       
-      {/* Enhanced Menu Items */}
-      <div className="space-y-2">
-        <button className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 group-hover:from-blue-100 group-hover:to-indigo-200 transition-all duration-200 mr-4">
-            <User className="h-6 w-6 text-blue-600" />
+      {/* Enhanced Theme Toggle */}
+      <div className="flex items-center justify-between p-4 bg-white/60 dark:bg-slate-700/60 rounded-2xl border border-white/20 dark:border-slate-600/30 shadow-lg hover:shadow-xl transition-all duration-300">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 group-hover:from-blue-100 group-hover:to-indigo-200 dark:group-hover:from-blue-800/30 dark:group-hover:to-indigo-800/30 transition-all duration-200">
+            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600" />
           </div>
-          <div className="flex-1">
-            <div className="font-semibold text-base">Profile Settings</div>
-            <div className="text-sm text-gray-500">Manage your account</div>
+          <div>
+            <div className="font-semibold text-sm text-slate-900 dark:text-slate-100">Theme</div>
+            <div className="text-xs text-slate-600 dark:text-slate-400">Light / Dark mode</div>
           </div>
-        </button>
-        
-        <div className="group w-full flex items-center justify-between p-4 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200">
-          <div className="flex items-center">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 group-hover:from-purple-100 group-hover:to-pink-200 transition-all duration-200 mr-4">
-              <Settings className="h-6 w-6 text-purple-600" />
-            </div>
-            <div className="flex-1">
-              <div className="font-semibold text-base">Theme</div>
-              <div className="text-sm text-gray-500">Light / Dark mode</div>
-            </div>
-          </div>
-          <ThemeToggle />
         </div>
-        
-        <button className="group w-full flex items-center p-4 text-left text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-100 group-hover:from-emerald-100 group-hover:to-teal-200 transition-all duration-200 mr-4">
-            <HelpCircle className="h-6 w-6 text-emerald-600" />
-          </div>
-          <div className="flex-1">
-            <div className="font-semibold text-base">Help & Support</div>
-            <div className="text-sm text-gray-500">Get assistance</div>
-          </div>
-        </button>
+        <ThemeToggle />
       </div>
+      
+      {/* Go to Dashboard */}
+      <Link href="/app" className="block">
+        <div className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-95 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold text-center">
+          <div className="flex items-center justify-center space-x-2">
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+            <span>Go to Dashboard</span>
+          </div>
+        </div>
+      </Link>
       
       {/* Enhanced Sign Out */}
       <button
         onClick={handleSignOut}
-        className="group w-full flex items-center p-4 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
+        className="w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all duration-300 hover:scale-[1.02] font-medium"
       >
-        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-red-50 group-hover:bg-red-100 transition-all duration-200 mr-4">
-          <LogOut className="h-6 w-6 text-red-600" />
-        </div>
-        <div className="flex-1">
-          <div className="font-semibold text-base">Sign Out</div>
-          <div className="text-sm text-red-500">End your session</div>
-        </div>
+        Sign Out
       </button>
     </div>
   );
