@@ -26,8 +26,8 @@ export function Footer() {
         <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl mx-6 mb-6 border border-white/20 dark:border-slate-700/50 shadow-xl">
           <div className="p-8 md:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Brand section - spans 4 columns */}
-            <div className="lg:col-span-4 space-y-6">
+            {/* Brand section - spans 6 columns */}
+            <div className="lg:col-span-6 space-y-6">
               <div className="space-y-4">
                 <h3 className="font-heading text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600">
                   Learnovium
@@ -70,43 +70,9 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Product links - spans 2 columns */}
-            <div className="lg:col-span-2 space-y-6">
-              <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Product</h4>
-              <nav className="flex flex-col space-y-4">
-                <Link 
-                  href="/app" 
-                  className="group flex items-center text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300 hover:translate-x-1"
-                >
-                  <span>Dashboard</span>
-                  <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
-                </Link>
-                <Link 
-                  href="/app/create" 
-                  className="group flex items-center text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-300 hover:translate-x-1"
-                >
-                  <span>Create Goal</span>
-                  <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
-                </Link>
-                <Link 
-                  href="/app/plans" 
-                  className="group flex items-center text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:translate-x-1"
-                >
-                  <span>Learning Plans</span>
-                  <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
-                </Link>
-                <Link 
-                  href="/pricing" 
-                  className="group flex items-center text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300 hover:translate-x-1"
-                >
-                  <span>Pricing</span>
-                  <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
-                </Link>
-              </nav>
-            </div>
 
-            {/* Company links - spans 2 columns */}
-            <div className="lg:col-span-2 space-y-6">
+            {/* Company links - spans 3 columns */}
+            <div className="lg:col-span-3 space-y-6">
               <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Company</h4>
               <nav className="flex flex-col space-y-4">
                 <Link 
@@ -140,8 +106,8 @@ export function Footer() {
               </nav>
             </div>
 
-            {/* Newsletter signup - spans 4 columns */}
-            <div className="lg:col-span-4 space-y-6">
+            {/* Newsletter signup - spans 3 columns */}
+            <div className="lg:col-span-3 space-y-6">
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Stay Updated</h4>
                 <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
