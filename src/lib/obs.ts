@@ -1,5 +1,5 @@
 type Usage = { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
-type TrackArgs = { task: "planner"|"lesson"|"validator"; model: string; ms: number; usage?: Usage };
+type TrackArgs = { task: "planner"|"lesson"|"validator"|"quiz"; model: string; ms: number; usage?: Usage };
 
 declare global {
   var __obsDaily: { date: string; tokens: number } | undefined;

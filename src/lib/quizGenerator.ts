@@ -1,4 +1,4 @@
-import { generateLesson } from "@/lib/aiCall";
+import { generateQuiz as generateQuizAI } from "@/lib/aiCall";
 import { buildLessonPromptWithRAG } from "@/lib/prompts";
 
 interface QuizQuestion {
@@ -114,14 +114,37 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
     // Generate quiz using AI
     const quizPrompt = buildQuizPrompt(lessonContent, difficulty, question_count, quiz_type);
     
-    const { data: aiResponse } = await generateLesson(quizPrompt, 'system');
+    const { data: aiResponse } = await generateQuizAI(quizPrompt);
     
     if (!aiResponse) {
       return { data: null, error: 'AI generation failed: No response' };
     }
 
-    // Parse AI response to extract quiz data
-    const quizData = parseQuizResponse(aiResponse, quizTitle, quizDescription, difficulty);
+    // The AI response should already be in the correct format
+    const quizData: QuizData = {
+      title: aiResponse.title || quizTitle,
+      description: aiResponse.description || quizDescription,
+      time_limit_minutes: aiResponse.time_limit_minutes || 30,
+      questions: aiResponse.questions.map((q: {
+        question: string;
+        type: string;
+        options?: string[];
+        correct_answer_index?: number;
+        correct_answer_text?: string;
+        difficulty: string;
+        points: number;
+        explanation: string;
+      }) => ({
+        question: q.question,
+        type: q.type as 'multiple_choice' | 'true_false' | 'fill_blank',
+        options: q.options,
+        correct_answer_index: q.correct_answer_index,
+        correct_answer_text: q.correct_answer_text,
+        difficulty: q.difficulty as 'easy' | 'medium' | 'hard',
+        points: q.points,
+        explanation: q.explanation
+      }))
+    };
 
     return { data: quizData, error: null };
 
@@ -189,49 +212,3 @@ Generate the quiz now:`
   ];
 }
 
-function parseQuizResponse(aiResponse: { quiz?: Array<{ q: string; a: string[]; correct_index: number }> }, title: string, description: string, difficulty: string): QuizData {
-  try {
-    // The AI response should be a lesson JSON with quiz data
-    if (!aiResponse || !aiResponse.quiz || !Array.isArray(aiResponse.quiz)) {
-      throw new Error("No quiz data found in AI response");
-    }
-
-    // Convert lesson quiz format to our quiz format
-    const questions: QuizQuestion[] = aiResponse.quiz.map((q) => ({
-      question: q.q,
-      type: 'multiple_choice' as const,
-      options: q.a,
-      correct_answer_index: q.correct_index,
-      difficulty: difficulty as 'easy' | 'medium' | 'hard',
-      points: 1,
-      explanation: `The correct answer is option ${q.correct_index + 1}: ${q.a[q.correct_index]}`
-    }));
-    
-    return {
-      title,
-      description,
-      time_limit_minutes: 30,
-      questions
-    };
-  } catch (error) {
-    console.error("Failed to parse quiz response:", error);
-    
-    // Fallback: create a basic quiz structure
-    return {
-      title,
-      description,
-      time_limit_minutes: 30,
-      questions: [
-        {
-          question: "What is the main topic of this lesson?",
-          type: 'multiple_choice',
-          options: ["Option A", "Option B", "Option C", "Option D"],
-          correct_answer_index: 0,
-          difficulty: difficulty as 'easy' | 'medium' | 'hard',
-          points: 1,
-          explanation: "This is a placeholder question. Please regenerate the quiz."
-        }
-      ]
-    };
-  }
-}

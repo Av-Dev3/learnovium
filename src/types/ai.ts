@@ -56,4 +56,22 @@ export const FlashcardJSON = z.object({
   })).min(4).max(20), // 4-20 flashcards per generation
 });
 
-export type TFlashcardJSON = z.infer<typeof FlashcardJSON>; 
+export type TFlashcardJSON = z.infer<typeof FlashcardJSON>;
+
+export const QuizJSON = z.object({
+  title: z.string().min(10).max(200),
+  description: z.string().min(20).max(500),
+  time_limit_minutes: z.number().int().min(5).max(120),
+  questions: z.array(z.object({
+    question: z.string().min(20).max(300),
+    type: z.enum(["multiple_choice", "true_false", "fill_blank"]),
+    options: z.array(z.string().min(5).max(150)).optional(),
+    correct_answer_index: z.number().int().min(0).max(3).optional(),
+    correct_answer_text: z.string().min(1).max(100).optional(),
+    difficulty: z.enum(["easy", "medium", "hard"]),
+    points: z.number().int().min(1).max(5),
+    explanation: z.string().min(10).max(300)
+  })).min(1).max(20)
+});
+
+export type TQuizJSON = z.infer<typeof QuizJSON>; 

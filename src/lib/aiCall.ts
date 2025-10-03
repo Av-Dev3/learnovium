@@ -97,7 +97,7 @@ async function chatCore(model: string, messages: Msg[], desiredTemp?: number, ta
 }
 
 async function chatJSON<T>(opts: {
-  task: "planner" | "lesson" | "validator";
+  task: "planner" | "lesson" | "validator" | "quiz";
   messages: Msg[];
   schema: z.ZodType<T>;
   temperature?: number;
@@ -197,6 +197,11 @@ export async function generateLesson(messages: Msg[], userId?: string, goalId?: 
 export async function validateLesson(messages: Msg[], userId?: string, goalId?: string) {
   const { ValidationJSON } = await import("@/types/ai");
   return chatJSON({ task: "validator", messages, schema: ValidationJSON, temperature: 0, userId, goalId });
+}
+
+export async function generateQuiz(messages: Msg[], userId?: string, goalId?: string) {
+  const { QuizJSON } = await import("@/types/ai");
+  return chatJSON({ task: "quiz", messages, schema: QuizJSON, temperature: 0.4, userId, goalId });
 }
 
 export async function generateFlashcards(

@@ -30,7 +30,7 @@ export const openai = new Proxy({} as OpenAI, {
 });
 
 // Helper to resolve model names with sane defaults per task.
-export function modelFor(task: "planner"|"lesson"|"validator") {
+export function modelFor(task: "planner"|"lesson"|"validator"|"quiz") {
   let model: string;
   switch (task) {
     case "planner": 
@@ -41,6 +41,9 @@ export function modelFor(task: "planner"|"lesson"|"validator") {
       break;
     case "validator": 
       model = process.env.OPENAI_MODEL_VALIDATOR ?? "gpt-5-mini";
+      break;
+    case "quiz": 
+      model = process.env.OPENAI_MODEL_QUIZ ?? "gpt-5-mini";
       break;
   }
   console.log("AI: modelFor selected model:", model, "for task:", task);
