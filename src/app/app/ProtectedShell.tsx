@@ -110,24 +110,32 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
         <div className="lg:pl-64 flex flex-col flex-1">
           {/* Topbar */}
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center border-b border-[var(--border)]/60 bg-[var(--bg)]/70 backdrop-blur-xl px-4 shadow-sm sm:px-6 lg:px-8">
-            {/* Mobile: Centered logo, Desktop: Left-aligned with right user menu */}
+            {/* Mobile: Centered logo with user menu, Desktop: Left-aligned with right user menu */}
             <div className="flex w-full items-center">
-              {/* Mobile Logo - Perfectly centered */}
-              <div className="flex lg:hidden w-full justify-center">
-                <div className="flex items-center space-x-3">
-                  <Logo size="md" />
-                  <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
+              {/* Mobile Layout */}
+              <div className="flex lg:hidden w-full items-center justify-between">
+                {/* Mobile Logo - Centered */}
+                <div className="flex-1 flex justify-center">
+                  <div className="flex items-center space-x-3">
+                    <Logo size="md" />
+                    <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
+                  </div>
+                </div>
+                
+                {/* Mobile User Menu - Right aligned */}
+                <div className="flex items-center">
+                  <UserMenu />
                 </div>
               </div>
               
-              {/* Desktop: Left-aligned with right user menu */}
+              {/* Desktop Layout */}
               <div className="hidden lg:flex w-full items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Logo size="md" />
                   <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
                 </div>
                 
-                {/* User Menu - Right aligned */}
+                {/* Desktop User Menu - Right aligned */}
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
                   <UserMenu />
                 </div>
