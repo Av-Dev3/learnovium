@@ -68,11 +68,11 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
       // Find the target day across all modules
       let targetLesson = null;
       let moduleTitle = '';
-      for (const module of plan.modules) {
-        const day = module.days.find(d => d.day_index === lesson_day_index);
+      for (const planModule of plan.modules) {
+        const day = planModule.days.find(d => d.day_index === lesson_day_index);
         if (day) {
           targetLesson = day;
-          moduleTitle = module.title;
+          moduleTitle = planModule.title;
           break;
         }
       }
@@ -120,8 +120,8 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
 
       // Collect all days within the week range from all modules
       const weekLessons: Array<{ day_index: number; topic: string; objective: string }> = [];
-      for (const module of plan.modules) {
-        for (const day of module.days) {
+      for (const planModule of plan.modules) {
+        for (const day of planModule.days) {
           if (day.day_index >= week_start_day! && day.day_index <= week_end_day!) {
             weekLessons.push(day);
           }
