@@ -1,0 +1,217 @@
+import { generatePlan, generateLesson } from "@/lib/aiCall";
+import { buildLessonPromptWithRAG } from "@/lib/prompts";
+
+interface QuizQuestion {
+  question: string;
+  type: 'multiple_choice' | 'true_false' | 'fill_blank';
+  options?: string[];
+  correct_answer_index?: number;
+  correct_answer_text?: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  points: number;
+  explanation: string;
+}
+
+interface QuizData {
+  title: string;
+  description: string;
+  time_limit_minutes: number;
+  questions: QuizQuestion[];
+}
+
+interface GenerateQuizParams {
+  goal: {
+    id: string;
+    topic: string;
+    focus?: string;
+    plan_json?: Record<string, unknown>;
+  };
+  quiz_type: 'lesson' | 'weekly';
+  lesson_day_index?: number;
+  week_start_day?: number;
+  week_end_day?: number;
+  difficulty: 'easy' | 'medium' | 'hard';
+  question_count: number;
+}
+
+export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: QuizData | null; error: string | null }> {
+  try {
+    const { goal, quiz_type, lesson_day_index, week_start_day, week_end_day, difficulty, question_count } = params;
+
+    let lessonContent: string = '';
+    let quizTitle: string = '';
+    let quizDescription: string = '';
+
+    if (quiz_type === 'lesson') {
+      // Generate quiz from a specific lesson
+      if (!goal.plan_json || typeof goal.plan_json !== 'object') {
+        return { data: null, error: "Goal does not have a plan" };
+      }
+
+      const plan = goal.plan_json as { modules?: Array<{ day: number; title: string; topic: string; objective: string; est_minutes: number }> };
+      if (!plan.modules || !Array.isArray(plan.modules)) {
+        return { data: null, error: "Plan does not have modules" };
+      }
+
+      const targetLesson = plan.modules.find(module => module.day === lesson_day_index);
+      if (!targetLesson) {
+        return { data: null, error: `Lesson for day ${lesson_day_index} not found` };
+      }
+
+      // Get lesson content using RAG
+      const { context } = await buildLessonPromptWithRAG(
+        `${goal.topic} - ${targetLesson.title}`,
+        goal.topic,
+        5
+      );
+
+      lessonContent = `Topic: ${targetLesson.topic}\nObjective: ${targetLesson.objective}\nContext: ${context}`;
+      quizTitle = `Quiz: ${targetLesson.title}`;
+      quizDescription = `Test your knowledge of ${targetLesson.title}`;
+
+    } else if (quiz_type === 'weekly') {
+      // Generate quiz from multiple lessons (weekly)
+      if (!goal.plan_json || typeof goal.plan_json !== 'object') {
+        return { data: null, error: "Goal does not have a plan" };
+      }
+
+      const plan = goal.plan_json as { modules?: Array<{ day: number; title: string; topic: string; objective: string; est_minutes: number }> };
+      if (!plan.modules || !Array.isArray(plan.modules)) {
+        return { data: null, error: "Plan does not have modules" };
+      }
+
+      const weekLessons = plan.modules.filter(module => 
+        module.day >= week_start_day! && module.day <= week_end_day!
+      );
+
+      if (weekLessons.length === 0) {
+        return { data: null, error: `No lessons found for week ${week_start_day}-${week_end_day}` };
+      }
+
+      // Combine all week lessons content
+      const weekContent = weekLessons.map(lesson => 
+        `Day ${lesson.day}: ${lesson.title}\nTopic: ${lesson.topic}\nObjective: ${lesson.objective}`
+      ).join('\n\n');
+
+      // Get RAG context for the week
+      const { context } = await buildLessonPromptWithRAG(
+        `${goal.topic} - Week ${week_start_day}-${week_end_day}`,
+        goal.topic,
+        8
+      );
+
+      lessonContent = `Weekly Review: ${goal.topic}\n\nLessons:\n${weekContent}\n\nContext: ${context}`;
+      quizTitle = `Weekly Quiz: ${goal.topic} (Days ${week_start_day}-${week_end_day})`;
+      quizDescription = `Comprehensive quiz covering lessons from days ${week_start_day} to ${week_end_day}`;
+    }
+
+    // Generate quiz using AI
+    const quizPrompt = buildQuizPrompt(lessonContent, difficulty, question_count, quiz_type);
+    
+    const { data: aiResponse, error: aiError } = await generateLesson(quizPrompt, 'system');
+    
+    if (aiError || !aiResponse) {
+      return { data: null, error: `AI generation failed: ${aiError || 'No response'}` };
+    }
+
+    // Parse AI response to extract quiz data
+    const quizData = parseQuizResponse(aiResponse, quizTitle, quizDescription, difficulty);
+
+    return { data: quizData, error: null };
+
+  } catch (error) {
+    console.error("Quiz generation error:", error);
+    return { data: null, error: `Quiz generation failed: ${error instanceof Error ? error.message : 'Unknown error'}` };
+  }
+}
+
+function buildQuizPrompt(lessonContent: string, difficulty: string, questionCount: number, quizType: string): string {
+  return `You are an expert quiz generator. Create a comprehensive quiz based on the following lesson content.
+
+LESSON CONTENT:
+${lessonContent}
+
+QUIZ REQUIREMENTS:
+- Quiz Type: ${quizType}
+- Difficulty: ${difficulty}
+- Number of Questions: ${questionCount}
+- Mix of question types: 70% multiple choice, 20% true/false, 10% fill-in-the-blank
+- Questions should test understanding, not just memorization
+- Include explanations for correct answers
+- Vary question difficulty within the specified level
+
+RESPONSE FORMAT (JSON):
+{
+  "title": "Quiz Title",
+  "description": "Quiz description",
+  "time_limit_minutes": 30,
+  "questions": [
+    {
+      "question": "Question text here?",
+      "type": "multiple_choice",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct_answer_index": 0,
+      "difficulty": "easy",
+      "points": 1,
+      "explanation": "Explanation of why this answer is correct"
+    },
+    {
+      "question": "True or false statement here?",
+      "type": "true_false",
+      "correct_answer_text": "true",
+      "difficulty": "medium",
+      "points": 1,
+      "explanation": "Explanation of the correct answer"
+    },
+    {
+      "question": "Fill in the blank: The capital of France is ____.",
+      "type": "fill_blank",
+      "correct_answer_text": "Paris",
+      "difficulty": "easy",
+      "points": 1,
+      "explanation": "Paris is the capital and largest city of France"
+    }
+  ]
+}
+
+Generate the quiz now:`;
+}
+
+function parseQuizResponse(aiResponse: string, title: string, description: string, difficulty: string): QuizData {
+  try {
+    // Try to extract JSON from the response
+    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("No JSON found in AI response");
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    
+    return {
+      title: parsed.title || title,
+      description: parsed.description || description,
+      time_limit_minutes: parsed.time_limit_minutes || 30,
+      questions: parsed.questions || []
+    };
+  } catch (error) {
+    console.error("Failed to parse quiz response:", error);
+    
+    // Fallback: create a basic quiz structure
+    return {
+      title,
+      description,
+      time_limit_minutes: 30,
+      questions: [
+        {
+          question: "What is the main topic of this lesson?",
+          type: 'multiple_choice',
+          options: ["Option A", "Option B", "Option C", "Option D"],
+          correct_answer_index: 0,
+          difficulty: difficulty as 'easy' | 'medium' | 'hard',
+          points: 1,
+          explanation: "This is a placeholder question. Please regenerate the quiz."
+        }
+      ]
+    };
+  }
+}

@@ -28,142 +28,152 @@ import {
   Trophy,
   Target,
   Search,
-  ChevronDown
+  ChevronDown,
+  Calendar,
+  FileText,
+  Settings
 } from "lucide-react";
 import Link from "next/link";
 
-// Mock data for the quiz page
-const mockQuizzes = [
-  {
-    id: "1",
-    title: "JavaScript Fundamentals",
-    description: "Test your knowledge of JavaScript basics",
-    category: "Programming",
-    difficulty: "easy",
-    questions: 15,
-    timeLimit: 20,
-    completedAt: null,
-    score: null,
-    color: "#3b82f6"
-  },
-  {
-    id: "2", 
-    title: "React Hooks Deep Dive",
-    description: "Advanced concepts in React Hooks",
-    category: "Frontend",
-    difficulty: "hard",
-    questions: 25,
-    timeLimit: 35,
-    completedAt: "2024-01-15",
-    score: 85,
-    color: "#8b5cf6"
-  },
-  {
-    id: "3",
-    title: "CSS Grid & Flexbox",
-    description: "Modern CSS layout techniques",
-    category: "CSS",
-    difficulty: "medium",
-    questions: 20,
-    timeLimit: 25,
-    completedAt: null,
-    score: null,
-    color: "#10b981"
-  },
-  {
-    id: "4",
-    title: "Node.js Basics",
-    description: "Server-side JavaScript fundamentals",
-    category: "Backend",
-    difficulty: "medium",
-    questions: 18,
-    timeLimit: 30,
-    completedAt: "2024-01-10",
-    score: 92,
-    color: "#f59e0b"
-  },
-  {
-    id: "5",
-    title: "Database Design Principles",
-    description: "Relational database concepts and design",
-    category: "Database",
-    difficulty: "hard",
-    questions: 22,
-    timeLimit: 40,
-    completedAt: null,
-    score: null,
-    color: "#ef4444"
-  },
-  {
-    id: "6",
-    title: "Python Data Structures",
-    description: "Lists, dictionaries, sets and more",
-    category: "Python",
-    difficulty: "easy",
-    questions: 12,
-    timeLimit: 15,
-    completedAt: "2024-01-12",
-    score: 78,
-    color: "#06b6d4"
-  }
-];
+interface Quiz {
+  id: string;
+  title: string;
+  description: string;
+  quiz_type: 'lesson' | 'weekly' | 'custom';
+  difficulty: 'easy' | 'medium' | 'hard';
+  total_questions: number;
+  time_limit_minutes: number;
+  completed_at: string | null;
+  score: number | null;
+  time_taken_seconds: number | null;
+  created_at: string;
+  learning_goals: {
+    topic: string;
+    focus: string;
+  };
+}
 
-const mockCategories = [
-  { id: "all", name: "All Categories", count: 6 },
-  { id: "programming", name: "Programming", count: 2 },
-  { id: "frontend", name: "Frontend", count: 1 },
-  { id: "css", name: "CSS", count: 1 },
-  { id: "backend", name: "Backend", count: 1 },
-  { id: "database", name: "Database", count: 1 }
-];
+interface Goal {
+  id: string;
+  topic: string;
+  focus: string;
+  plan_json?: {
+    modules?: Array<{
+      day: number;
+      title: string;
+      topic: string;
+      objective: string;
+      est_minutes: number;
+    }>;
+  };
+}
 
 export default function QuizPage() {
   // State for quiz management
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [selectedGoal, setSelectedGoal] = useState<string>('all');
+  const [selectedQuizType, setSelectedQuizType] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<"recent" | "difficulty" | "score">("recent");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showCompletedOnly, setShowCompletedOnly] = useState(false);
-
-  // Mock loading state
   const [isLoading, setIsLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [generateForm, setGenerateForm] = useState({
+    goal_id: '',
+    quiz_type: 'lesson' as 'lesson' | 'weekly',
+    lesson_day_index: 1,
+    week_start_day: 1,
+    week_end_day: 7,
+    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+    question_count: 10
+  });
 
+  // Fetch quizzes and goals
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
+    fetchQuizzes();
+    fetchGoals();
   }, []);
 
-  // Filter and sort quizzes
-  const filteredQuizzes = mockQuizzes.filter(quiz => {
-    const categoryMatch = selectedCategory === 'all' || quiz.category.toLowerCase() === selectedCategory;
+  const fetchQuizzes = async () => {
+    try {
+      const response = await fetch('/api/quizzes');
+      if (response.ok) {
+        const data = await response.json();
+        setQuizzes(data.quizzes || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch quizzes:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchGoals = async () => {
+    try {
+      const response = await fetch('/api/goals');
+      if (response.ok) {
+        const data = await response.json();
+        setGoals(data.goals || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch goals:', error);
+    }
+  };
+
+  // Filter quizzes
+  const filteredQuizzes = quizzes.filter(quiz => {
+    const goalMatch = selectedGoal === 'all' || quiz.learning_goals.topic.toLowerCase().includes(selectedGoal.toLowerCase());
+    const typeMatch = selectedQuizType === 'all' || quiz.quiz_type === selectedQuizType;
     const difficultyMatch = selectedDifficulty === 'all' || quiz.difficulty === selectedDifficulty;
     const searchMatch = quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                        quiz.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const completedMatch = !showCompletedOnly || quiz.completedAt !== null;
+    const completedMatch = !showCompletedOnly || quiz.completed_at !== null;
     
-    return categoryMatch && difficultyMatch && searchMatch && completedMatch;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case "difficulty":
-        const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
-        return difficultyOrder[a.difficulty as keyof typeof difficultyOrder] - difficultyOrder[b.difficulty as keyof typeof difficultyOrder];
-      case "score":
-        return (b.score || 0) - (a.score || 0);
-      default:
-        return new Date(b.completedAt || '1970-01-01').getTime() - new Date(a.completedAt || '1970-01-01').getTime();
-    }
+    return goalMatch && typeMatch && difficultyMatch && searchMatch && completedMatch;
   });
 
+  // Generate quiz function
+  const handleGenerateQuiz = async () => {
+    if (!generateForm.goal_id) {
+      alert('Please select a goal');
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const response = await fetch('/api/quizzes/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(generateForm)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Quiz generated:', data);
+        setShowGenerateModal(false);
+        fetchQuizzes(); // Refresh quizzes
+      } else {
+        const error = await response.json();
+        alert(`Failed to generate quiz: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Quiz generation failed:', error);
+      alert('Failed to generate quiz');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   // Stats calculations
-  const totalQuizzes = mockQuizzes.length;
-  const completedQuizzes = mockQuizzes.filter(q => q.completedAt).length;
+  const totalQuizzes = quizzes.length;
+  const completedQuizzes = quizzes.filter(q => q.completed_at).length;
   const averageScore = completedQuizzes > 0 
-    ? Math.round(mockQuizzes.filter(q => q.score).reduce((sum, q) => sum + (q.score || 0), 0) / completedQuizzes)
+    ? Math.round(quizzes.filter(q => q.score).reduce((sum, q) => sum + (q.score || 0), 0) / completedQuizzes)
     : 0;
-  const todayCompleted = mockQuizzes.filter(q => 
-    q.completedAt && new Date(q.completedAt).toDateString() === new Date().toDateString()
+  const todayCompleted = quizzes.filter(q => 
+    q.completed_at && new Date(q.completed_at).toDateString() === new Date().toDateString()
   ).length;
 
   const getDifficultyColor = (difficulty: string) => {
@@ -227,10 +237,11 @@ export default function QuizPage() {
                 </Link>
               </Button>
               <Button 
+                onClick={() => setShowGenerateModal(true)}
                 className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl px-6 py-3"
               >
                 <Plus className="h-5 w-5 mr-2" />
-                Create Quiz
+                Generate Quiz
               </Button>
             </div>
           </div>
@@ -252,16 +263,29 @@ export default function QuizPage() {
               </div>
               
               <div className="flex gap-3">
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <Select value={selectedGoal} onValueChange={setSelectedGoal}>
                   <SelectTrigger className="h-12 w-48 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
-                    <SelectValue placeholder="All Categories" />
+                    <SelectValue placeholder="All Goals" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm">
-                    {mockCategories.map(category => (
-                      <SelectItem key={category.id} value={category.id} className="text-lg py-3">
-                        {category.name} ({category.count})
+                    <SelectItem value="all" className="text-lg py-3">All Goals</SelectItem>
+                    {goals.map(goal => (
+                      <SelectItem key={goal.id} value={goal.topic} className="text-lg py-3">
+                        {goal.topic}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={selectedQuizType} onValueChange={setSelectedQuizType}>
+                  <SelectTrigger className="h-12 w-40 text-lg border-2 border-slate-200 dark:border-slate-600 focus:border-brand focus:ring-4 focus:ring-brand/20 rounded-2xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm">
+                    <SelectValue placeholder="All Types" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm">
+                    <SelectItem value="all" className="text-lg py-3">All Types</SelectItem>
+                    <SelectItem value="lesson" className="text-lg py-3">Lesson</SelectItem>
+                    <SelectItem value="weekly" className="text-lg py-3">Weekly</SelectItem>
+                    <SelectItem value="custom" className="text-lg py-3">Custom</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -386,19 +410,19 @@ export default function QuizPage() {
                         {quiz.difficulty}
                       </Badge>
                       <Badge variant="outline" className="bg-slate-50 dark:bg-slate-700">
-                        {quiz.category}
+                        {quiz.quiz_type}
                       </Badge>
                       <Badge variant="outline" className="bg-slate-50 dark:bg-slate-700">
-                        {quiz.questions} questions
+                        {quiz.total_questions} questions
                       </Badge>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
                       <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
-                        <span>{quiz.timeLimit} min</span>
+                        <span>{quiz.time_limit_minutes} min</span>
                       </div>
-                      {quiz.completedAt && (
+                      {quiz.completed_at && (
                         <div className="flex items-center gap-1">
                           <CheckCircle className="h-4 w-4 text-green-500" />
                           <span>Completed</span>
@@ -409,22 +433,25 @@ export default function QuizPage() {
                     <div className="pt-2">
                       <Button 
                         className={`w-full h-12 text-lg font-semibold rounded-xl transition-all duration-300 ${
-                          quiz.completedAt 
+                          quiz.completed_at 
                             ? 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl hover:scale-105'
                             : 'bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700 text-white shadow-lg hover:shadow-xl hover:scale-105'
                         }`}
+                        asChild
                       >
-                        {quiz.completedAt ? (
-                          <>
-                            <RotateCcw className="h-5 w-5 mr-2" />
-                            Retake Quiz
-                          </>
-                        ) : (
-                          <>
-                            <Play className="h-5 w-5 mr-2" />
-                            Start Quiz
-                          </>
-                        )}
+                        <Link href={`/app/quiz/${quiz.id}`}>
+                          {quiz.completed_at ? (
+                            <>
+                              <RotateCcw className="h-5 w-5 mr-2" />
+                              Retake Quiz
+                            </>
+                          ) : (
+                            <>
+                              <Play className="h-5 w-5 mr-2" />
+                              Start Quiz
+                            </>
+                          )}
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -513,6 +540,191 @@ export default function QuizPage() {
               </div>
             </div>
           </section>
+        )}
+
+        {/* Quiz Generation Modal */}
+        {showGenerateModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                  Generate New Quiz
+                </h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowGenerateModal(false)}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-6">
+                {/* Goal Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Select Goal
+                  </label>
+                  <Select 
+                    value={generateForm.goal_id} 
+                    onValueChange={(value) => setGenerateForm(prev => ({ ...prev, goal_id: value }))}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose a learning goal" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {goals.map(goal => (
+                        <SelectItem key={goal.id} value={goal.id}>
+                          {goal.topic} - {goal.focus}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Quiz Type */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Quiz Type
+                  </label>
+                  <Select 
+                    value={generateForm.quiz_type} 
+                    onValueChange={(value: 'lesson' | 'weekly') => setGenerateForm(prev => ({ ...prev, quiz_type: value }))}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="lesson">Lesson Quiz</SelectItem>
+                      <SelectItem value="weekly">Weekly Quiz</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Lesson-specific options */}
+                {generateForm.quiz_type === 'lesson' && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      Lesson Day
+                    </label>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={generateForm.lesson_day_index}
+                      onChange={(e) => setGenerateForm(prev => ({ 
+                        ...prev, 
+                        lesson_day_index: parseInt(e.target.value) || 1 
+                      }))}
+                      className="w-full"
+                    />
+                  </div>
+                )}
+
+                {/* Weekly-specific options */}
+                {generateForm.quiz_type === 'weekly' && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        Start Day
+                      </label>
+                      <Input
+                        type="number"
+                        min="1"
+                        value={generateForm.week_start_day}
+                        onChange={(e) => setGenerateForm(prev => ({ 
+                          ...prev, 
+                          week_start_day: parseInt(e.target.value) || 1 
+                        }))}
+                        className="w-full"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        End Day
+                      </label>
+                      <Input
+                        type="number"
+                        min="1"
+                        value={generateForm.week_end_day}
+                        onChange={(e) => setGenerateForm(prev => ({ 
+                          ...prev, 
+                          week_end_day: parseInt(e.target.value) || 7 
+                        }))}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Difficulty and Question Count */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      Difficulty
+                    </label>
+                    <Select 
+                      value={generateForm.difficulty} 
+                      onValueChange={(value: 'easy' | 'medium' | 'hard') => setGenerateForm(prev => ({ ...prev, difficulty: value }))}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="easy">Easy</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="hard">Hard</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      Question Count
+                    </label>
+                    <Input
+                      type="number"
+                      min="5"
+                      max="50"
+                      value={generateForm.question_count}
+                      onChange={(e) => setGenerateForm(prev => ({ 
+                        ...prev, 
+                        question_count: parseInt(e.target.value) || 10 
+                      }))}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowGenerateModal(false)}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleGenerateQuiz}
+                    disabled={isGenerating || !generateForm.goal_id}
+                    className="flex-1 bg-gradient-to-r from-brand to-purple-600 hover:from-brand/90 hover:to-purple-700"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Generate Quiz
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
         </div>
       </div>
