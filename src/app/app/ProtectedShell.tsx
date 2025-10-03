@@ -18,6 +18,7 @@ import {
   TrendingUp,
   Lightbulb
 } from "lucide-react";
+import { useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -354,7 +355,7 @@ function UserMenu() {
     };
   }, [user]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     try {
       const supabase = supabaseBrowser();
       await supabase.auth.signOut();
@@ -363,20 +364,22 @@ function UserMenu() {
       console.error("Error signing out:", error);
       router.push("/auth");
     }
-  };
+  }, [router]);
 
-  const toggleMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const toggleMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     try {
-      console.log("Dashboard: Toggling user menu from:", isOpen, "to:", !isOpen);
       const rect = event.currentTarget.getBoundingClientRect();
       setButtonRect(rect);
       setIsOpen(prev => !prev);
     } catch (error) {
       console.error("Error toggling menu:", error);
     }
-  };
+  }, []);
 
-  console.log("UserMenu render - isOpen:", isOpen);
+  const closeMenu = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
 
   return (
     <div className="relative">
@@ -403,7 +406,7 @@ function UserMenu() {
           {/* Backdrop with blur */}
           <div 
             className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm" 
-            onClick={() => setIsOpen(false)}
+            onClick={closeMenu}
           />
           
           {/* Modern Dropdown Menu */}
