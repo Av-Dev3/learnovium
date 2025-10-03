@@ -111,21 +111,26 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
           {/* Topbar */}
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center border-b border-[var(--border)]/60 bg-[var(--bg)]/70 backdrop-blur-xl px-4 shadow-sm sm:px-6 lg:px-8">
             {/* Mobile: Centered logo, Desktop: Left-aligned with right user menu */}
-            <div className="flex w-full items-center justify-between">
+            <div className="flex w-full items-center">
               {/* Mobile Logo - Perfectly centered */}
-              <div className="flex lg:hidden flex-1 justify-center">
+              <div className="flex lg:hidden w-full justify-center">
                 <div className="flex items-center space-x-3">
                   <Logo size="md" />
                   <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
                 </div>
               </div>
               
-              {/* Desktop: Empty space for left alignment balance */}
-              <div className="hidden lg:flex"></div>
-              
-              {/* User Menu - Right aligned */}
-              <div className="flex items-center gap-x-4 lg:gap-x-6">
-                <UserMenu />
+              {/* Desktop: Left-aligned with right user menu */}
+              <div className="hidden lg:flex w-full items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Logo size="md" />
+                  <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
+                </div>
+                
+                {/* User Menu - Right aligned */}
+                <div className="flex items-center gap-x-4 lg:gap-x-6">
+                  <UserMenu />
+                </div>
               </div>
             </div>
           </div>
@@ -247,15 +252,9 @@ function MobileAppNav() {
                   ? "bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25" 
                   : "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-600 dark:to-slate-700 group-hover:from-blue-50 group-hover:to-purple-50 dark:group-hover:from-blue-900/20 dark:group-hover:to-purple-900/20"
               }`}>
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  isActive 
-                    ? "bg-white" 
-                    : "bg-gradient-to-br from-blue-500 to-purple-600"
-                }`}>
-                  <div className={`w-2 h-2 rounded-full ${
-                    isActive ? "bg-blue-500" : "bg-white"
-                  }`} />
-                </div>
+                <item.icon className={`h-6 w-6 ${
+                  isActive ? "text-white" : "text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                }`} />
               </div>
               <div className="flex-1">
                 <div className={`font-semibold text-base ${

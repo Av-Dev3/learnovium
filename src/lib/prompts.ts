@@ -68,12 +68,13 @@ DURATION RULES:
 - 90 days (comprehensive): full breadth + depth; 20–45 min/day; 3–6 modules; portfolio-grade capstone.
 
 DAY TITLE TEMPLATE (must be used for each day's "topic"):
-"D{two-digit day} | {ModuleShort}: {Imperative verb} {precise concept} — {specific outcome} [Builds on Day {N-1}: {carryover}]"
+- Day 1: "D01 | {ModuleShort}: {Imperative verb} {precise concept} — {specific outcome}"
+- Days 2+: "D{two-digit day} | {ModuleShort}: {Imperative verb} {precise concept} — {specific outcome} [Builds on Day {N-1}: {carryover}]"
 
 Title rules:
 - Use imperative Bloom verbs appropriate to level.
 - Outcome must be specific and testable.
-- Day 1 must end with "[Builds on Day 0: N/A]" or "[Builds on Day 0: starts from zero]".
+- Day 1 should NOT include any "builds on" text - it's the starting point.
 - Days 2+ must state what they build on from the previous day.
 - Avoid vague nouns ("basics", "stuff"); avoid passive voice.
 - Keep under ~140 characters, prefer clarity.
@@ -95,7 +96,7 @@ ${levelInstructions}` },
       "days": [
         {
           "day_index": 1,
-          "topic": "D01 | Foundations: Understand core concept X — perform outcome Y [Builds on Day 0: N/A]",
+          "topic": "D01 | Foundations: Understand core concept X — perform outcome Y ",
           "objective": "Achieve a clear, concrete goal; include 2–3 micro-objectives separated by semicolons.",
           "practice": "Brief spiral review of the previous day if applicable; then today's guided steps toward the outcome.",
           "assessment": "Explicit artifact + criteria (what will be checked and how).",
@@ -178,7 +179,7 @@ Create a comprehensive LessonJSON for the day's topic. Write the lesson as a flo
 Use "walkthrough" to provide a natural summary of the key points and definitions from the reading.
 
 CRITICAL REQUIREMENTS:
-- The "topic" field MUST be the exact day title from the plan (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes [Builds on Day 0: N/A]")
+- The "topic" field MUST be the exact day title from the plan (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes ")
 - Do NOT create your own topic name - use the provided day title exactly as it appears in the plan
 - The topic field must be at least 10 characters long
 
@@ -260,7 +261,7 @@ Create a comprehensive LessonJSON for day ${dayIndex} that reads as a flowing, e
 Use "walkthrough" to provide a natural summary of the key points and definitions from the reading.
 
 CRITICAL REQUIREMENTS:
-- The "topic" field MUST be the exact day title provided (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes [Builds on Day 0: N/A]")
+- The "topic" field MUST be the exact day title provided (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes ")
 - Do NOT create your own topic name - use the provided day title exactly as it appears
 - The topic field must be at least 10 characters long
 
@@ -328,7 +329,7 @@ ${levelInstructions}` },
       "days": [
         {
           "day_index": 1,
-          "topic": "D01 | Foundations: Understand core concept X — perform outcome Y [Builds on Day 0: N/A]",
+          "topic": "D01 | Foundations: Understand core concept X — perform outcome Y ",
           "objective": "Achieve a clear, concrete goal; include 2–3 micro-objectives separated by semicolons.",
           "practice": "Brief spiral review of the previous day if applicable; then today's guided steps toward the outcome.",
           "assessment": "Explicit artifact + criteria (what will be checked and how).",
@@ -410,7 +411,7 @@ Ensure 'topic' equals the exact DayTitle from context (or a precise derived DayT
 Use 'walkthrough' for a natural summary of key points and definitions from the reading.
 
 CRITICAL REQUIREMENTS:
-- The "topic" field MUST be the exact day title from the plan (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes [Builds on Day 0: N/A]")
+- The "topic" field MUST be the exact day title from the plan (e.g., "D01 | Basics: Identify what a snake is — name core traits of snakes ")
 - Do NOT create your own topic name - use the provided day title exactly as it appears in the plan
 - The topic field must be at least 10 characters long
 
