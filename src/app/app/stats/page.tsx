@@ -25,60 +25,86 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-// Mock data for stats and streaks
-const mockStats = {
-  totalStudyTime: 147, // hours
-  totalLessons: 89,
-  totalQuizzes: 34,
-  totalFlashcards: 156,
-  averageScore: 87,
-  currentStreak: 12,
-  longestStreak: 28,
-  weeklyGoal: 5, // hours
-  weeklyProgress: 3.5, // hours
-  monthlyGoal: 20, // hours
-  monthlyProgress: 14.5, // hours
-  level: 8,
-  xp: 2340,
-  xpToNext: 660,
-  badges: [
-    { id: 1, name: "First Steps", description: "Complete your first lesson", earned: true, rarity: "common" },
-    { id: 2, name: "Quiz Master", description: "Score 90% or higher on 5 quizzes", earned: true, rarity: "rare" },
-    { id: 3, name: "Streak Warrior", description: "Maintain a 7-day learning streak", earned: true, rarity: "epic" },
-    { id: 4, name: "Knowledge Seeker", description: "Complete 50 lessons", earned: true, rarity: "rare" },
-    { id: 5, name: "Flash Champion", description: "Master 100 flashcards", earned: true, rarity: "epic" },
-    { id: 6, name: "Perfectionist", description: "Score 100% on a quiz", earned: false, rarity: "legendary" },
-    { id: 7, name: "Marathon Learner", description: "Study for 30 days straight", earned: false, rarity: "legendary" },
-    { id: 8, name: "Speed Demon", description: "Complete 10 lessons in one day", earned: false, rarity: "epic" }
-  ]
-};
+// Types for stats data
+interface UserStats {
+  totalStudyTime: number;
+  totalLessons: number;
+  totalQuizzes: number;
+  totalFlashcards: number;
+  averageScore: number;
+  currentStreak: number;
+  longestStreak: number;
+  weeklyGoal: number;
+  weeklyProgress: number;
+  monthlyGoal: number;
+  monthlyProgress: number;
+  level: number;
+  xp: number;
+  xpToNext: number;
+  badges: Badge[];
+  weeklyActivity: WeeklyActivity[];
+}
 
-const mockWeeklyActivity = [
-  { day: "Mon", hours: 2.5, lessons: 3, quizzes: 1 },
-  { day: "Tue", hours: 1.8, lessons: 2, quizzes: 0 },
-  { day: "Wed", hours: 3.2, lessons: 4, quizzes: 2 },
-  { day: "Thu", hours: 0.5, lessons: 1, quizzes: 0 },
-  { day: "Fri", hours: 2.1, lessons: 3, quizzes: 1 },
-  { day: "Sat", hours: 1.9, lessons: 2, quizzes: 1 },
-  { day: "Sun", hours: 2.8, lessons: 3, quizzes: 2 }
-];
+interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  earned: boolean;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+}
 
-const mockLeaderboard = [
-  { rank: 1, name: "Alex Chen", xp: 4580, avatar: "AC" },
-  { rank: 2, name: "Sarah Johnson", xp: 4120, avatar: "SJ" },
-  { rank: 3, name: "You", xp: 2340, avatar: "ME", isCurrentUser: true },
-  { rank: 4, name: "Mike Wilson", xp: 2180, avatar: "MW" },
-  { rank: 5, name: "Emma Davis", xp: 1950, avatar: "ED" }
-];
+interface WeeklyActivity {
+  day: string;
+  hours: number;
+  lessons: number;
+  quizzes: number;
+}
+
+interface LeaderboardUser {
+  rank: number;
+  name: string;
+  xp: number;
+  avatar: string;
+  isCurrentUser?: boolean;
+}
 
 export default function StatsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<'overview' | 'streaks' | 'badges' | 'leaderboard'>('overview');
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Fetch stats data
+        const statsResponse = await fetch('/api/stats');
+        if (!statsResponse.ok) {
+          throw new Error('Failed to fetch stats');
+        }
+        const statsData = await statsResponse.json();
+        setStats(statsData);
+
+        // Fetch leaderboard data
+        const leaderboardResponse = await fetch('/api/leaderboard');
+        if (!leaderboardResponse.ok) {
+          throw new Error('Failed to fetch leaderboard');
+        }
+        const leaderboardData = await leaderboardResponse.json();
+        setLeaderboard(leaderboardData);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const getBadgeRarityColor = (rarity: string) => {
@@ -104,6 +130,36 @@ export default function StatsPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto mb-4"></div>
           <p className="text-[var(--fg)]/70">Loading your stats...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">Failed to Load Stats</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-slate-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-slate-500 text-6xl mb-4">📊</div>
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">No Stats Available</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">Start learning to see your progress!</p>
+          <Button asChild>
+            <Link href="/app">Go to Dashboard</Link>
+          </Button>
         </div>
       </div>
     );
@@ -157,28 +213,28 @@ export default function StatsPage() {
                   <Crown className="h-12 w-12 text-white" />
                 </div>
                 <div className="absolute -bottom-2 -right-2 bg-white dark:bg-slate-800 rounded-full px-3 py-1 shadow-lg border-2 border-brand">
-                  <span className="text-sm font-bold text-brand">{mockStats.level}</span>
+                  <span className="text-sm font-bold text-brand">{stats.level}</span>
                 </div>
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-200">Level {mockStats.level}</h2>
+                <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-200">Level {stats.level}</h2>
                 <p className="text-slate-600 dark:text-slate-400">Learning Champion</p>
                 <div className="flex items-center gap-2 mt-2">
                   <Sparkles className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm font-medium">{mockStats.xp.toLocaleString()} XP</span>
+                  <span className="text-sm font-medium">{stats.xp.toLocaleString()} XP</span>
                 </div>
               </div>
             </div>
             
             <div className="flex-1 w-full">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Progress to Level {mockStats.level + 1}</span>
-                <span className="text-sm font-bold text-brand">{mockStats.xpToNext} XP to go</span>
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Progress to Level {stats.level + 1}</span>
+                <span className="text-sm font-bold text-brand">{stats.xpToNext} XP to go</span>
               </div>
               <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-4">
                 <div 
                   className="bg-gradient-to-r from-brand to-purple-600 h-4 rounded-full transition-all duration-500"
-                  style={{ width: `${(mockStats.xp / (mockStats.xp + mockStats.xpToNext)) * 100}%` }}
+                  style={{ width: `${(stats.xp / (stats.xp + stats.xpToNext)) * 100}%` }}
                 />
               </div>
             </div>
@@ -223,7 +279,7 @@ export default function StatsPage() {
                     <Clock className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{mockStats.totalStudyTime}h</p>
+                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{stats.totalStudyTime}h</p>
                     <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Study Time</p>
                   </div>
                 </div>
@@ -235,7 +291,7 @@ export default function StatsPage() {
                     <BookOpen className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{mockStats.totalLessons}</p>
+                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{stats.totalLessons}</p>
                     <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Lessons</p>
                   </div>
                 </div>
@@ -247,7 +303,7 @@ export default function StatsPage() {
                     <Brain className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{mockStats.totalQuizzes}</p>
+                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{stats.totalQuizzes}</p>
                     <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Quizzes</p>
                   </div>
                 </div>
@@ -259,7 +315,7 @@ export default function StatsPage() {
                     <TrendingUp className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{mockStats.averageScore}%</p>
+                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{stats.averageScore}%</p>
                     <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Avg Score</p>
                   </div>
                 </div>
@@ -275,7 +331,7 @@ export default function StatsPage() {
                 </div>
                 
                 <div className="grid grid-cols-7 gap-4">
-                  {mockWeeklyActivity.map((day) => (
+                  {stats.weeklyActivity.map((day) => (
                     <div key={day.day} className="text-center">
                       <div className="mb-2">
                         <div 
@@ -301,13 +357,13 @@ export default function StatsPage() {
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{mockStats.weeklyProgress}h / {mockStats.weeklyGoal}h</span>
-                      <span className="text-sm font-bold text-brand">{Math.round((mockStats.weeklyProgress / mockStats.weeklyGoal) * 100)}%</span>
+                      <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{stats.weeklyProgress}h / {stats.weeklyGoal}h</span>
+                      <span className="text-sm font-bold text-brand">{Math.round((stats.weeklyProgress / stats.weeklyGoal) * 100)}%</span>
                     </div>
                     <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
                       <div 
                         className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min((mockStats.weeklyProgress / mockStats.weeklyGoal) * 100, 100)}%` }}
+                        style={{ width: `${Math.min((stats.weeklyProgress / stats.weeklyGoal) * 100, 100)}%` }}
                       />
                     </div>
                   </div>
@@ -322,13 +378,13 @@ export default function StatsPage() {
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{mockStats.monthlyProgress}h / {mockStats.monthlyGoal}h</span>
-                      <span className="text-sm font-bold text-brand">{Math.round((mockStats.monthlyProgress / mockStats.monthlyGoal) * 100)}%</span>
+                      <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{stats.monthlyProgress}h / {stats.monthlyGoal}h</span>
+                      <span className="text-sm font-bold text-brand">{Math.round((stats.monthlyProgress / stats.monthlyGoal) * 100)}%</span>
                     </div>
                     <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
                       <div 
                         className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min((mockStats.monthlyProgress / mockStats.monthlyGoal) * 100, 100)}%` }}
+                        style={{ width: `${Math.min((stats.monthlyProgress / stats.monthlyGoal) * 100, 100)}%` }}
                       />
                     </div>
                   </div>
@@ -343,9 +399,9 @@ export default function StatsPage() {
             <div className="space-y-8">
               <div className="text-center">
                 <div className="inline-flex items-center gap-4 p-8 rounded-3xl bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 border border-orange-200 dark:border-orange-800">
-                  <Flame className={`h-16 w-16 ${getStreakFlameColor(mockStats.currentStreak)}`} />
+                  <Flame className={`h-16 w-16 ${getStreakFlameColor(stats.currentStreak)}`} />
                   <div>
-                    <div className="text-4xl font-bold text-slate-800 dark:text-slate-200">{mockStats.currentStreak}</div>
+                    <div className="text-4xl font-bold text-slate-800 dark:text-slate-200">{stats.currentStreak}</div>
                     <div className="text-lg font-medium text-slate-600 dark:text-slate-400">Day Streak</div>
                   </div>
                 </div>
@@ -354,13 +410,13 @@ export default function StatsPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border border-yellow-200 dark:border-yellow-800">
                   <Trophy className="h-12 w-12 text-yellow-600 mx-auto mb-4" />
-                  <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">{mockStats.longestStreak}</div>
+                  <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">{stats.longestStreak}</div>
                   <div className="text-lg font-medium text-slate-600 dark:text-slate-400">Longest Streak</div>
                 </div>
 
                 <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800">
                   <Zap className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                  <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">7</div>
+                  <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">{stats.weeklyActivity.filter(day => day.lessons > 0).length}</div>
                   <div className="text-lg font-medium text-slate-600 dark:text-slate-400">Days This Week</div>
                 </div>
               </div>
@@ -402,12 +458,12 @@ export default function StatsPage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Achievement Badges</h2>
                 <div className="text-sm text-slate-600 dark:text-slate-400">
-                  {mockStats.badges.filter(b => b.earned).length} / {mockStats.badges.length} earned
+                  {stats.badges.filter(b => b.earned).length} / {stats.badges.length} earned
                 </div>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockStats.badges.map((badge) => (
+                {stats.badges.map((badge) => (
                   <div
                     key={badge.id}
                     className={`p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 ${
@@ -453,7 +509,7 @@ export default function StatsPage() {
               </div>
               
               <div className="space-y-4">
-                {mockLeaderboard.map((user) => (
+                {leaderboard.map((user) => (
                   <div
                     key={user.rank}
                     className={`p-4 rounded-2xl transition-all duration-300 hover:scale-105 ${
