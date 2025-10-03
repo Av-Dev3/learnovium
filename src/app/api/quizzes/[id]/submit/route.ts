@@ -45,6 +45,7 @@ export async function POST(
       .select(`
         id,
         total_questions,
+        completed_at,
         quiz_questions!inner(
           id,
           correct_answer_index,
@@ -79,7 +80,7 @@ export async function POST(
     const attemptsToInsert = [];
 
     for (const answer of answers) {
-      const question = quiz.quiz_questions.find((q: any) => q.id === answer.question_id);
+      const question = quiz.quiz_questions.find((q: { id: string }) => q.id === answer.question_id);
       if (!question) continue;
 
       let isCorrect = false;

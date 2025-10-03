@@ -1,4 +1,4 @@
-import { generatePlan, generateLesson } from "@/lib/aiCall";
+import { generateLesson } from "@/lib/aiCall";
 import { buildLessonPromptWithRAG } from "@/lib/prompts";
 
 interface QuizQuestion {
@@ -59,11 +59,14 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
       }
 
       // Get lesson content using RAG
-      const { context } = await buildLessonPromptWithRAG(
+      const ragMessages = await buildLessonPromptWithRAG(
         `${goal.topic} - ${targetLesson.title}`,
         goal.topic,
         5
       );
+
+      // Extract context from the RAG messages
+      const context = ragMessages.find(msg => msg.role === 'user')?.content || '';
 
       lessonContent = `Topic: ${targetLesson.topic}\nObjective: ${targetLesson.objective}\nContext: ${context}`;
       quizTitle = `Quiz: ${targetLesson.title}`;
@@ -94,11 +97,14 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
       ).join('\n\n');
 
       // Get RAG context for the week
-      const { context } = await buildLessonPromptWithRAG(
+      const ragMessages = await buildLessonPromptWithRAG(
         `${goal.topic} - Week ${week_start_day}-${week_end_day}`,
         goal.topic,
         8
       );
+
+      // Extract context from the RAG messages
+      const context = ragMessages.find(msg => msg.role === 'user')?.content || '';
 
       lessonContent = `Weekly Review: ${goal.topic}\n\nLessons:\n${weekContent}\n\nContext: ${context}`;
       quizTitle = `Weekly Quiz: ${goal.topic} (Days ${week_start_day}-${week_end_day})`;
@@ -108,10 +114,10 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
     // Generate quiz using AI
     const quizPrompt = buildQuizPrompt(lessonContent, difficulty, question_count, quiz_type);
     
-    const { data: aiResponse, error: aiError } = await generateLesson(quizPrompt, 'system');
+    const { data: aiResponse } = await generateLesson(quizPrompt, 'system');
     
-    if (aiError || !aiResponse) {
-      return { data: null, error: `AI generation failed: ${aiError || 'No response'}` };
+    if (!aiResponse) {
+      return { data: null, error: 'AI generation failed: No response' };
     }
 
     // Parse AI response to extract quiz data
@@ -125,11 +131,11 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
   }
 }
 
-function buildQuizPrompt(lessonContent: string, difficulty: string, questionCount: number, quizType: string): string {
-  return `You are an expert quiz generator. Create a comprehensive quiz based on the following lesson content.
-
-LESSON CONTENT:
-${lessonContent}
+function buildQuizPrompt(lessonContent: string, difficulty: string, questionCount: number, quizType: string) {
+  return [
+    {
+      role: "system" as const,
+      content: `You are an expert quiz generator. Create a comprehensive quiz based on the following lesson content.
 
 QUIZ REQUIREMENTS:
 - Quiz Type: ${quizType}
@@ -174,24 +180,38 @@ RESPONSE FORMAT (JSON):
   ]
 }
 
-Generate the quiz now:`;
+Generate the quiz now:`
+    },
+    {
+      role: "user" as const,
+      content: `LESSON CONTENT:\n${lessonContent}`
+    }
+  ];
 }
 
-function parseQuizResponse(aiResponse: string, title: string, description: string, difficulty: string): QuizData {
+function parseQuizResponse(aiResponse: { quiz?: Array<{ q: string; a: string[]; correct_index: number }> }, title: string, description: string, difficulty: string): QuizData {
   try {
-    // Try to extract JSON from the response
-    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error("No JSON found in AI response");
+    // The AI response should be a lesson JSON with quiz data
+    if (!aiResponse || !aiResponse.quiz || !Array.isArray(aiResponse.quiz)) {
+      throw new Error("No quiz data found in AI response");
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
+    // Convert lesson quiz format to our quiz format
+    const questions: QuizQuestion[] = aiResponse.quiz.map((q) => ({
+      question: q.q,
+      type: 'multiple_choice' as const,
+      options: q.a,
+      correct_answer_index: q.correct_index,
+      difficulty: difficulty as 'easy' | 'medium' | 'hard',
+      points: 1,
+      explanation: `The correct answer is option ${q.correct_index + 1}: ${q.a[q.correct_index]}`
+    }));
     
     return {
-      title: parsed.title || title,
-      description: parsed.description || description,
-      time_limit_minutes: parsed.time_limit_minutes || 30,
-      questions: parsed.questions || []
+      title,
+      description,
+      time_limit_minutes: 30,
+      questions
     };
   } catch (error) {
     console.error("Failed to parse quiz response:", error);

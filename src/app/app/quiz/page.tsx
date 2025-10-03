@@ -8,30 +8,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { 
   BookOpen, 
   Clock, 
-  Zap, 
   Plus, 
   CheckCircle, 
-  XCircle, 
   ArrowLeft, 
-  ArrowRight,
   Brain,
   TrendingUp,
-  Shuffle,
-  Star,
   Bookmark,
   Sparkles,
-  Filter,
   RotateCcw,
   X,
   Play,
-  Pause,
   Trophy,
-  Target,
-  Search,
-  ChevronDown,
-  Calendar,
-  FileText,
-  Settings
+  Search
 } from "lucide-react";
 import Link from "next/link";
 
@@ -380,10 +368,12 @@ export default function QuizPage() {
                   key={quiz.id}
                   className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 >
-                  {/* Color accent bar */}
+                  {/* Difficulty accent bar */}
                   <div 
-                    className="absolute top-0 left-0 right-0 h-1"
-                    style={{ backgroundColor: quiz.color }}
+                    className={`absolute top-0 left-0 right-0 h-1 ${
+                      quiz.difficulty === 'easy' ? 'bg-green-500' :
+                      quiz.difficulty === 'medium' ? 'bg-yellow-500' : 'bg-red-500'
+                    }`}
                   />
                   
                   <div className="p-6 space-y-4">
@@ -396,7 +386,7 @@ export default function QuizPage() {
                           {quiz.description}
                         </p>
                       </div>
-                      {quiz.completedAt && quiz.score && (
+                      {quiz.completed_at && quiz.score && (
                         <div className="ml-4">
                           <div className={`text-2xl font-bold ${getScoreColor(quiz.score)}`}>
                             {quiz.score}%
@@ -465,18 +455,19 @@ export default function QuizPage() {
               </div>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">No quizzes found</h3>
               <p className="text-slate-600 dark:text-slate-400 mb-6 text-lg">
-                {searchTerm || selectedCategory !== 'all' || selectedDifficulty !== 'all' || showCompletedOnly
+                {searchTerm || selectedGoal !== 'all' || selectedQuizType !== 'all' || selectedDifficulty !== 'all' || showCompletedOnly
                   ? "Try adjusting your search or filters"
                   : "Create your first quiz to get started"
                 }
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                {(searchTerm || selectedCategory !== 'all' || selectedDifficulty !== 'all' || showCompletedOnly) && (
+                {(searchTerm || selectedGoal !== 'all' || selectedQuizType !== 'all' || selectedDifficulty !== 'all' || showCompletedOnly) && (
                   <Button 
                     variant="outline" 
                     onClick={() => {
                       setSearchTerm("");
-                      setSelectedCategory("all");
+                      setSelectedGoal("all");
+                      setSelectedQuizType("all");
                       setSelectedDifficulty("all");
                       setShowCompletedOnly(false);
                     }}
@@ -506,7 +497,7 @@ export default function QuizPage() {
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {mockQuizzes.filter(q => q.completedAt).slice(0, 3).map((quiz) => (
+                {quizzes.filter(q => q.completed_at).slice(0, 3).map((quiz) => (
                   <div
                     key={quiz.id}
                     className="p-4 rounded-xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-105"
@@ -531,8 +522,8 @@ export default function QuizPage() {
                       </div>
                       
                       <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-500">
-                        <span>{quiz.category}</span>
-                        <span>{quiz.questions} questions</span>
+                        <span>{quiz.quiz_type}</span>
+                        <span>{quiz.total_questions} questions</span>
                       </div>
                     </div>
                   </div>

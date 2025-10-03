@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,12 +8,9 @@ import {
   ArrowLeft, 
   Clock, 
   CheckCircle, 
-  XCircle,
   Play,
-  Pause,
   RotateCcw,
   Trophy,
-  Target,
   Brain
 } from "lucide-react";
 import Link from "next/link";
@@ -66,8 +63,46 @@ export default function QuizTakingPage({ params }: { params: Promise<{ id: strin
   const [isQuizStarted, setIsQuizStarted] = useState(false);
   const [isQuizCompleted, setIsQuizCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [quizResult, setQuizResult] = useState<any>(null);
+  const [quizResult, setQuizResult] = useState<{
+    score: number;
+    correct_answers: number;
+    total_questions: number;
+    earned_points: number;
+    total_points: number;
+    time_taken_seconds: number;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleSubmitQuiz = useCallback(async () => {
+    if (isSubmitting || !quiz) return;
+    
+    setIsSubmitting(true);
+    try {
+      const totalTime = quiz.time_limit_minutes * 60 - timeRemaining;
+      const response = await fetch(`/api/quizzes/${quiz.id}/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          answers,
+          total_time_seconds: totalTime
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setQuizResult(result);
+        setIsQuizCompleted(true);
+      } else {
+        const error = await response.json();
+        alert(`Failed to submit quiz: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Quiz submission failed:', error);
+      alert('Failed to submit quiz');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [isSubmitting, quiz, timeRemaining, answers]);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -107,7 +142,7 @@ export default function QuizTakingPage({ params }: { params: Promise<{ id: strin
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isQuizStarted, timeRemaining, isQuizCompleted]);
+  }, [isQuizStarted, timeRemaining, isQuizCompleted, handleSubmitQuiz]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -132,37 +167,6 @@ export default function QuizTakingPage({ params }: { params: Promise<{ id: strin
         }];
       }
     });
-  };
-
-  const handleSubmitQuiz = async () => {
-    if (isSubmitting) return;
-    
-    setIsSubmitting(true);
-    try {
-      const totalTime = quiz!.time_limit_minutes * 60 - timeRemaining;
-      const response = await fetch(`/api/quizzes/${quiz!.id}/submit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          answers,
-          total_time_seconds: totalTime
-        })
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setQuizResult(result);
-        setIsQuizCompleted(true);
-      } else {
-        const error = await response.json();
-        alert(`Failed to submit quiz: ${error.error}`);
-      }
-    } catch (error) {
-      console.error('Quiz submission failed:', error);
-      alert('Failed to submit quiz');
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -392,23 +396,23 @@ export default function QuizTakingPage({ params }: { params: Promise<{ id: strin
                 {/* Answer Options */}
                 <div className="space-y-3">
                   {currentQuestion.question_type === 'multiple_choice' && currentQuestion.options && (
-                    currentQuestion.options.map((option, index) => (
+                    currentQuestion.options.map((option, optionIndex) => (
                       <button
-                        key={index}
-                        onClick={() => handleAnswerSelect(currentQuestion.id, index)}
+                        key={optionIndex}
+                        onClick={() => handleAnswerSelect(currentQuestion.id, optionIndex)}
                         className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 ${
-                          currentAnswer?.selected_answer_index === index
+                          currentAnswer?.selected_answer_index === optionIndex
                             ? 'border-brand bg-brand/10 text-brand dark:text-brand-300'
                             : 'border-slate-200 dark:border-slate-600 hover:border-brand/50 hover:bg-brand/5'
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                            currentAnswer?.selected_answer_index === index
+                            currentAnswer?.selected_answer_index === optionIndex
                               ? 'border-brand bg-brand text-white'
                               : 'border-slate-300 dark:border-slate-600'
                           }`}>
-                            {currentAnswer?.selected_answer_index === index && (
+                            {currentAnswer?.selected_answer_index === optionIndex && (
                               <CheckCircle className="h-4 w-4" />
                             )}
                           </div>
@@ -420,7 +424,7 @@ export default function QuizTakingPage({ params }: { params: Promise<{ id: strin
 
                   {currentQuestion.question_type === 'true_false' && (
                     <div className="grid grid-cols-2 gap-4">
-                      {['True', 'False'].map((option, index) => (
+                      {['True', 'False'].map((option) => (
                         <button
                           key={option}
                           onClick={() => handleAnswerSelect(currentQuestion.id, option.toLowerCase())}
