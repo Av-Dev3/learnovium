@@ -25,14 +25,14 @@ export function Footer() {
         {/* Glassmorphism container */}
         <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl mx-6 mb-6 border border-white/20 dark:border-slate-700/50 shadow-xl">
           <div className="p-8 md:p-12">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Brand section - spans 6 columns */}
-            <div className="lg:col-span-6 space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Brand section - spans 1 column */}
+            <div className="space-y-6">
               <div className="space-y-4">
                 <h3 className="font-heading text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600">
                   Learnovium
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed max-w-sm">
+                <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
                   Master any skill with AI-powered learning paths. Get personalized daily lessons and achieve your learning goals.
                 </p>
               </div>
@@ -70,9 +70,8 @@ export function Footer() {
               </div>
             </div>
 
-
-            {/* Company links - spans 3 columns */}
-            <div className="lg:col-span-3 space-y-6">
+            {/* Company links - spans 1 column */}
+            <div className="space-y-6">
               <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Company</h4>
               <nav className="flex flex-col space-y-4">
                 <Link 
@@ -106,8 +105,8 @@ export function Footer() {
               </nav>
             </div>
 
-            {/* Newsletter signup - spans 3 columns */}
-            <div className="lg:col-span-3 space-y-6">
+            {/* Newsletter signup - spans 1 column */}
+            <div className="space-y-6">
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Stay Updated</h4>
                 <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
