@@ -113,9 +113,9 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
             {/* Mobile: Centered logo with user menu, Desktop: Left-aligned with right user menu */}
             <div className="flex w-full items-center">
               {/* Mobile Layout */}
-              <div className="flex lg:hidden w-full items-center justify-between">
-                {/* Mobile Logo - Centered */}
-                <div className="flex-1 flex justify-center">
+              <div className="flex lg:hidden w-full items-center relative">
+                {/* Mobile Logo - Absolutely centered */}
+                <div className="absolute left-1/2 transform -translate-x-1/2">
                   <div className="flex items-center space-x-3">
                     <Logo size="md" />
                     <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
@@ -123,7 +123,7 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
                 </div>
                 
                 {/* Mobile User Menu - Right aligned */}
-                <div className="flex items-center">
+                <div className="flex items-center ml-auto">
                   <UserMenu />
                 </div>
               </div>
