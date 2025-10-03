@@ -119,12 +119,12 @@ export default function Home() {
                 {/* Badge */}
                 <div 
                   data-animate-id="hero-badge"
-                  className={`inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 hover:from-yellow-400/30 hover:to-orange-400/30 transition-all duration-300 ${
+                  className={`inline-flex items-center gap-2 rounded-full px-6 py-3 bg-gradient-to-r from-brand/10 to-purple-600/10 backdrop-blur-sm border border-brand/20 hover:from-brand/20 hover:to-purple-600/20 transition-all duration-300 ${
                     animatedElements.has('hero-badge') ? 'animate-in' : 'animate-on-scroll'
                   }`}
                 >
-                  <Sparkles className="w-4 h-4 text-yellow-600 animate-pulse" />
-                  <span className="text-sm font-bold text-yellow-800 dark:text-yellow-200">AI-Powered Learning Platform</span>
+                  <Sparkles className="w-4 h-4 text-brand animate-pulse" />
+                  <span className="text-sm font-bold text-brand">AI-Powered Learning Platform</span>
                 </div>
 
                 {/* Main Heading */}
