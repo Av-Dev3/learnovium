@@ -48,19 +48,42 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
         return { data: null, error: "Goal does not have a plan" };
       }
 
-      const plan = goal.plan_json as { modules?: Array<{ day: number; title: string; topic: string; objective: string; est_minutes: number }> };
+      const plan = goal.plan_json as { 
+        modules?: Array<{ 
+          title: string; 
+          days: Array<{ 
+            day_index: number; 
+            topic: string; 
+            objective: string; 
+            practice: string; 
+            assessment: string; 
+            est_minutes: number 
+          }> 
+        }> 
+      };
       if (!plan.modules || !Array.isArray(plan.modules)) {
         return { data: null, error: "Plan does not have modules" };
       }
 
-      const targetLesson = plan.modules.find(module => module.day === lesson_day_index);
+      // Find the target day across all modules
+      let targetLesson = null;
+      let moduleTitle = '';
+      for (const module of plan.modules) {
+        const day = module.days.find(d => d.day_index === lesson_day_index);
+        if (day) {
+          targetLesson = day;
+          moduleTitle = module.title;
+          break;
+        }
+      }
+
       if (!targetLesson) {
         return { data: null, error: `Lesson for day ${lesson_day_index} not found` };
       }
 
       // Get lesson content using RAG
       const ragMessages = await buildLessonPromptWithRAG(
-        `${goal.topic} - ${targetLesson.title}`,
+        `${goal.topic} - ${targetLesson.topic}`,
         goal.topic,
         5
       );
@@ -69,8 +92,8 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
       const context = ragMessages.find(msg => msg.role === 'user')?.content || '';
 
       lessonContent = `Topic: ${targetLesson.topic}\nObjective: ${targetLesson.objective}\nContext: ${context}`;
-      quizTitle = `Quiz: ${targetLesson.title}`;
-      quizDescription = `Test your knowledge of ${targetLesson.title}`;
+      quizTitle = `Quiz: ${targetLesson.topic} (${moduleTitle})`;
+      quizDescription = `Test your knowledge of ${targetLesson.topic}`;
 
     } else if (quiz_type === 'weekly') {
       // Generate quiz from multiple lessons (weekly)
@@ -78,14 +101,32 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
         return { data: null, error: "Goal does not have a plan" };
       }
 
-      const plan = goal.plan_json as { modules?: Array<{ day: number; title: string; topic: string; objective: string; est_minutes: number }> };
+      const plan = goal.plan_json as { 
+        modules?: Array<{ 
+          title: string; 
+          days: Array<{ 
+            day_index: number; 
+            topic: string; 
+            objective: string; 
+            practice: string; 
+            assessment: string; 
+            est_minutes: number 
+          }> 
+        }> 
+      };
       if (!plan.modules || !Array.isArray(plan.modules)) {
         return { data: null, error: "Plan does not have modules" };
       }
 
-      const weekLessons = plan.modules.filter(module => 
-        module.day >= week_start_day! && module.day <= week_end_day!
-      );
+      // Collect all days within the week range from all modules
+      const weekLessons: Array<{ day_index: number; topic: string; objective: string }> = [];
+      for (const module of plan.modules) {
+        for (const day of module.days) {
+          if (day.day_index >= week_start_day! && day.day_index <= week_end_day!) {
+            weekLessons.push(day);
+          }
+        }
+      }
 
       if (weekLessons.length === 0) {
         return { data: null, error: `No lessons found for week ${week_start_day}-${week_end_day}` };
@@ -93,7 +134,7 @@ export async function generateQuiz(params: GenerateQuizParams): Promise<{ data: 
 
       // Combine all week lessons content
       const weekContent = weekLessons.map(lesson => 
-        `Day ${lesson.day}: ${lesson.title}\nTopic: ${lesson.topic}\nObjective: ${lesson.objective}`
+        `Day ${lesson.day_index}: ${lesson.topic}\nObjective: ${lesson.objective}`
       ).join('\n\n');
 
       // Get RAG context for the week
