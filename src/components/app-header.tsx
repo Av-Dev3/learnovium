@@ -321,7 +321,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
           </div>
 
           {/* Desktop Layout */}
-          <div className="hidden md:flex w-full items-center">
+          <div className="hidden md:flex w-full items-center justify-between">
             {/* Left: Logo */}
             <div className="flex items-center space-x-4">
               <Link href="/" className="flex items-center space-x-2">
@@ -330,8 +330,8 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
               </Link>
             </div>
 
-            {/* Center: Navigation - Absolutely centered */}
-            <div className="flex-1 flex justify-center">
+            {/* Center: Navigation - Absolutely centered on page */}
+            <div className="absolute left-1/2 transform -translate-x-1/2">
               <nav className="flex items-center space-x-1">
                 {navItems.map((item) => (
                   <Link
