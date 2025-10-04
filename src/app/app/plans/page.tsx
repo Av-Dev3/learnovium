@@ -6,15 +6,25 @@ import { LoadingState } from "@/components/ui/loading-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Target, Search, Plus, ChevronDown } from "lucide-react";
+import { Target, Search, Plus, ChevronDown, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
 import { useGoals } from "@/app/lib/hooks";
+
+interface PopularGoal {
+  topic: string;
+  focus: string | null;
+  level: string | null;
+  count: number;
+  recent_created_at: string;
+}
 
 export default function Plans() {
   const { goals, isLoading, isError, error } = useGoals();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"recent">("recent");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [popularGoals, setPopularGoals] = useState<PopularGoal[]>([]);
+  const [isLoadingPopular, setIsLoadingPopular] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -29,6 +39,28 @@ export default function Plans() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, []);
+
+  // Fetch popular goals
+  useEffect(() => {
+    const fetchPopularGoals = async () => {
+      try {
+        setIsLoadingPopular(true);
+        const response = await fetch('/api/goals/popular');
+        if (response.ok) {
+          const data = await response.json();
+          setPopularGoals(data);
+        } else {
+          console.error('Failed to fetch popular goals:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching popular goals:', error);
+      } finally {
+        setIsLoadingPopular(false);
+      }
+    };
+
+    fetchPopularGoals();
   }, []);
 
   // Use useMemo to compute filtered goals instead of useState + useEffect
@@ -309,6 +341,104 @@ export default function Plans() {
             }
           })()}
         </section>
+
+        {/* Popular Goals Section */}
+        {popularGoals.length > 0 && (
+          <section aria-labelledby="popular-goals-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 id="popular-goals-heading" className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                    Popular Learning Goals
+                  </h2>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    See what others are learning right now
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {isLoadingPopular ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="bg-slate-100 dark:bg-slate-700 rounded-2xl p-4 animate-pulse">
+                    <div className="h-4 bg-slate-300 dark:bg-slate-600 rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-slate-300 dark:bg-slate-600 rounded w-1/2 mb-3" />
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-slate-300 dark:bg-slate-600 rounded" />
+                      <div className="h-3 bg-slate-300 dark:bg-slate-600 rounded w-16" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {popularGoals.slice(0, 6).map((goal, index) => (
+                  <div
+                    key={`${goal.topic}-${goal.focus}-${index}`}
+                    className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 p-6 border border-slate-200 dark:border-slate-600 hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
+                    onClick={() => {
+                      // Pre-fill the create form with this popular goal
+                      const params = new URLSearchParams({
+                        topic: goal.topic,
+                        focus: goal.focus || '',
+                        level: goal.level || 'beginner'
+                      });
+                      window.location.href = `/app/create?${params.toString()}`;
+                    }}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-lg mb-1 group-hover:text-brand transition-colors">
+                          {goal.topic}
+                        </h3>
+                        {goal.focus && (
+                          <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
+                            {goal.focus}
+                          </p>
+                        )}
+                        {goal.level && (
+                          <span className="inline-block px-2 py-1 bg-brand/10 text-brand text-xs font-medium rounded-full">
+                            {goal.level}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                        <Users className="w-4 h-4" />
+                        <span className="text-sm font-medium">{goal.count}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {new Date(goal.recent_created_at).toLocaleDateString()}
+                      </span>
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="w-2 h-2 bg-brand rounded-full animate-pulse" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-6 text-center">
+              <Button
+                variant="outline"
+                className="h-12 px-6 text-lg border-2 border-slate-300 dark:border-slate-600 hover:border-brand hover:bg-brand/5 rounded-2xl transition-all duration-300"
+                asChild
+              >
+                <Link href="/app/create">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create Your Own Goal
+                </Link>
+              </Button>
+            </div>
+          </section>
+        )}
 
         {/* Summary Stats */}
         {(() => {

@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Target, Brain, Clock, Globe, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCreateGoal } from "@/app/lib/hooks";
 import { success as showSuccess, error as showError } from "@/app/lib/toast";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ type CreationStatus = "idle" | "creating" | "generating_plan" | "saving" | "succ
 
 export default function CreateGoal() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { createGoal, isLoading } = useCreateGoal();
   const [currentStep, setCurrentStep] = useState<Step>("topic");
   const [creationStatus, setCreationStatus] = useState<CreationStatus>("idle");
@@ -29,6 +30,27 @@ export default function CreateGoal() {
     durationDays: 7 as 7 | 30 | 60 | 90,
     channels: [] as string[]
   });
+
+  // Handle URL parameters for pre-filling form
+  useEffect(() => {
+    const topic = searchParams.get('topic');
+    const focus = searchParams.get('focus');
+    const level = searchParams.get('level');
+    
+    if (topic || focus || level) {
+      setForm(prev => ({
+        ...prev,
+        ...(topic && { topic }),
+        ...(focus && { focus }),
+        ...(level && ['beginner', 'intermediate', 'advanced'].includes(level) && { level: level as "beginner" | "intermediate" | "advanced" })
+      }));
+      
+      // If we have both topic and focus, move to preferences step
+      if (topic && focus) {
+        setCurrentStep("preferences");
+      }
+    }
+  }, [searchParams]);
 
   const availableChannels = [
     { id: "video", label: "Video Lessons", icon: Globe },
