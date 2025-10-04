@@ -18,6 +18,7 @@ import {
 import { success as showSuccess, error as showError } from "@/app/lib/toast";
 import { PrivacySettings } from "./PrivacySettings";
 import { AdvancedSecurity } from "./AdvancedSecurity";
+import { CalendarIntegration } from "./CalendarIntegration";
 
 interface SecuritySettingsProps {
   userEmail?: string;
@@ -164,6 +165,9 @@ export function SecuritySettings({ userEmail }: SecuritySettingsProps) {
 
   return (
     <div className="space-y-8">
+      {/* Calendar Integration */}
+      <CalendarIntegration userEmail={userEmail} />
+      
       {/* Privacy Settings */}
       <PrivacySettings userEmail={userEmail} />
       
