@@ -89,6 +89,20 @@ export function Footer() {
                   <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
                 </Link>
                 <Link 
+                  href="/help" 
+                  className="group flex items-center text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 hover:translate-x-1"
+                >
+                  <span>Help & FAQ</span>
+                  <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="group flex items-center text-slate-600 dark:text-slate-300 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300 hover:translate-x-1"
+                >
+                  <span>Contact</span>
+                  <ArrowUpRight className="ml-2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
+                </Link>
+                <Link 
                   href="/privacy" 
                   className="group flex items-center text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:translate-x-1"
                 >

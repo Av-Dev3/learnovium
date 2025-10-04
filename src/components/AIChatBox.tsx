@@ -18,6 +18,7 @@ const SITE_KNOWLEDGE = {
     "Daily Consistency: Build lasting habits with daily reminders and streak tracking",
     "Progress Tracking: Visualize your learning journey with comprehensive analytics",
     "Flashcards: Interactive flashcards for better retention and review",
+    "Quizzes: Generate quizzes from your lessons to test knowledge",
     "Secure & Private: Enterprise-grade security and privacy controls",
     "Lightning Fast: Optimized performance across all devices"
   ],
@@ -57,20 +58,107 @@ const SITE_KNOWLEDGE = {
     }
   },
   navigation: [
-    "Home: Main landing page with features and pricing overview",
-    "Auth: Sign in/sign up page with authentication options",
-    "Dashboard: Main learning interface (requires authentication)",
-    "Pricing: Detailed pricing plans and feature comparison",
-    "About: Information about Learnovium's mission and values",
-    "Settings: User preferences and account management"
+    "Home (/): Main landing page with features and pricing overview",
+    "Auth (/auth): Sign in/sign up page with email/password or magic link authentication",
+    "Dashboard (/app): Main learning interface - requires authentication",
+    "Create Goal (/app/create): Create new learning goals with AI",
+    "Flashcards (/app/flashcards): Study with interactive flashcards",
+    "Quiz (/app/quiz): Generate and take quizzes from your lessons",
+    "Plans (/app/plans/[id]): View detailed learning plans",
+    "Pricing (/pricing): Detailed pricing plans and feature comparison",
+    "About (/about): Information about Learnovium's mission and values"
   ],
-  howToUse: [
-    "1. Sign up for a free account at /auth",
-    "2. Create your first learning goal in the dashboard",
-    "3. Choose a lesson plan length (7, 30, 60, or 90 days)",
-    "4. Complete daily lessons and track your progress",
-    "5. Use flashcards to reinforce learning",
-    "6. Monitor your analytics and adjust your goals as needed"
+  howToUse: {
+    gettingStarted: [
+      "1. Visit /auth to sign up for a free account (email/password or magic link)",
+      "2. After signup, you'll be redirected to /app (the main dashboard)",
+      "3. Click 'New Goal' to create your first learning goal",
+      "4. Fill out the goal creation form with your topic, focus area, and preferences",
+      "5. Choose your skill level (beginner, intermediate, advanced)",
+      "6. Select lesson plan length (7, 30, 60, or 90 days)",
+      "7. Choose learning channels (video, reading, exercises, quizzes)",
+      "8. AI will generate a personalized learning plan for you"
+    ],
+    dailyUsage: [
+      "1. Go to /app to see your active learning goals",
+      "2. Click on a goal to view your learning plan",
+      "3. Access today's lesson by clicking 'Start Today's Lesson'",
+      "4. Complete the lesson (reading, walkthrough, quiz, exercise)",
+      "5. Mark the lesson as complete to unlock the next day",
+      "6. Use /app/flashcards to review key concepts",
+      "7. Generate quizzes at /app/quiz to test your knowledge",
+      "8. Track your progress in the dashboard analytics"
+    ],
+    goalCreation: [
+      "1. Go to /app/create to start creating a new goal",
+      "2. Enter your learning topic (e.g., 'Python Programming')",
+      "3. Specify your focus area (e.g., 'Web Development')",
+      "4. Choose your current skill level",
+      "5. Set how many minutes per day you want to study (15-120 minutes)",
+      "6. Select lesson plan duration (7, 30, 60, or 90 days)",
+      "7. Choose preferred learning channels",
+      "8. Review and confirm your goal settings",
+      "9. AI will generate a personalized learning plan (takes 2-3 minutes)"
+    ],
+    lessonStructure: [
+      "Each lesson contains:",
+      "• Reading: Comprehensive content teaching the concept",
+      "• Walkthrough: Key points and definitions summary",
+      "• Quiz: 2 questions testing your understanding",
+      "• Exercise: Practical task to reinforce learning",
+      "• Citations: 1-3 reputable sources for further reading",
+      "• Time estimate: 5-20 minutes per lesson"
+    ],
+    flashcards: [
+      "1. Go to /app/flashcards to access your flashcard collection",
+      "2. Flashcards are automatically generated from completed lessons",
+      "3. Study in 'Review' mode to see all cards or 'Practice' mode for spaced repetition",
+      "4. Filter by goal, day, or category",
+      "5. Mark cards as easy, medium, or hard to adjust difficulty",
+      "6. Create custom flashcards manually if needed",
+      "7. Use categories to organize cards by topic"
+    ],
+    quizzes: [
+      "1. Go to /app/quiz to generate quizzes from your lessons",
+      "2. Select a learning goal to create a quiz for",
+      "3. Choose which lesson days to include in the quiz",
+      "4. Set number of questions (2-10)",
+      "5. AI generates questions based on your completed lessons",
+      "6. Take the quiz and see your score",
+      "7. Review correct answers and explanations"
+    ]
+  },
+  authentication: {
+    signup: [
+      "1. Go to /auth",
+      "2. Choose 'Sign Up' mode",
+      "3. Enter your email and password",
+      "4. Click 'Create Account'",
+      "5. Check your email for confirmation (if required)",
+      "6. You'll be redirected to /app after successful signup"
+    ],
+    signin: [
+      "1. Go to /auth",
+      "2. Choose 'Sign In' mode",
+      "3. Enter your email and password",
+      "4. Click 'Sign In'",
+      "5. You'll be redirected to /app"
+    ],
+    magicLink: [
+      "1. Go to /auth",
+      "2. Choose 'Magic Link' mode",
+      "3. Enter your email",
+      "4. Click 'Send Magic Link'",
+      "5. Check your email and click the link",
+      "6. You'll be automatically signed in and redirected to /app"
+    ]
+  },
+  troubleshooting: [
+    "If you can't access /app: Make sure you're signed in at /auth",
+    "If goal creation fails: Check your internet connection and try again",
+    "If lessons don't load: Refresh the page or try again in a few minutes",
+    "If flashcards aren't showing: Complete a lesson first to generate them",
+    "If you're stuck: Contact support through the chat or email"
   ]
 };
 
@@ -105,92 +193,366 @@ export function AIChatBox() {
 
   const generateResponse = async (userMessage: string): Promise<string> => {
     // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
 
     const lowerMessage = userMessage.toLowerCase();
 
-    // Pricing questions
-    if (lowerMessage.includes("price") || lowerMessage.includes("cost") || lowerMessage.includes("plan")) {
-      return `Here are our pricing plans:
+    // Authentication questions
+    if (lowerMessage.includes("sign up") || lowerMessage.includes("signup") || lowerMessage.includes("create account") || lowerMessage.includes("register")) {
+      return `Here's how to sign up for Learnovium:
 
-**Free Plan - $0**
+**Step-by-Step Signup:**
+1. Go to /auth
+2. Choose 'Sign Up' mode
+3. Enter your email and password
+4. Click 'Create Account'
+5. Check your email for confirmation (if required)
+6. You'll be redirected to /app after successful signup
+
+**Alternative: Magic Link**
+1. Go to /auth
+2. Choose 'Magic Link' mode
+3. Enter your email
+4. Click 'Send Magic Link'
+5. Check your email and click the link
+6. You'll be automatically signed in and redirected to /app
+
+After signup, you can immediately start creating your first learning goal!`;
+    }
+
+    if (lowerMessage.includes("sign in") || lowerMessage.includes("signin") || lowerMessage.includes("login") || lowerMessage.includes("log in")) {
+      return `Here's how to sign in to Learnovium:
+
+**Email & Password:**
+1. Go to /auth
+2. Choose 'Sign In' mode
+3. Enter your email and password
+4. Click 'Sign In'
+5. You'll be redirected to /app
+
+**Magic Link (Passwordless):**
+1. Go to /auth
+2. Choose 'Magic Link' mode
+3. Enter your email
+4. Click 'Send Magic Link'
+5. Check your email and click the link
+6. You'll be automatically signed in and redirected to /app
+
+If you can't access /app, make sure you're properly signed in!`;
+    }
+
+    // Getting started questions
+    if (lowerMessage.includes("get started") || lowerMessage.includes("begin") || lowerMessage.includes("first time") || lowerMessage.includes("new user")) {
+      return `Welcome to Learnovium! Here's your complete getting started guide:
+
+**🚀 Getting Started:**
+1. Visit /auth to sign up for a free account
+2. After signup, you'll be redirected to /app (the main dashboard)
+3. Click 'New Goal' to create your first learning goal
+4. Fill out the goal creation form with your topic and focus area
+5. Choose your skill level (beginner, intermediate, advanced)
+6. Select lesson plan length (7, 30, 60, or 90 days)
+7. Choose learning channels (video, reading, exercises, quizzes)
+8. AI will generate a personalized learning plan for you (takes 2-3 minutes)
+
+**📚 Daily Usage:**
+1. Go to /app to see your active learning goals
+2. Click on a goal to view your learning plan
+3. Access today's lesson by clicking 'Start Today's Lesson'
+4. Complete the lesson (reading, walkthrough, quiz, exercise)
+5. Mark the lesson as complete to unlock the next day
+6. Use /app/flashcards to review key concepts
+7. Generate quizzes at /app/quiz to test your knowledge
+
+Start with the free plan and upgrade as you grow!`;
+    }
+
+    // Goal creation questions
+    if (lowerMessage.includes("create goal") || lowerMessage.includes("new goal") || lowerMessage.includes("goal creation") || lowerMessage.includes("learning goal")) {
+      return `Here's how to create a learning goal in Learnovium:
+
+**🎯 Goal Creation Process:**
+1. Go to /app/create to start creating a new goal
+2. Enter your learning topic (e.g., 'Python Programming', 'Spanish Language')
+3. Specify your focus area (e.g., 'Web Development', 'Conversational Spanish')
+4. Choose your current skill level (beginner, intermediate, advanced)
+5. Set how many minutes per day you want to study (15-120 minutes)
+6. Select lesson plan duration (7, 30, 60, or 90 days)
+7. Choose preferred learning channels:
+   - Video Lessons
+   - Reading Materials
+   - Practice Exercises
+   - Knowledge Quizzes
+8. Review and confirm your goal settings
+9. AI will generate a personalized learning plan (takes 2-3 minutes)
+
+**💡 Tips:**
+- Be specific with your topic and focus area for better AI-generated content
+- Start with shorter plans (7-30 days) if you're new to the platform
+- You can create multiple goals with Pro/Elite plans
+- Goals are automatically saved and can be accessed from your dashboard`;
+    }
+
+    // Lesson structure questions
+    if (lowerMessage.includes("lesson") || lowerMessage.includes("daily lesson") || lowerMessage.includes("lesson structure") || lowerMessage.includes("what's in a lesson")) {
+      return `Here's what each lesson contains in Learnovium:
+
+**📖 Lesson Structure:**
+Each lesson includes:
+• **Reading**: Comprehensive content teaching the concept (800-4000 characters)
+• **Walkthrough**: Key points and definitions summary (400-800 characters)
+• **Quiz**: 2 questions testing your understanding with 4 multiple choice options
+• **Exercise**: Practical task to reinforce learning (100-300 characters)
+• **Citations**: 1-3 reputable sources for further reading
+• **Time estimate**: 5-20 minutes per lesson
+
+**🎯 How to Access Lessons:**
+1. Go to /app to see your active learning goals
+2. Click on a goal to view your learning plan
+3. Click 'Start Today's Lesson' to access the current lesson
+4. Complete all sections: reading, walkthrough, quiz, and exercise
+5. Mark the lesson as complete to unlock the next day
+6. Your progress is automatically saved
+
+**💡 Pro Tips:**
+- Take your time with the reading section - it's the core content
+- Use the walkthrough as a quick reference
+- Don't worry if you get quiz questions wrong - you can retake them
+- The exercise helps reinforce what you've learned`;
+    }
+
+    // Flashcards questions
+    if (lowerMessage.includes("flashcard") || lowerMessage.includes("flash card") || lowerMessage.includes("study cards") || lowerMessage.includes("review")) {
+      return `Here's how to use flashcards in Learnovium:
+
+**🃏 Flashcard System:**
+1. Go to /app/flashcards to access your flashcard collection
+2. Flashcards are automatically generated from completed lessons
+3. Study in 'Review' mode to see all cards or 'Practice' mode for spaced repetition
+4. Filter by goal, day, or category to focus your study
+5. Mark cards as easy, medium, or hard to adjust difficulty
+6. Create custom flashcards manually if needed
+7. Use categories to organize cards by topic
+
+**📚 Study Modes:**
+- **Review Mode**: See all flashcards in order
+- **Practice Mode**: Spaced repetition based on difficulty
+- **Due Today**: Focus on cards that need review
+
+**🎯 Pro Tips:**
+- Complete lessons first to generate flashcards
+- Use the difficulty ratings to focus on challenging cards
+- Create categories to organize related concepts
+- Regular review helps with long-term retention
+
+Flashcards are included in Pro and Elite plans!`;
+    }
+
+    // Quiz questions
+    if (lowerMessage.includes("quiz") || lowerMessage.includes("test") || lowerMessage.includes("questions") || lowerMessage.includes("assessment")) {
+      return `Here's how to use quizzes in Learnovium:
+
+**🧠 Quiz System:**
+1. Go to /app/quiz to generate quizzes from your lessons
+2. Select a learning goal to create a quiz for
+3. Choose which lesson days to include in the quiz
+4. Set number of questions (2-10)
+5. AI generates questions based on your completed lessons
+6. Take the quiz and see your score
+7. Review correct answers and explanations
+
+**📊 Quiz Features:**
+- Questions are generated from your actual lesson content
+- Multiple choice format with 4 options each
+- Immediate feedback on answers
+- Score tracking and progress monitoring
+- Can retake quizzes as many times as needed
+
+**💡 Pro Tips:**
+- Complete several lessons before generating a quiz
+- Include multiple lesson days for comprehensive testing
+- Use quizzes to identify knowledge gaps
+- Review explanations for incorrect answers
+
+Quizzes are a great way to test your understanding and reinforce learning!`;
+    }
+
+    // Pricing questions
+    if (lowerMessage.includes("price") || lowerMessage.includes("cost") || lowerMessage.includes("plan") || lowerMessage.includes("subscription") || lowerMessage.includes("free trial")) {
+      return `Here are Learnovium's pricing plans:
+
+**🆓 Free Plan - $0**
 • 1 active learning goal at a time
-• 7-day and 30-day lesson plans
+• 7-day and 30-day lesson plans only
 • Basic progress tracking
 • Community support
 • Contains ads
 
-**Pro Plan - $4.99/month**
+**⭐ Pro Plan - $4.99/month**
 • Up to 5 active learning goals
 • All lesson lengths (7, 30, 60, 90 days)
 • Flashcards included
 • Ad-free experience
-• Advanced analytics
+• Advanced progress analytics
 • Priority support
 
-**Elite Plan - $10.99/month**
+**👑 Elite Plan - $10.99/month**
 • Unlimited learning goals
 • Everything in Pro
-• Advanced AI models
+• Access to advanced AI models
+• Faster, more accurate lessons
 • Custom learning paths
-• Offline mobile app
-• VIP support
+• Offline mode for mobile app
+• VIP support & onboarding
 
-All paid plans include a 7-day free trial with no credit card required!`;
-    }
+**🎁 Free Trial:**
+All paid plans include a 7-day free trial with no credit card required!
 
-    // Features questions
-    if (lowerMessage.includes("feature") || lowerMessage.includes("what can") || lowerMessage.includes("capability")) {
-      return `Here are Learnovium's key features:
-
-🤖 **AI-Powered Learning**: Personalized daily lessons tailored to your learning style and pace
-🎯 **Goal-Oriented Learning**: Set clear objectives and track progress with detailed analytics
-📅 **Daily Consistency**: Build habits with reminders and streak tracking
-📊 **Progress Tracking**: Comprehensive analytics and performance metrics
-🃏 **Flashcards**: Interactive flashcards for better retention
-🔒 **Secure & Private**: Enterprise-grade security and privacy controls
-⚡ **Lightning Fast**: Optimized performance across all devices
-
-We also offer mobile apps (coming soon) with offline learning capabilities!`;
+**💡 Recommendation:**
+Start with the free plan to explore the platform, then upgrade to Pro for more goals and features!`;
     }
 
     // Navigation questions
-    if (lowerMessage.includes("navigate") || lowerMessage.includes("where") || lowerMessage.includes("how to find")) {
+    if (lowerMessage.includes("navigate") || lowerMessage.includes("where") || lowerMessage.includes("how to find") || lowerMessage.includes("menu") || lowerMessage.includes("pages")) {
       return `Here's how to navigate Learnovium:
 
-🏠 **Home** (/): Main landing page with features and pricing overview
-🔐 **Auth** (/auth): Sign in/sign up page
-📊 **Dashboard** (/app): Main learning interface (requires login)
-💰 **Pricing** (/pricing): Detailed pricing plans and comparisons
-ℹ️ **About** (/about): Learn about our mission and values
-⚙️ **Settings**: User preferences and account management
+**🧭 Main Pages:**
+• **Home** (/): Landing page with features and pricing overview
+• **Auth** (/auth): Sign in/sign up page with email/password or magic link
+• **Dashboard** (/app): Main learning interface - requires authentication
+• **Create Goal** (/app/create): Create new learning goals with AI
+• **Flashcards** (/app/flashcards): Study with interactive flashcards
+• **Quiz** (/app/quiz): Generate and take quizzes from your lessons
+• **Plans** (/app/plans/[id]): View detailed learning plans
+• **Pricing** (/pricing): Detailed pricing plans and feature comparison
+• **About** (/about): Information about Learnovium's mission and values
 
-To get started, visit /auth to create an account, then head to /app to begin your learning journey!`;
+**🔐 Authentication Required:**
+All /app/* pages require you to be signed in. If you try to access them without being signed in, you'll be redirected to /auth.
+
+**💡 Quick Start:**
+1. Visit /auth to sign up
+2. Go to /app to access your dashboard
+3. Click 'New Goal' to create your first learning goal
+4. Use the navigation to access different features`;
     }
 
-    // How to use questions
-    if (lowerMessage.includes("how to use") || lowerMessage.includes("get started") || lowerMessage.includes("begin")) {
-      return `Here's how to get started with Learnovium:
+    // Features questions
+    if (lowerMessage.includes("feature") || lowerMessage.includes("what can") || lowerMessage.includes("capability") || lowerMessage.includes("what does") || lowerMessage.includes("functionality")) {
+      return `Here are Learnovium's key features:
 
-1️⃣ **Sign Up**: Visit /auth to create your free account
-2️⃣ **Create Goals**: Set up your first learning goal in the dashboard
-3️⃣ **Choose Plan**: Select lesson length (7, 30, 60, or 90 days)
-4️⃣ **Daily Lessons**: Complete personalized daily lessons
-5️⃣ **Track Progress**: Monitor your analytics and achievements
-6️⃣ **Use Flashcards**: Reinforce learning with interactive flashcards
+**🤖 AI-Powered Learning**
+• Personalized daily lessons tailored to your learning style and pace
+• Intelligent content generation based on your goals and preferences
+• Adaptive difficulty that adjusts to your progress
 
-The platform adapts to your pace and learning style automatically. Start with the free plan and upgrade as you grow!`;
+**🎯 Goal-Oriented Learning**
+• Set clear learning objectives and track progress with detailed analytics
+• Create multiple learning goals for different skills
+• Visual progress tracking and achievement milestones
+
+**📅 Daily Consistency**
+• Build lasting habits with daily reminders and streak tracking
+• Structured learning paths that keep you motivated
+• Progress persistence across all your devices
+
+**📊 Progress Tracking**
+• Comprehensive analytics and performance metrics
+• Visual dashboards showing your learning journey
+• Detailed insights into your study patterns
+
+**🃏 Interactive Learning Tools**
+• Flashcards for better retention and review
+• Quizzes generated from your lessons
+• Practice exercises to reinforce concepts
+
+**🔒 Security & Privacy**
+• Enterprise-grade security and privacy controls
+• Your data is protected and never shared
+• Secure authentication with multiple options
+
+**⚡ Performance**
+• Lightning-fast loading and smooth experience
+• Optimized for all devices and screen sizes
+• Offline capabilities (coming soon in mobile apps)
+
+**📱 Mobile Ready**
+• Responsive design works on all devices
+• Mobile apps coming soon with offline sync
+• Push notifications for learning reminders`;
+    }
+
+    // Troubleshooting questions
+    if (lowerMessage.includes("problem") || lowerMessage.includes("issue") || lowerMessage.includes("error") || lowerMessage.includes("not working") || lowerMessage.includes("help") || lowerMessage.includes("stuck")) {
+      return `Here are solutions to common issues:
+
+**🔐 Authentication Issues:**
+• Can't access /app: Make sure you're signed in at /auth
+• Sign-in not working: Try the magic link option instead
+• Forgot password: Use the magic link option to sign in
+
+**🎯 Goal Creation Issues:**
+• Goal creation fails: Check your internet connection and try again
+• AI generation taking too long: This is normal - it takes 2-3 minutes
+• Form not submitting: Make sure all required fields are filled
+
+**📚 Lesson Issues:**
+• Lessons don't load: Refresh the page or try again in a few minutes
+• Can't mark lesson complete: Make sure you've completed all sections
+• Progress not saving: Check your internet connection
+
+**🃏 Flashcard Issues:**
+• No flashcards showing: Complete a lesson first to generate them
+• Cards not loading: Try refreshing the page
+• Can't create custom cards: Make sure you're on Pro or Elite plan
+
+**🧠 Quiz Issues:**
+• Can't generate quiz: Complete some lessons first
+• Quiz not loading: Check your internet connection
+• Questions seem wrong: AI generates based on your lesson content
+
+**💡 General Tips:**
+• Always check your internet connection
+• Try refreshing the page if something seems stuck
+• Contact support if issues persist
+• Use the magic link option if password sign-in fails`;
     }
 
     // General help
-    if (lowerMessage.includes("help") || lowerMessage.includes("support")) {
+    if (lowerMessage.includes("help") || lowerMessage.includes("support") || lowerMessage.includes("assistance")) {
       return `I'm here to help! I can answer questions about:
 
-💰 **Pricing & Plans**: Free, Pro ($4.99/month), and Elite ($10.99/month) options
-🚀 **Features**: AI-powered learning, progress tracking, flashcards, and more
-🧭 **Navigation**: How to find different parts of the platform
-📚 **How to Use**: Step-by-step guide to get started
-❓ **General Questions**: Anything else about Learnovium
+**💰 Pricing & Plans**
+• Free, Pro ($4.99/month), and Elite ($10.99/month) options
+• Feature comparisons and free trial information
+• Upgrade/downgrade processes
+
+**🚀 Features & Functionality**
+• AI-powered learning and personalized lessons
+• Progress tracking and analytics
+• Flashcards and quiz systems
+• Goal creation and management
+
+**🧭 Navigation & Usage**
+• How to find different parts of the platform
+• Step-by-step guides for all features
+• Authentication and account management
+
+**📚 Learning Process**
+• Getting started as a new user
+• Daily lesson workflow
+• Goal creation and management
+• Study techniques and tips
+
+**🔧 Troubleshooting**
+• Common issues and solutions
+• Technical problems and fixes
+• Account and authentication help
+
+**❓ General Questions**
+• Anything else about Learnovium
+• Platform capabilities and limitations
+• Best practices and recommendations
 
 What specific topic would you like to know more about?`;
     }
@@ -198,13 +560,36 @@ What specific topic would you like to know more about?`;
     // Default response
     return `I'd be happy to help! I can assist you with:
 
-• **Pricing information** - Learn about our Free, Pro, and Elite plans
-• **Platform features** - Discover what Learnovium can do for you
-• **Navigation help** - Find your way around the site
-• **Getting started** - Step-by-step guide to begin learning
-• **General questions** - Anything else about our platform
+**🎯 Getting Started**
+• How to sign up and create your first learning goal
+• Step-by-step onboarding process
+• Understanding the platform basics
 
-Could you be more specific about what you'd like to know?`;
+**📚 Learning Features**
+• How lessons work and what they contain
+• Using flashcards and quizzes effectively
+• Progress tracking and analytics
+
+**💰 Pricing & Plans**
+• Free, Pro, and Elite plan details
+• Feature comparisons and free trials
+• Upgrade recommendations
+
+**🧭 Navigation**
+• Finding different parts of the platform
+• Authentication and account management
+• Using the dashboard and tools
+
+**🔧 Troubleshooting**
+• Common issues and solutions
+• Technical problems and fixes
+• Getting help when stuck
+
+Could you be more specific about what you'd like to know? For example, you could ask:
+• "How do I create my first learning goal?"
+• "What's included in each pricing plan?"
+• "How do I use flashcards?"
+• "I'm having trouble signing in"`;
   };
 
   const handleSendMessage = async () => {

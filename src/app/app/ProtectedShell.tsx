@@ -16,7 +16,9 @@ import {
   Brain,
   BookCheck,
   TrendingUp,
-  Lightbulb
+  Lightbulb,
+  HelpCircle,
+  MessageSquare
 } from "lucide-react";
 import { useCallback } from "react";
 import Link from "next/link";
@@ -504,6 +506,32 @@ function UserMenu() {
                     <div className="flex-1">
                       <div className="font-semibold text-sm">Settings</div>
                       <div className="text-xs text-gray-500 dark:text-slate-400">Customize your experience</div>
+                    </div>
+                    <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </Link>
+                  
+                  <Link href="/help" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20 group-hover:from-blue-100 group-hover:to-cyan-200 dark:group-hover:from-blue-800/30 dark:group-hover:to-cyan-800/30 transition-all duration-200 mr-3">
+                      <HelpCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm">Help & FAQ</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">Get help and support</div>
+                    </div>
+                    <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </Link>
+                  
+                  <Link href="/contact" className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 group-hover:from-purple-100 group-hover:to-pink-200 dark:group-hover:from-purple-800/30 dark:group-hover:to-pink-800/30 transition-all duration-200 mr-3">
+                      <MessageSquare className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm">Contact Us</div>
+                      <div className="text-xs text-gray-500 dark:text-slate-400">Get in touch with support</div>
                     </div>
                     <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
                       <ChevronRight className="h-4 w-4" />
