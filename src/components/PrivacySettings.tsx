@@ -68,7 +68,6 @@ export function PrivacySettings({}: PrivacySettingsProps) {
             <Switch
               checked={privacySettings.showEmail}
               onCheckedChange={(checked) => handleSettingChange("showEmail", checked)}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
 
@@ -82,7 +81,6 @@ export function PrivacySettings({}: PrivacySettingsProps) {
             <Switch
               checked={privacySettings.showProgress}
               onCheckedChange={(checked) => handleSettingChange("showProgress", checked)}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
 
@@ -96,7 +94,6 @@ export function PrivacySettings({}: PrivacySettingsProps) {
             <Switch
               checked={privacySettings.showStreaks}
               onCheckedChange={(checked) => handleSettingChange("showStreaks", checked)}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
         </div>
@@ -120,7 +117,6 @@ export function PrivacySettings({}: PrivacySettingsProps) {
             <Switch
               checked={privacySettings.analytics}
               onCheckedChange={(checked) => handleSettingChange("analytics", checked)}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
 
@@ -134,7 +130,6 @@ export function PrivacySettings({}: PrivacySettingsProps) {
             <Switch
               checked={privacySettings.dataSharing}
               onCheckedChange={(checked) => handleSettingChange("dataSharing", checked)}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
         </div>
@@ -158,7 +153,6 @@ export function PrivacySettings({}: PrivacySettingsProps) {
             <Switch
               checked={privacySettings.emailNotifications}
               onCheckedChange={(checked) => handleSettingChange("emailNotifications", checked)}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
 
@@ -172,7 +166,6 @@ export function PrivacySettings({}: PrivacySettingsProps) {
             <Switch
               checked={privacySettings.pushNotifications}
               onCheckedChange={(checked) => handleSettingChange("pushNotifications", checked)}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
 
@@ -186,7 +179,6 @@ export function PrivacySettings({}: PrivacySettingsProps) {
             <Switch
               checked={privacySettings.marketing}
               onCheckedChange={(checked) => handleSettingChange("marketing", checked)}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
         </div>

@@ -93,7 +93,6 @@ export function AdvancedSecurity({ userEmail }: AdvancedSecurityProps) {
                     handle2FADisable();
                   }
                 }}
-                className="data-[state=checked]:bg-brand"
               />
             </div>
           </div>
@@ -130,7 +129,6 @@ export function AdvancedSecurity({ userEmail }: AdvancedSecurityProps) {
             <Switch
               checked={loginAlerts}
               onCheckedChange={setLoginAlerts}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
 
@@ -144,7 +142,6 @@ export function AdvancedSecurity({ userEmail }: AdvancedSecurityProps) {
             <Switch
               checked={suspiciousActivity}
               onCheckedChange={setSuspiciousActivity}
-              className="data-[state=checked]:bg-brand"
             />
           </div>
         </div>

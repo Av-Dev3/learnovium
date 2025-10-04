@@ -475,7 +475,6 @@ export default function Settings() {
                 checked={reminderSettings.enabled}
                 onCheckedChange={(checked: boolean) => setReminderSettings(prev => ({ ...prev, enabled: checked }))}
                 aria-label="Enable learning reminders"
-                className="data-[state=checked]:bg-brand"
               />
             </div>
             
