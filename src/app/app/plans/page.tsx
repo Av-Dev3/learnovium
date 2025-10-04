@@ -343,7 +343,7 @@ export default function Plans() {
         </section>
 
         {/* Popular Goals Section */}
-        {popularGoals.length > 0 && (
+        {!isLoadingPopular && (
           <section aria-labelledby="popular-goals-heading" className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
@@ -374,7 +374,7 @@ export default function Plans() {
                   </div>
                 ))}
               </div>
-            ) : (
+            ) : popularGoals.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {popularGoals.slice(0, 6).map((goal, index) => (
                   <div
@@ -422,6 +422,16 @@ export default function Plans() {
                     </div>
                   </div>
                 ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 rounded-full flex items-center justify-center mb-4">
+                  <TrendingUp className="h-8 w-8 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">No Popular Goals Yet</h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-6">
+                  Be the first to create a learning goal and help others discover what to learn!
+                </p>
               </div>
             )}
 
