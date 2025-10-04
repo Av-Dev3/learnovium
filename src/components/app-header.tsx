@@ -60,9 +60,12 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center relative">
           {/* Mobile Layout */}
-          <div className="flex md:hidden w-full items-center">
-            {/* Mobile Logo - Centered */}
-            <div className="flex flex-1 justify-center">
+          <div className="flex md:hidden w-full items-center justify-between">
+            {/* Mobile: Invisible spacer for balance */}
+            <div className="w-12"></div>
+            
+            {/* Mobile Logo - Absolutely centered */}
+            <div className="absolute left-1/2 transform -translate-x-1/2">
               <Link href="/" className="flex items-center space-x-2">
                 <Logo size="lg" />
                 <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
@@ -318,7 +321,7 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
           </div>
 
           {/* Desktop Layout */}
-          <div className="hidden md:flex w-full items-center justify-between">
+          <div className="hidden md:flex w-full items-center">
             {/* Left: Logo */}
             <div className="flex items-center space-x-4">
               <Link href="/" className="flex items-center space-x-2">
@@ -327,22 +330,24 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
               </Link>
             </div>
 
-            {/* Center: Navigation */}
-            <nav className="flex items-center space-x-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    isActive(item.href)
-                      ? "bg-gradient-to-r from-brand/20 to-purple-500/20 text-brand"
-                      : "text-[var(--fg)]/70 hover:text-[var(--fg)] hover:bg-muted/50"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            {/* Center: Navigation - Absolutely centered */}
+            <div className="flex-1 flex justify-center">
+              <nav className="flex items-center space-x-1">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                      isActive(item.href)
+                        ? "bg-gradient-to-r from-brand/20 to-purple-500/20 text-brand"
+                        : "text-[var(--fg)]/70 hover:text-[var(--fg)] hover:bg-muted/50"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
             {/* Right: Auth/Actions */}
             <div className="flex items-center space-x-3">
