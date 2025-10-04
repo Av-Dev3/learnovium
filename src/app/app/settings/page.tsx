@@ -11,7 +11,6 @@ import {
   User, 
   Bell, 
   Shield, 
-  Trash2, 
   Save,
   Clock,
   Mail,
@@ -27,6 +26,7 @@ import { useProfile } from "@/app/lib/hooks/useProfile";
 import { success as showSuccess, error as showError } from "@/app/lib/toast";
 import { ImageCropper } from "@/components/ui/image-cropper";
 import { DragDropUpload } from "@/components/ui/drag-drop-upload";
+import { SecuritySettings } from "@/components/SecuritySettings";
 
 export default function Settings() {
   const { 
@@ -553,46 +553,15 @@ export default function Settings() {
         </div>
       </section>
 
-      {/* Data & Privacy */}
-      <section aria-labelledby="privacy-heading">
+      {/* Security & Privacy Settings */}
+      <section aria-labelledby="security-heading">
         <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-3xl p-6 border border-white/20 dark:border-slate-700/50">
-          <h2 id="privacy-heading" className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-3">
+          <h2 id="security-heading" className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-3">
             <Shield className="h-6 w-6 text-brand" aria-hidden="true" />
-            Data & Privacy
+            Security & Privacy
           </h2>
           
-          <div className="space-y-4 max-w-2xl">
-            <div className="flex items-center justify-between p-6 rounded-2xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300">
-              <div className="space-y-1">
-                <h3 className="font-semibold text-base text-slate-800 dark:text-slate-200">Export My Data</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Download all your learning data and progress
-                </p>
-              </div>
-              <Button 
-                variant="outline" 
-                className="h-10 px-6 text-sm font-semibold border-2 border-slate-200 dark:border-slate-600 hover:border-brand hover:ring-4 hover:ring-brand/20 rounded-xl transition-all duration-300 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm hover:scale-105"
-              >
-                Export
-              </Button>
-            </div>
-            
-            <div className="flex items-center justify-between p-6 rounded-2xl bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border border-red-200 dark:border-red-800 hover:shadow-lg transition-all duration-300">
-              <div className="space-y-1">
-                <h3 className="font-semibold text-base text-slate-800 dark:text-slate-200">Delete Account</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Permanently remove your account and all data
-                </p>
-              </div>
-              <Button 
-                variant="destructive" 
-                className="h-10 px-6 text-sm font-semibold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl"
-              >
-                <Trash2 className="h-4 w-4 mr-2" aria-hidden="true" />
-                Delete
-              </Button>
-            </div>
-          </div>
+          <SecuritySettings userEmail={profile?.email} />
         </div>
       </section>
         </div>
