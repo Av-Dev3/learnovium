@@ -58,421 +58,436 @@ export function AppHeader({ isLoggedIn = false, userName, userAvatarUrl }: AppHe
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[var(--border)]/40 bg-[var(--bg)]/80 backdrop-blur-xl">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between relative">
-          {/* Left: Logo - Hidden on mobile, shown on desktop */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <Logo size="lg" />
-              <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
-            </Link>
-          </div>
-
-          {/* Mobile: Invisible spacer for balance */}
-          <div className="flex md:hidden w-12"></div>
-
-          {/* Center: Mobile Logo - Centered on mobile */}
-          <div className="flex md:hidden flex-1 justify-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <Logo size="lg" />
-              <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
-            </Link>
-          </div>
-
-          {/* Center: Navigation (Desktop) */}
-          <nav className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                  isActive(item.href)
-                    ? "bg-gradient-to-r from-brand/20 to-purple-500/20 text-brand"
-                    : "text-[var(--fg)]/70 hover:text-[var(--fg)] hover:bg-muted/50"
-                }`}
-              >
-                {item.label}
+        <div className="flex h-16 items-center relative">
+          {/* Mobile Layout */}
+          <div className="flex md:hidden w-full items-center">
+            {/* Mobile Logo - Centered */}
+            <div className="flex flex-1 justify-center">
+              <Link href="/" className="flex items-center space-x-2">
+                <Logo size="lg" />
+                <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
               </Link>
-            ))}
-          </nav>
-
-          {/* Right: Auth/Actions */}
-          <div className="flex items-center space-x-3">
-            {!isLoggedIn ? (
-              <>
-                {/* Desktop Theme Toggle */}
-                <div className="hidden md:block">
-                  <ThemeToggle />
-                </div>
-                <Button variant="ghost" size="sm" shape="pill" asChild className="hidden sm:inline-flex">
-                  <Link href="/auth">Sign In</Link>
-                </Button>
-                <Button size="sm" shape="pill" asChild className="bg-gradient-to-r from-brand to-purple-600 hover:opacity-95 text-white border-0 shadow-md hidden sm:inline-flex">
-                  <Link href="/auth">Get Started</Link>
-                </Button>
-                {/* Mobile Menu Only */}
-                <div className="flex md:hidden items-center">
-                  <Sheet onOpenChange={setMobileMenuOpen}>
-                    <SheetTrigger asChild>
-                      <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                        <AnimatedHamburger isOpen={mobileMenuOpen} className="text-[var(--fg)]" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50 top-16 h-[calc(100vh-4rem)]">
-                      <div className="flex flex-col h-full overflow-hidden">
-                        {/* Modern Mobile Header */}
-                        <div className="relative overflow-hidden bg-gradient-fresh p-6 text-white shadow-lg">
-                          <div className="flex items-center space-x-3">
-                            <Logo size="lg" />
-                            <span className="font-heading text-xl font-semibold">Learnovium</span>
-                          </div>
-                          <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl" />
-                          <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/5 rounded-full blur-lg" />
-                        </div>
-                        
-                        {/* Scrollable Content Area */}
-                        <div className="flex-1 overflow-y-auto bg-gradient-to-b from-white/40 to-white/20 dark:from-slate-800/40 dark:to-slate-800/20">
-                          {/* Modern Mobile Navigation */}
-                          <nav className="p-6 space-y-3">
-                            {navItems.map((item) => {
-                              const isItemActive = isActive(item.href);
-                              return (
-                                <Link
-                                  key={item.href}
-                                  href={item.href}
-                                  className={`group block p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] ${
-                                    isItemActive
-                                      ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-400/30 shadow-lg shadow-blue-500/10"
-                                      : "bg-white/40 dark:bg-slate-700/40 border border-white/20 dark:border-slate-600/30 hover:bg-white/60 dark:hover:bg-slate-600/40 hover:shadow-lg hover:shadow-black/5"
-                                  }`}
-                                >
-                                  <div className="flex items-center space-x-4">
-                                    <div className={`p-3 rounded-xl transition-all duration-300 ${
-                                      isItemActive 
-                                        ? "bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25" 
-                                        : "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-600 dark:to-slate-700 group-hover:from-blue-50 group-hover:to-purple-50 dark:group-hover:from-blue-900/20 dark:group-hover:to-purple-900/20"
-                                    }`}>
-                                      <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                                        isItemActive 
-                                          ? "bg-white" 
-                                          : "bg-gradient-to-br from-blue-500 to-purple-600"
-                                      }`}>
-                                        <div className={`w-2 h-2 rounded-full ${
-                                          isItemActive ? "bg-blue-500" : "bg-white"
-                                        }`} />
-                                      </div>
-                                    </div>
-                                    <div className="flex-1">
-                                      <div className={`font-semibold text-base ${
-                                        isItemActive ? "text-blue-600 dark:text-blue-400" : "text-slate-900 dark:text-slate-100"
-                                      }`}>
-                                        {item.label}
-                                      </div>
-                                      <div className={`text-sm ${
-                                        isItemActive ? "text-blue-500 dark:text-blue-300" : "text-slate-600 dark:text-slate-400"
-                                      }`}>
-                                        Navigate to {item.label.toLowerCase()}
-                                      </div>
-                                    </div>
-                                    <div className={`text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors ${
-                                      isItemActive ? "text-blue-400" : ""
-                                    }`}>
-                                      <ChevronRight className="h-4 w-4" />
-                                    </div>
-                                  </div>
-                                </Link>
-                              );
-                            })}
-                          </nav>
-
-                          {/* Modern Mobile Footer */}
-                          <div className="p-6 border-t border-white/20 dark:border-slate-700/50 bg-white/30 dark:bg-slate-800/30">
-                            <div className="space-y-4">
-                              {/* Enhanced Theme Toggle */}
-                              <div className="flex items-center justify-between p-4 bg-white/60 dark:bg-slate-700/60 rounded-2xl border border-white/20 dark:border-slate-600/30 shadow-lg hover:shadow-xl transition-all duration-300">
-                                <div className="flex items-center gap-3">
-                                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 group-hover:from-blue-100 group-hover:to-indigo-200 dark:group-hover:from-blue-800/30 dark:group-hover:to-indigo-800/30 transition-all duration-200">
-                                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600" />
-                                  </div>
-                                  <div>
-                                    <div className="font-semibold text-sm text-slate-900 dark:text-slate-100">Theme</div>
-                                    <div className="text-xs text-slate-600 dark:text-slate-400">Light / Dark mode</div>
-                                  </div>
-                                </div>
-                                <ThemeToggle />
-                              </div>
-                              
-                              <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-95 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
-                                <Link href="/auth">
-                                  <div className="flex items-center justify-center space-x-2">
-                                    <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                                    <span>Start Learning Free</span>
-                                  </div>
-                                </Link>
-                              </Button>
-                              
-                              <Button variant="outline" className="w-full border-2 border-white/30 dark:border-slate-600/30 hover:border-blue-400/50 hover:bg-white/50 dark:hover:bg-slate-700/50 transition-all duration-300 rounded-2xl py-4 text-base font-medium text-slate-700 dark:text-slate-300" asChild>
-                                <Link href="/auth/sign-in">
-                                  <div className="flex items-center justify-center space-x-2">
-                                    <div className="w-2 h-2 bg-slate-600 dark:bg-slate-400 rounded-full" />
-                                    <span>Sign In</span>
-                                  </div>
-                                </Link>
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Desktop Theme Toggle */}
-                <div className="hidden md:block">
-                  <ThemeToggle />
-                </div>
-                <AdminLinkClient />
-                <div className="relative">
-                  <Button
-                    variant="ghost"
-                    className="group relative h-11 w-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-                    onClick={toggleUserMenu}
-                  >
-                    <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300 pointer-events-none">
-                      <AvatarImage src={userAvatarUrl} alt={userName} />
-                      <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
-                        {userName ? userName.charAt(0).toUpperCase() : "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    
-                    {/* Animated indicator */}
-                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full border-2 border-white transition-all duration-300 ${
-                      userMenuOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-60'
-                    }`} />
-                  </Button>
-
-                {userMenuOpen && buttonRect && typeof window !== 'undefined' && createPortal(
+            </div>
+            
+            {/* Mobile Menu - Right aligned */}
+            <div className="flex items-center">
+              <div className="flex items-center space-x-3">
+                {!isLoggedIn ? (
                   <>
-                    {/* Backdrop with blur */}
-                    <div 
-                      className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm" 
-                      onClick={() => setUserMenuOpen(false)}
-                    />
-                    
-                    {/* Modern User Menu */}
-                    <div 
-                      className="fixed z-[110] w-80 sm:w-80"
-                      style={{
-                        top: buttonRect.bottom + 8,
-                        left: window.innerWidth < 640 ? 8 : Math.max(8, Math.min(buttonRect.right - 320, window.innerWidth - 328)), // Full width on mobile with padding
-                        right: window.innerWidth < 640 ? 8 : 'auto', // Add right padding on mobile
-                        width: window.innerWidth < 640 ? 'auto' : '320px', // Auto width on mobile
-                      }}
-                    >
-                      <div className="relative">
-                        {/* Arrow pointer */}
-                        <div className="absolute -top-2 right-6 w-4 h-4 bg-white dark:bg-slate-800 rotate-45 border-l border-t border-gray-200/50 dark:border-slate-700/50 shadow-lg" />
-                        
-                        {/* Main menu container */}
-                        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl shadow-black/10 dark:shadow-black/20 border border-gray-200/50 dark:border-slate-700/50 overflow-hidden">
-                          {/* Header with gradient */}
-                          <div className="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
-                            {/* Background pattern */}
-                            <div className="absolute inset-0 bg-white/10 opacity-30" />
-                            
-                            <div className="relative flex items-center space-x-4">
-                              <div className="relative">
-                                <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
-                                  <AvatarImage src={userAvatarUrl} alt={userName} />
-                                  <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
-                                    {userName ? userName.charAt(0).toUpperCase() : "U"}
-                                  </AvatarFallback>
-                                </Avatar>
-                                {/* Online status */}
-                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
+                    {/* Mobile Menu Only */}
+                    <div className="flex items-center">
+                      <Sheet onOpenChange={setMobileMenuOpen}>
+                        <SheetTrigger asChild>
+                          <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
+                            <AnimatedHamburger isOpen={mobileMenuOpen} className="text-[var(--fg)]" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50 top-16 h-[calc(100vh-4rem)]">
+                          <div className="flex flex-col h-full overflow-hidden">
+                            {/* Modern Mobile Header */}
+                            <div className="relative overflow-hidden bg-gradient-fresh p-6 text-white shadow-lg">
+                              <div className="flex items-center space-x-3">
+                                <Logo size="lg" />
+                                <span className="font-heading text-xl font-semibold">Learnovium</span>
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <h3 className="font-bold text-lg truncate">{userName || "User Account"}</h3>
-                                <p className="text-indigo-100 text-sm truncate">{userName || "user@example.com"}</p>
-                                <div className="flex items-center mt-2 space-x-2">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                                    Premium
-                                  </span>
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                                    Verified
-                                  </span>
+                              <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl" />
+                              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/5 rounded-full blur-lg" />
+                            </div>
+                            
+                            {/* Scrollable Content Area */}
+                            <div className="flex-1 overflow-y-auto bg-gradient-to-b from-white/40 to-white/20 dark:from-slate-800/40 dark:to-slate-800/20">
+                              {/* Modern Mobile Navigation */}
+                              <nav className="p-6 space-y-3">
+                                {navItems.map((item) => {
+                                  const isItemActive = isActive(item.href);
+                                  return (
+                                    <Link
+                                      key={item.href}
+                                      href={item.href}
+                                      className={`group block p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] ${
+                                        isItemActive
+                                          ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-400/30 shadow-lg shadow-blue-500/10"
+                                          : "bg-white/40 dark:bg-slate-700/40 border border-white/20 dark:border-slate-600/30 hover:bg-white/60 dark:hover:bg-slate-600/40 hover:shadow-lg hover:shadow-black/5"
+                                      }`}
+                                    >
+                                      <div className="flex items-center space-x-4">
+                                        <div className={`p-3 rounded-xl transition-all duration-300 ${
+                                          isItemActive 
+                                            ? "bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25" 
+                                            : "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-600 dark:to-slate-700 group-hover:from-blue-50 group-hover:to-purple-50 dark:group-hover:from-blue-900/20 dark:group-hover:to-purple-900/20"
+                                        }`}>
+                                          <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                            isItemActive 
+                                              ? "bg-white" 
+                                              : "bg-gradient-to-br from-blue-500 to-purple-600"
+                                          }`}>
+                                            <div className={`w-2 h-2 rounded-full ${
+                                              isItemActive ? "bg-blue-500" : "bg-white"
+                                            }`} />
+                                          </div>
+                                        </div>
+                                        <div className="flex-1">
+                                          <div className={`font-semibold text-base ${
+                                            isItemActive ? "text-blue-600 dark:text-blue-400" : "text-slate-900 dark:text-slate-100"
+                                          }`}>
+                                            {item.label}
+                                          </div>
+                                          <div className={`text-sm ${
+                                            isItemActive ? "text-blue-500 dark:text-blue-300" : "text-slate-600 dark:text-slate-400"
+                                          }`}>
+                                            Navigate to {item.label.toLowerCase()}
+                                          </div>
+                                        </div>
+                                        <div className={`text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors ${
+                                          isItemActive ? "text-blue-400" : ""
+                                        }`}>
+                                          <ChevronRight className="h-4 w-4" />
+                                        </div>
+                                      </div>
+                                    </Link>
+                                  );
+                                })}
+                              </nav>
+
+                              {/* Modern Mobile Footer */}
+                              <div className="p-6 border-t border-white/20 dark:border-slate-700/50 bg-white/30 dark:bg-slate-800/30">
+                                <div className="space-y-4">
+                                  {/* Enhanced Theme Toggle */}
+                                  <div className="flex items-center justify-between p-4 bg-white/60 dark:bg-slate-700/60 rounded-2xl border border-white/20 dark:border-slate-600/30 shadow-lg hover:shadow-xl transition-all duration-300">
+                                    <div className="flex items-center gap-3">
+                                      <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 group-hover:from-blue-100 group-hover:to-indigo-200 dark:group-hover:from-blue-800/30 dark:group-hover:to-indigo-800/30 transition-all duration-200">
+                                        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600" />
+                                      </div>
+                                      <div>
+                                        <div className="font-semibold text-sm text-slate-900 dark:text-slate-100">Theme</div>
+                                        <div className="text-xs text-slate-600 dark:text-slate-400">Light / Dark mode</div>
+                                      </div>
+                                    </div>
+                                    <ThemeToggle />
+                                  </div>
+                                  
+                                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-95 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
+                                    <Link href="/auth">
+                                      <div className="flex items-center justify-center space-x-2">
+                                        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                        <span>Start Learning Free</span>
+                                      </div>
+                                    </Link>
+                                  </Button>
+                                  
+                                  <Button variant="outline" className="w-full border-2 border-white/30 dark:border-slate-600/30 hover:border-blue-400/50 hover:bg-white/50 dark:hover:bg-slate-700/50 transition-all duration-300 rounded-2xl py-4 text-base font-medium text-slate-700 dark:text-slate-300" asChild>
+                                    <Link href="/auth/sign-in">
+                                      <div className="flex items-center justify-center space-x-2">
+                                        <div className="w-2 h-2 bg-slate-600 dark:bg-slate-400 rounded-full" />
+                                        <span>Sign In</span>
+                                      </div>
+                                    </Link>
+                                  </Button>
                                 </div>
                               </div>
                             </div>
                           </div>
-
-                          {/* Menu Items */}
-                          <div className="p-3 space-y-1">
-                            {userMenuItems.map((item) => (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
-                                onClick={() => setUserMenuOpen(false)}
-                              >
-                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 group-hover:from-blue-100 group-hover:to-indigo-200 dark:group-hover:from-blue-800/30 dark:group-hover:to-indigo-800/30 transition-all duration-200 mr-3">
-                                  <div className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400" />
-                                </div>
-                                <div className="flex-1">
-                                  <div className="font-semibold text-sm">{item.label}</div>
-                                  <div className="text-xs text-gray-500 dark:text-slate-400">Navigate to {item.label.toLowerCase()}</div>
-                                </div>
-                                <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
-                                  <ChevronRight className="h-4 w-4" />
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-
-                          {/* Footer with sign out */}
-                          <div className="p-3 border-t border-gray-100 dark:border-slate-700/50">
-                            <button
-                              onClick={handleSignOut}
-                              className="group w-full flex items-center px-4 py-3 text-left text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
-                            >
-                              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-all duration-200 mr-3">
-                                <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" />
-                              </div>
-                              <div className="flex-1">
-                                <div className="font-semibold text-sm">Sign Out</div>
-                                <div className="text-xs text-red-500 dark:text-red-400">End your session</div>
-                              </div>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                        </SheetContent>
+                      </Sheet>
                     </div>
-                  </>,
-                  document.body
-                )}
-                </div>
-                
-                {/* Mobile Menu for logged-in users */}
-                <div className="flex md:hidden items-center">
-                  <Sheet onOpenChange={setMobileMenuOpen}>
-                    <SheetTrigger asChild>
-                      <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
-                        <AnimatedHamburger isOpen={mobileMenuOpen} className="text-[var(--fg)]" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50 top-16 h-[calc(100vh-4rem)]">
-                      <div className="flex flex-col h-full overflow-hidden">
-                        {/* Modern Mobile Header */}
-                        <div className="relative overflow-hidden bg-gradient-fresh p-6 text-white shadow-lg">
-                          <div className="flex items-center space-x-3">
-                            <Logo size="lg" />
-                            <span className="font-heading text-xl font-semibold">Learnovium</span>
+                  </>
+                ) : (
+                  <>
+                    {/* Mobile Menu for logged-in users */}
+                    <div className="flex items-center">
+                      <Sheet onOpenChange={setMobileMenuOpen}>
+                        <SheetTrigger asChild>
+                          <Button variant="ghost" size="sm" className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl p-3">
+                            <AnimatedHamburger isOpen={mobileMenuOpen} className="text-[var(--fg)]" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-80 p-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-l border-white/20 dark:border-slate-700/50 top-16 h-[calc(100vh-4rem)]">
+                          <div className="flex flex-col h-full overflow-hidden">
+                            {/* Modern Mobile Header */}
+                            <div className="relative overflow-hidden bg-gradient-fresh p-6 text-white shadow-lg">
+                              <div className="flex items-center space-x-3">
+                                <Logo size="lg" />
+                                <span className="font-heading text-xl font-semibold">Learnovium</span>
+                              </div>
+                              <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl" />
+                              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/5 rounded-full blur-lg" />
+                            </div>
+                            
+                            {/* Scrollable Content Area */}
+                            <div className="flex-1 overflow-y-auto bg-gradient-to-b from-white/40 to-white/20 dark:from-slate-800/40 dark:to-slate-800/20">
+                              {/* Modern Mobile Navigation */}
+                              <nav className="p-6 space-y-3">
+                                {navItems.map((item) => {
+                                  const isItemActive = isActive(item.href);
+                                  return (
+                                    <Link
+                                      key={item.href}
+                                      href={item.href}
+                                      className={`group block p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] ${
+                                        isItemActive
+                                          ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-400/30 shadow-lg shadow-blue-500/10"
+                                          : "bg-white/40 dark:bg-slate-700/40 border border-white/20 dark:border-slate-600/30 hover:bg-white/60 dark:hover:bg-slate-600/40 hover:shadow-lg hover:shadow-black/5"
+                                      }`}
+                                    >
+                                      <div className="flex items-center space-x-4">
+                                        <div className={`p-3 rounded-xl transition-all duration-300 ${
+                                          isItemActive 
+                                            ? "bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25" 
+                                            : "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-600 dark:to-slate-700 group-hover:from-blue-50 group-hover:to-purple-50 dark:group-hover:from-blue-900/20 dark:group-hover:to-purple-900/20"
+                                        }`}>
+                                          <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                            isItemActive 
+                                              ? "bg-white" 
+                                              : "bg-gradient-to-br from-blue-500 to-purple-600"
+                                          }`}>
+                                            <div className={`w-2 h-2 rounded-full ${
+                                              isItemActive ? "bg-blue-500" : "bg-white"
+                                            }`} />
+                                          </div>
+                                        </div>
+                                        <div className="flex-1">
+                                          <div className={`font-semibold text-base ${
+                                            isItemActive ? "text-blue-600 dark:text-blue-400" : "text-slate-900 dark:text-slate-100"
+                                          }`}>
+                                            {item.label}
+                                          </div>
+                                          <div className={`text-sm ${
+                                            isItemActive ? "text-blue-500 dark:text-blue-300" : "text-slate-600 dark:text-slate-400"
+                                          }`}>
+                                            Navigate to {item.label.toLowerCase()}
+                                          </div>
+                                        </div>
+                                        <div className={`text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors ${
+                                          isItemActive ? "text-blue-400" : ""
+                                        }`}>
+                                          <ChevronRight className="h-4 w-4" />
+                                        </div>
+                                      </div>
+                                    </Link>
+                                  );
+                                })}
+                              </nav>
+
+                              {/* Modern Mobile Footer - User Info */}
+                              <div className="p-6 border-t border-white/20 dark:border-slate-700/50 bg-white/30 dark:bg-slate-800/30">
+                                <div className="space-y-4">
+                                  {/* Enhanced User Info */}
+                                  <div className="flex items-center space-x-3 p-4 rounded-2xl bg-white/60 dark:bg-slate-700/60 border border-white/20 dark:border-slate-600/30 shadow-lg hover:shadow-xl transition-all duration-300">
+                                    <Avatar className="h-12 w-12 ring-2 ring-white/20 dark:ring-slate-600/30">
+                                      <AvatarImage src={userAvatarUrl} alt={userName} />
+                                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-medium">
+                                        {userName ? userName.charAt(0).toUpperCase() : "U"}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <p className="font-semibold text-slate-900 dark:text-slate-100">{userName || "User"}</p>
+                                      <p className="text-sm text-slate-600 dark:text-slate-400">Signed In</p>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Go to Dashboard */}
+                                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-95 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
+                                    <Link href="/app">
+                                      <div className="flex items-center justify-center space-x-2">
+                                        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                        <span>Go to Dashboard</span>
+                                      </div>
+                                    </Link>
+                                  </Button>
+                                  
+                                  {/* Enhanced Sign Out */}
+                                  <button
+                                    onClick={handleSignOut}
+                                    className="w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all duration-300 hover:scale-[1.02] font-medium"
+                                  >
+                                    Sign Out
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl" />
-                          <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/5 rounded-full blur-lg" />
-                        </div>
-                        
-                        {/* Scrollable Content Area */}
-                        <div className="flex-1 overflow-y-auto bg-gradient-to-b from-white/40 to-white/20 dark:from-slate-800/40 dark:to-slate-800/20">
-                          {/* Modern Mobile Navigation */}
-                          <nav className="p-6 space-y-3">
-                            {navItems.map((item) => {
-                              const isItemActive = isActive(item.href);
-                              return (
+                        </SheetContent>
+                      </Sheet>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden md:flex w-full items-center justify-between">
+            {/* Left: Logo */}
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="flex items-center space-x-2">
+                <Logo size="lg" />
+                <span className="font-heading text-xl font-semibold gradient-text">Learnovium</span>
+              </Link>
+            </div>
+
+            {/* Center: Navigation */}
+            <nav className="flex items-center space-x-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    isActive(item.href)
+                      ? "bg-gradient-to-r from-brand/20 to-purple-500/20 text-brand"
+                      : "text-[var(--fg)]/70 hover:text-[var(--fg)] hover:bg-muted/50"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Right: Auth/Actions */}
+            <div className="flex items-center space-x-3">
+              {!isLoggedIn ? (
+                <>
+                  {/* Desktop Theme Toggle */}
+                  <div className="hidden md:block">
+                    <ThemeToggle />
+                  </div>
+                  <Button variant="ghost" size="sm" shape="pill" asChild className="hidden sm:inline-flex">
+                    <Link href="/auth">Sign In</Link>
+                  </Button>
+                  <Button size="sm" shape="pill" asChild className="bg-gradient-to-r from-brand to-purple-600 hover:opacity-95 text-white border-0 shadow-md hidden sm:inline-flex">
+                    <Link href="/auth">Get Started</Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* Desktop Theme Toggle */}
+                  <div className="hidden md:block">
+                    <ThemeToggle />
+                  </div>
+                  <AdminLinkClient />
+                  <div className="relative">
+                    <Button
+                      variant="ghost"
+                      className="group relative h-11 w-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      onClick={toggleUserMenu}
+                    >
+                      <Avatar className="h-9 w-9 ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300 pointer-events-none">
+                        <AvatarImage src={userAvatarUrl} alt={userName} />
+                        <AvatarFallback className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-sm">
+                          {userName ? userName.charAt(0).toUpperCase() : "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      {/* Animated indicator */}
+                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full border-2 border-white transition-all duration-300 ${
+                        userMenuOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-60'
+                      }`} />
+                    </Button>
+
+                  {userMenuOpen && buttonRect && typeof window !== 'undefined' && createPortal(
+                    <>
+                      {/* Backdrop with blur */}
+                      <div 
+                        className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm" 
+                        onClick={() => setUserMenuOpen(false)}
+                      />
+                      
+                      {/* Modern User Menu */}
+                      <div 
+                        className="fixed z-[110] w-80 sm:w-80"
+                        style={{
+                          top: buttonRect.bottom + 8,
+                          left: window.innerWidth < 640 ? 8 : Math.max(8, Math.min(buttonRect.right - 320, window.innerWidth - 328)), // Full width on mobile with padding
+                          right: window.innerWidth < 640 ? 8 : 'auto', // Add right padding on mobile
+                          width: window.innerWidth < 640 ? 'auto' : '320px', // Auto width on mobile
+                        }}
+                      >
+                        <div className="relative">
+                          {/* Arrow pointer */}
+                          <div className="absolute -top-2 right-6 w-4 h-4 bg-white dark:bg-slate-800 rotate-45 border-l border-t border-gray-200/50 dark:border-slate-700/50 shadow-lg" />
+                          
+                          {/* Main menu container */}
+                          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl shadow-black/10 dark:shadow-black/20 border border-gray-200/50 dark:border-slate-700/50 overflow-hidden">
+                            {/* Header with gradient */}
+                            <div className="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white overflow-hidden">
+                              {/* Background pattern */}
+                              <div className="absolute inset-0 bg-white/10 opacity-30" />
+                              
+                              <div className="relative flex items-center space-x-4">
+                                <div className="relative">
+                                  <Avatar className="h-16 w-16 ring-4 ring-white/30 shadow-lg">
+                                    <AvatarImage src={userAvatarUrl} alt={userName} />
+                                    <AvatarFallback className="bg-white/20 text-white text-xl font-bold backdrop-blur-sm">
+                                      {userName ? userName.charAt(0).toUpperCase() : "U"}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  {/* Online status */}
+                                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full border-3 border-white shadow-lg" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-bold text-lg truncate">{userName || "User Account"}</h3>
+                                  <p className="text-indigo-100 text-sm truncate">{userName || "user@example.com"}</p>
+                                  <div className="flex items-center mt-2 space-x-2">
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                                      Premium
+                                    </span>
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
+                                      Verified
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Menu Items */}
+                            <div className="p-3 space-y-1">
+                              {userMenuItems.map((item) => (
                                 <Link
                                   key={item.href}
                                   href={item.href}
-                                  className={`group block p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] ${
-                                    isItemActive
-                                      ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-400/30 shadow-lg shadow-blue-500/10"
-                                      : "bg-white/40 dark:bg-slate-700/40 border border-white/20 dark:border-slate-600/30 hover:bg-white/60 dark:hover:bg-slate-600/40 hover:shadow-lg hover:shadow-black/5"
-                                  }`}
+                                  className="group w-full flex items-center px-4 py-3 text-left text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
+                                  onClick={() => setUserMenuOpen(false)}
                                 >
-                                  <div className="flex items-center space-x-4">
-                                    <div className={`p-3 rounded-xl transition-all duration-300 ${
-                                      isItemActive 
-                                        ? "bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25" 
-                                        : "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-600 dark:to-slate-700 group-hover:from-blue-50 group-hover:to-purple-50 dark:group-hover:from-blue-900/20 dark:group-hover:to-purple-900/20"
-                                    }`}>
-                                      <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                                        isItemActive 
-                                          ? "bg-white" 
-                                          : "bg-gradient-to-br from-blue-500 to-purple-600"
-                                      }`}>
-                                        <div className={`w-2 h-2 rounded-full ${
-                                          isItemActive ? "bg-blue-500" : "bg-white"
-                                        }`} />
-                                      </div>
-                                    </div>
-                                    <div className="flex-1">
-                                      <div className={`font-semibold text-base ${
-                                        isItemActive ? "text-blue-600 dark:text-blue-400" : "text-slate-900 dark:text-slate-100"
-                                      }`}>
-                                        {item.label}
-                                      </div>
-                                      <div className={`text-sm ${
-                                        isItemActive ? "text-blue-500 dark:text-blue-300" : "text-slate-600 dark:text-slate-400"
-                                      }`}>
-                                        Navigate to {item.label.toLowerCase()}
-                                      </div>
-                                    </div>
-                                    <div className={`text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors ${
-                                      isItemActive ? "text-blue-400" : ""
-                                    }`}>
-                                      <ChevronRight className="h-4 w-4" />
-                                    </div>
+                                  <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 group-hover:from-blue-100 group-hover:to-indigo-200 dark:group-hover:from-blue-800/30 dark:group-hover:to-indigo-800/30 transition-all duration-200 mr-3">
+                                    <div className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400" />
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="font-semibold text-sm">{item.label}</div>
+                                    <div className="text-xs text-gray-500 dark:text-slate-400">Navigate to {item.label.toLowerCase()}</div>
+                                  </div>
+                                  <div className="text-gray-400 dark:text-slate-500 group-hover:text-gray-600 dark:group-hover:text-slate-300 transition-colors">
+                                    <ChevronRight className="h-4 w-4" />
                                   </div>
                                 </Link>
-                              );
-                            })}
-                          </nav>
+                              ))}
+                            </div>
 
-                          {/* Modern Mobile Footer - User Info */}
-                          <div className="p-6 border-t border-white/20 dark:border-slate-700/50 bg-white/30 dark:bg-slate-800/30">
-                            <div className="space-y-4">
-                              {/* Enhanced User Info */}
-                              <div className="flex items-center space-x-3 p-4 rounded-2xl bg-white/60 dark:bg-slate-700/60 border border-white/20 dark:border-slate-600/30 shadow-lg hover:shadow-xl transition-all duration-300">
-                                <Avatar className="h-12 w-12 ring-2 ring-white/20 dark:ring-slate-600/30">
-                                  <AvatarImage src={userAvatarUrl} alt={userName} />
-                                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-medium">
-                                    {userName ? userName.charAt(0).toUpperCase() : "U"}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <p className="font-semibold text-slate-900 dark:text-slate-100">{userName || "User"}</p>
-                                  <p className="text-sm text-slate-600 dark:text-slate-400">Signed In</p>
-                                </div>
-                              </div>
-                              
-                              {/* Go to Dashboard */}
-                              <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-95 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] rounded-2xl py-4 text-base font-semibold" asChild>
-                                <Link href="/app">
-                                  <div className="flex items-center justify-center space-x-2">
-                                    <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                                    <span>Go to Dashboard</span>
-                                  </div>
-                                </Link>
-                              </Button>
-                              
-                              {/* Enhanced Sign Out */}
+                            {/* Footer with sign out */}
+                            <div className="p-3 border-t border-gray-100 dark:border-slate-700/50">
                               <button
                                 onClick={handleSignOut}
-                                className="w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all duration-300 hover:scale-[1.02] font-medium"
+                                className="group w-full flex items-center px-4 py-3 text-left text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all duration-200 hover:scale-[1.02]"
                               >
-                                Sign Out
+                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-all duration-200 mr-3">
+                                  <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="font-semibold text-sm">Sign Out</div>
+                                  <div className="text-xs text-red-500 dark:text-red-400">End your session</div>
+                                </div>
                               </button>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </SheetContent>
-                  </Sheet>
-                </div>
-              </>
-            )}
+                    </>,
+                    document.body
+                  )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
