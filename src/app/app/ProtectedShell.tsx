@@ -132,12 +132,7 @@ export function ProtectedShell({ children }: { children: React.ReactNode }) {
               </div>
               
               {/* Desktop Layout */}
-              <div className="hidden lg:flex w-full items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Logo size="md" />
-                  <span className="font-heading text-lg font-semibold gradient-text">Learnovium</span>
-                </div>
-                
+              <div className="hidden lg:flex w-full items-center justify-end">
                 {/* Desktop User Menu - Right aligned */}
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
                   <UserMenu />
